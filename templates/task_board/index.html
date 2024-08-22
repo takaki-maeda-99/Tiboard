@@ -1,15 +1,77 @@
-<!DOCTYPE html>
-<html lang="ja">
+{% extends "../base.html" %} {% block content %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+
+    <style>
+        .field {
+            display: flex;
+        }
+    </style>
 </head>
 
-<body>
 
+<body>
+    <div class=”container” id="status_indicator">
+        <div class="field">
+            <div class="spinner-grow m-1" style="width: 1.5rem; height: 1.5rem;" role="status" id="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h3 id="status_text">loading...</h3>
+        </div>
+    </div>
+
+    <h1 id="result">Hello!</h1>
+
+    <script>
+
+        const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));//timeはミリ秒
+
+        async function read_database() {
+            document.getElementById('status_text').textContent = 'reading database...';
+            document.getElementById("status").classList.add("text-primary");
+            await sleep(2000);
+            return await 'read_database';
+        }
+
+        async function update_courses() {
+            document.getElementById('status_text').textContent = 'updating courses...';
+            document.getElementById("status").classList.add("text-secondary");
+            await sleep(2000);
+            return await 'update_courses';
+
+        }
+
+        async function update_courseWork() {
+            document.getElementById('status_text').textContent = 'updating courseWork...';
+            document.getElementById("status").classList.add("text-success");
+            await sleep(2000);
+            return await 'update_courseWork';
+        }
+
+        async function main() {
+            const result1 = await read_database();
+            document.getElementById('result').textContent = result1;
+            const result2 = await update_courses();
+            document.getElementById('result').textContent = result2;
+            const result3 = await update_courseWork();
+            document.getElementById('result').textContent = result3;
+            document.getElementById("status_indicator").style.visibility = "hidden";
+        }
+
+        main();
+
+    </script>
 </body>
-<h1>Hello!</h1>
+
 
 </html>
+
+{%endblock%}
