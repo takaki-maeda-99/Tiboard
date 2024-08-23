@@ -17,7 +17,6 @@
     </style>
 </head>
 
-
 <body>
     <div class=”container” id="status_indicator">
         <div class="field">
@@ -64,6 +63,7 @@
             const result3 = await update_courseWork();
             document.getElementById('result').textContent = result3;
             document.getElementById("status_indicator").style.visibility = "hidden";
+            console.log('Hello!');
         }
 
         main();
