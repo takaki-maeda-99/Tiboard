@@ -73,10 +73,13 @@ def authenticate_user(request):
     user_id = None
 
     creds = None
-
+    
     try:
         # cookieを使ってユーザーの情報を取得する
         user_id = request.COOKIES['user_id']
+        
+        # データベースにユーザーが存在するか確認する
+        user = User.objects.get(user_id=user_id)
         
         # トークンファイルが存在する場合は、それを使って認証する
         if os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
@@ -85,9 +88,6 @@ def authenticate_user(request):
         # トークンファイルが存在しない、またはトークンが無効な場合は、新しいトークンを取得する
         if not creds or not creds.valid:
             raise KeyError
-        
-        # データベースにユーザーが存在するか確認する
-        user = User.objects.get(user_id=user_id)
         
     except KeyError or FileNotFoundError or User.DoesNotExist:
         # Refresh the token if it has expired
