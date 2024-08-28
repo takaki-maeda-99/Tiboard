@@ -12,6 +12,9 @@ from googleapiclient.errors import HttpError
 
 from task_board.models import User, Course, CourseWork
 
+import functions.classroom as classroom
+import functions.database as database
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
         "https://www.googleapis.com/auth/classroom.courses.readonly",
@@ -33,86 +36,68 @@ TOKENS_FILE_PATH = "OAuth/tokens"
 COURSE_INFO_FIELDS = "courses(name,id,updateTime)"
 COURSEWORK_INFO_FIELDS = "courseWork(title,id,updateTime)"
 
-def get_user_info(creds):
-    # classroomAPIを使ってユーザーの情報を取得する
-    # 入力：creds（Credentials）, 出力: user_id, user_mail (dict)
-    
-    headers = {
-        'Authorization': f'Bearer {creds.token}',
-    }
-    
-    try:
-        response = requests.get(f"https://people.googleapis.com/v1/people/me?personFields=emailAddresses", headers=headers).json()
-        user_info = response.get("emailAddresses", [])[0]
-        user_id = user_info["metadata"]["source"]["id"]
-        user_mail = user_info["value"]
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
-    
-    return {"id": user_id, "mail": user_mail}
+def convert_utc_to_jst(utc_date=None, date_dict=None, time_dict=None):
+    jst_time = datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
+    if utc_date:
+        utc_date = datetime.fromisoformat(utc_date.replace('Z', '+00:00'))
+        jst_time = utc_date.astimezone(ZoneInfo("Asia/Tokyo"))
+    elif date_dict:
+        utc_time = datetime(
+            date_dict.get('year', 1970),
+            date_dict.get('month', 1),
+            date_dict.get('day', 1),
+            time_dict.get('hours', 0),
+            time_dict.get('minutes', 0),
+            time_dict.get('seconds', 0),
+        )
+        utc_time = str(utc_time) + '+00:00'
+        jst_time = datetime.fromisoformat(utc_time).astimezone(ZoneInfo("Asia/Tokyo"))
+    return jst_time
 
-def get_courses_info(creds):
-    # set the headers for the request to the Google Classroom API with the access token
-    headers = {
-        'Authorization': f'Bearer {creds.token}',
-    }
+def set_or_create_creds(request):
     
-    try:
-        response = requests.get(f"https://classroom.googleapis.com/v1/courses?fields={COURSE_INFO_FIELDS}", headers=headers).json()
-        courses_info = response.get("courses", [])
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
-    
-    return courses_info
-    
-
-def authenticate_user(request):
-    
-    user_id = None
-
     creds = None
+    user_id = None
+    created = False
     
     try:
         # cookieを使ってユーザーの情報を取得する
         user_id = request.COOKIES['user_id']
         
-        # データベースにユーザーが存在するか確認する
-        user = User.objects.get(user_id=user_id)
+        creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
         
-        # トークンファイルが存在する場合は、それを使って認証する
-        if os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
-            creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
-        
-        # トークンファイルが存在しない、またはトークンが無効な場合は、新しいトークンを取得する
-        if not creds or not creds.valid:
-            raise KeyError
-        
-    except KeyError or FileNotFoundError or User.DoesNotExist:
-        # Refresh the token if it has expired
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                CREDENTIALS_FILE_PATH, SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-            
-            user_info = get_user_info(creds)
-            
-            user_id = user_info["id"]
-            user_mail = user_info["mail"]
-            
-            user = User(user_id=user_id, user_mail=user_mail)
-            user.save()
-            
-            # Save the credentials for the next run
-            with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
-                token.write(creds.to_json())
+        
+        if not creds or not creds.valid:
+            raise KeyError
     
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None, None
+    except (KeyError, FileNotFoundError):
+        
+        flow = InstalledAppFlow.from_client_secrets_file(
+            CREDENTIALS_FILE_PATH, SCOPES
+        )
+        creds = flow.run_local_server(port=0)
+        
+        created = True
     
-    return creds, {"id": user.user_id, "mail": user.user_mail}
+    return creds, user_id, created
+
+def authorize(request):
+    creds, user_id, created = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    if created:
+        user_info = classroom.request_person_info(headers)
+        
+        user_id = user_info["user_id"]
+        user_email = user_info["user_email"]
+        
+        database.insert_user_to_db(user_id, user_email)
+        
+        with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
+            token.write(creds.to_json())
+    
+    return headers, user_id, created
+

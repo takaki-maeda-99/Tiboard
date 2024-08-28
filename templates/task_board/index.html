@@ -31,6 +31,35 @@
 
     <script>
 
+        async function fetchData(url) {
+            try {
+                // fetchリクエストを実行
+                const response = await fetch(`/task_board/${url}`);
+
+                // レスポンスをJSON形式に変換
+                const data = await response.json();
+
+                return data;
+
+            } catch (error) {
+                // エラーが発生した場合は、エラーメッセージをコンソールに表示
+                console.error("Error:", error);
+
+                return { error: error };
+            }
+
+        }
+
+        fetchData("auth/").then(data => {
+            console.log(data);
+            return data;
+        });
+
+        fetchData("test/").then(data => {
+            console.log(data);
+            return data;
+        });
+
         const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));//timeはミリ秒
 
         async function read_database() {
@@ -69,8 +98,6 @@
         main();
 
     </script>
-
-<script src="./javaScript/fetch.js" defer></script>
 
 </body>
 
