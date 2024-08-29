@@ -4,8 +4,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from task_board.models import User, Course, CourseWork
-
 import functions.classroom as classroom
 import functions.database as database
 
@@ -61,14 +59,20 @@ def authorize(request):
     
     headers = {"Authorization": f"Bearer {creds.token}"}
     
+    response = classroom.async_request_user_and_course_info(headers)
+    
+    user_info = response[0]
+    courses = response[1]
+    
+    user_id = user_info.get("user_id", user_id)
+    user_email = user_info.get("user_email", "")
+    
+    database.insert_user_to_db(user_id, user_email)
+    
+    for course in courses:
+        database.add_course_to_user(user_id, course.get("id", ""))
+    
     if created:
-        user_info = classroom.request_person_info(headers)
-        
-        user_id = user_info["user_id"]
-        user_email = user_info["user_email"]
-        
-        database.insert_user_to_db(user_id, user_email)
-        
         with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
             token.write(creds.to_json())
     
@@ -88,7 +92,7 @@ def update_courses_data(request):
     courses = classroom.request_courses_info(headers)
     
     for course in courses:
-        database.insert_course_to_db(user_id, course)
+        database.insert_course_to_db(course)
     
     return courses
 
@@ -106,6 +110,36 @@ def update_coursework_data(request):
     
     for course_id, course_works in zip(course_ids, course_workss):
         for course_work in course_works:
-            database.insert_coursework_to_db(user_id, course_id, course_work)
+            database.insert_coursework_to_db(course_id, course_work)
     
     return course_workss
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+def update_submission_data(request):
+    creds, user_id, _ = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    courseworkss = database.get_courseworkss_from_db(user_id)
+    
+    course_and_coursework_ids = []
+    
+    now = datetime(2024, 7, 25, 12, 0, 0, tzinfo=ZoneInfo("Asia/Tokyo"))
+
+    for courseworks in courseworkss:
+        for coursework in courseworks:
+            coursework_due_time = coursework.due_time
+            print(coursework_due_time,now)
+            if coursework_due_time is not None:
+                if coursework_due_time < now:
+                    continue
+            course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
+            
+    submissions = classroom.async_request_submissions_info(headers, course_and_coursework_ids)
+    
+    for (course_id, coursework_id), submission in zip(course_and_coursework_ids, submissions):
+        database.insert_submission_state(user_id, course_id, coursework_id, submission)
+    
+    return submissions

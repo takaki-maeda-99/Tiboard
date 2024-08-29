@@ -56,7 +56,14 @@ def update_coursework(request):
 
     return response
 
+def update_submission(request):
+    try:
+        response = JsonResponse(function.update_submission_data(request),safe=False)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        response = JsonResponse({"update_submission": "failed", "error": f"{e}"})
 
+    return response
 
 
 

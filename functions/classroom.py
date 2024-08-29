@@ -7,19 +7,14 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 def request_person_info(headers):
+    response = requests.get(f"https://people.googleapis.com/v1/people/me?personFields=emailAddresses", headers=headers).json()
+    if response.get("error", None):
+        raise Exception(response.get("error", {}).get("message", "An error occurred"))
     
-    try:
-        response = requests.get(f"https://people.googleapis.com/v1/people/me?personFields=emailAddresses", headers=headers).json()
-        if response.get("error", None):
-            raise Exception(response.get("error", {}).get("message", "An error occurred"))
-        
-        person_info = response.get("emailAddresses", [])[0]
-        person_extracted_info = {"user_id": person_info.get("metadata", {}).get("source", {}).get("id", ""), "user_email": person_info.get("value", "")}
-        
-        return person_extracted_info
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return {}
+    person_info = response.get("emailAddresses", [])[0]
+    person_extracted_info = {"user_id": person_info.get("metadata", {}).get("source", {}).get("id", ""), "user_email": person_info.get("value", "")}
+    
+    return person_extracted_info
     
     # person_info
     # [{'metadata': {'primary': True, 
@@ -37,14 +32,10 @@ def request_person_info(headers):
 def request_courses_info(headers):
     COURSE_INFO_FIELDS = "courses(name,id,alternateLink)"
     
-    try:
-        response = requests.get(f"https://classroom.googleapis.com/v1/courses?fields={COURSE_INFO_FIELDS}", headers=headers).json()
-        if response.get("error", None):
-            raise Exception(response.get("error", {}).get("message", "An error occurred"))
-        return response.get("courses", [])
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
+    response = requests.get(f"https://classroom.googleapis.com/v1/courses?fields={COURSE_INFO_FIELDS}", headers=headers).json()
+    if response.get("error", None):
+        raise Exception(response.get("error", {}).get("message", "An error occurred"))
+    return response.get("courses", [])
     
     # course
     # {'id': '645150769353', 
@@ -97,14 +88,10 @@ def request_courses_info(headers):
 def request_courseWork_info(headers, courseId=""):
     COURSEWORK_INFO_FIELDS = "courseWork(courseId,id,title,updateTime,dueDate,dueTime,alternateLink)"
     
-    try:
-        response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork?fields={COURSEWORK_INFO_FIELDS}", headers=headers).json()
-        if response.get("error", None):
-            raise Exception(response.get("error", {}).get("message", "An error occurred"))
-        return response.get("courseWork", [])
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
+    response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork?fields={COURSEWORK_INFO_FIELDS}", headers=headers).json()
+    if response.get("error", None):
+        raise Exception(response.get("error", {}).get("message", "An error occurred"))
+    return response.get("courseWork", [])
 
     # courseWork
     # {'courseId': '645150769353', 
@@ -162,14 +149,10 @@ def request_courseWork_info(headers, courseId=""):
 def reqeust_submissions_info(headers, courseId="", courseWorkId=""):
     SUBMISSION_INFO_FIELDS = "studentSubmissions(courseWorkId,creationTime,state)"
     
-    try:
-        response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions?fields={SUBMISSION_INFO_FIELDS}", headers=headers).json()
-        if response.get("error", None):
-            raise Exception(response.get("error", {}).get("message", "An error occurred"))
-        return response.get("studentSubmissions", [])[0]
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
+    response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions?fields={SUBMISSION_INFO_FIELDS}", headers=headers).json()
+    if response.get("error", None):
+        raise Exception(response.get("error", {}).get("message", "An error occurred"))
+    return response.get("studentSubmissions", [])[0]
 
     # submission
     # [{'courseId': '645154192598', 
