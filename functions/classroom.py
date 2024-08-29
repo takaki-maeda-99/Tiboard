@@ -1,6 +1,7 @@
 import os.path
 import requests
 import asyncio
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -195,24 +196,24 @@ async def async_function(function, *args):
 async def async_functions(functions):
     return await asyncio.gather(*functions)
 
-def async_request_user_and_course_info(creds):
+def async_request_user_and_course_info(headers):
     tasks = [
-        async_function(request_person_info, creds),
-        async_function(request_courses_info, creds)
+        async_function(request_person_info, headers),
+        async_function(request_courses_info, headers)
     ]
     return asyncio.run(async_functions(tasks))
 
-    # request_user_and_course_info(creds) -> (user_info, course_info)
+    # request_user_and_course_info(headers) -> (user_info, course_info)
     # user_info: [{'metadata': {'primary': True, 'verified': True, 'source': {'type': 'DOMAIN_PROFILE', 'id': '100529591481232043303'}, 'sourcePrimary': True}, 'value': '
     # course_info: [{'id': '645150769353', 'name': 'B4001401 力学1および演習_2024'}, {'id': '646077438079', 'name': 'B4000801 線形代数1および演習_2024'}, ...]
 
-def async_request_courseWork_info(creds, course_ids):
+def async_request_courseWork_info(headers, course_ids):
     tasks = []
     for course_id in course_ids:
-        tasks.append(async_function(request_courseWork_info, creds, course_id))
+        tasks.append(async_function(request_courseWork_info, headers, course_id))
     return asyncio.run(async_functions(tasks))
 
-    # async_request_courseWork_info(creds, course_ids) -> [courseWork_info]
+    # async_request_courseWork_info(headers, course_ids) -> [courseWork_info]
     # courseWork_info: [{'id': '645150769545', 
     #                   'title': '第１５回', 
     #                   'alternateLink': 'https://classroom.google.com/c/NjQ1MTUwNzY5MzUz/a/NjQ1MTUwNzY5NTQ1/details', 
@@ -220,10 +221,10 @@ def async_request_courseWork_info(creds, course_ids):
     #                   'dueDate': {'year': 2024, 'month': 7, 'day': 18}, 
     #                   'dueTime': {'hours': 3, 'minutes': 10}}, ...]
 
-def async_request_submissions_info(creds, course_and_courseWork_ids):
+def async_request_submissions_info(headers, course_and_courseWork_ids):
     tasks = []
     for course_id, courseWork_id in course_and_courseWork_ids:
-        tasks.append(async_function(reqeust_submissions_info, creds, course_id, courseWork_id))
+        tasks.append(async_function(reqeust_submissions_info, headers, course_id, courseWork_id))
     return asyncio.run(async_functions(tasks))
 
 # -------------------------------test--------------------------------

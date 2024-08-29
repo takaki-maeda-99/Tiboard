@@ -1,9 +1,3 @@
-import os.path
-import requests
-
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -32,27 +26,6 @@ SCOPES = [
 
 CREDENTIALS_FILE_PATH = "OAuth/credentials.json"
 TOKENS_FILE_PATH = "OAuth/tokens"
-
-COURSE_INFO_FIELDS = "courses(name,id,updateTime)"
-COURSEWORK_INFO_FIELDS = "courseWork(title,id,updateTime)"
-
-def convert_utc_to_jst(utc_date=None, date_dict=None, time_dict=None):
-    jst_time = datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
-    if utc_date:
-        utc_date = datetime.fromisoformat(utc_date.replace('Z', '+00:00'))
-        jst_time = utc_date.astimezone(ZoneInfo("Asia/Tokyo"))
-    elif date_dict:
-        utc_time = datetime(
-            date_dict.get('year', 1970),
-            date_dict.get('month', 1),
-            date_dict.get('day', 1),
-            time_dict.get('hours', 0),
-            time_dict.get('minutes', 0),
-            time_dict.get('seconds', 0),
-        )
-        utc_time = str(utc_time) + '+00:00'
-        jst_time = datetime.fromisoformat(utc_time).astimezone(ZoneInfo("Asia/Tokyo"))
-    return jst_time
 
 def set_or_create_creds(request):
     
@@ -101,3 +74,38 @@ def authorize(request):
     
     return headers, user_id, created
 
+def get_task_board_data(request):
+    user_id = request.COOKIES['user_id']
+    courses = database.get_courses_from_db(user_id)
+    courses = list(courses.values())
+    return courses
+
+def update_courses_data(request):
+    creds, user_id, _ = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+
+    courses = classroom.request_courses_info(headers)
+    
+    for course in courses:
+        database.insert_course_to_db(user_id, course)
+    
+    return courses
+
+def update_coursework_data(request):
+    creds, user_id, _ = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    courses = database.get_courses_from_db(user_id)
+    courses = list(courses.values())
+    
+    course_ids = [course['course_id'] for course in courses]
+    
+    course_workss = classroom.async_request_courseWork_info(headers, course_ids)
+    
+    for course_id, course_works in zip(course_ids, course_workss):
+        for course_work in course_works:
+            database.insert_coursework_to_db(user_id, course_id, course_work)
+    
+    return course_workss

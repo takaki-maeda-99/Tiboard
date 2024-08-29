@@ -29,6 +29,40 @@ def auth(request):
 
     return response
 
+def get_task_board(request):
+    try:
+        response = JsonResponse(function.get_task_board_data(request),safe=False)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        response = JsonResponse({"task_board_data": "failed", "error": f"{e}"})
+
+    return response
+
+def update_courses(request):
+    try:
+        response = JsonResponse(function.update_courses_data(request),safe=False)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        response = JsonResponse({"update_courses": "failed", "error": f"{e}"})
+
+    return response
+
+def update_coursework(request):
+    try:
+        response = JsonResponse(function.update_coursework_data(request),safe=False)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        response = JsonResponse({"update_coursework": "failed", "error": f"{e}"})
+
+    return response
+
+
+
+
+
+
+# -------------------------------test--------------------------------
+
 # test_data
 test_user_id = "test_user_id"
 test_user_email = "test_user_email"
@@ -41,9 +75,10 @@ test_coursework_description = "test_coursework_description"
 test_coursework_materials = "test_coursework_materials"
 test_coursework_link = "test_coursework_link"
 test_coursework_update_time = "2024-07-18T01:05:33.759Z"
-test_coursework_due_time = "2024-07-18T01:05:33.759Z"
+test_coursework_due_date = {'year': 2024, 'month': 7, 'day': 18}
+test_coursework_due_time = {'hours': 18, 'minutes': 59}
 test_submission_state = "test_submission_state"
-test_submission_created_time = "2024-07-18T01:05:33.759Z"
+test_submission_created_time = "2024-07-18T05:05:33.759Z"
 
 def test_insert_to_db(request):
     try:
@@ -60,31 +95,15 @@ def test_insert_to_db(request):
             "materials": test_coursework_materials,
             "alternateLink": test_coursework_link,
             "updateTime": test_coursework_update_time,
+            "dueDate": test_coursework_due_date,
             "dueTime": test_coursework_due_time
+        })
+        database.update_submission_state(test_user_id, test_course_id, test_coursework_id, {
+            "state": test_submission_state,
+            "creationTime": test_submission_created_time
         })
         response = JsonResponse({"insert": "success"})
     except Exception as e:
         print(f"An error occurred: {e}")
         response = JsonResponse({"insert": "failed", "error": f"{e}"})
     return response
-
-def update_course_work(request):
-    # user = authenticate_user(request)
-    # user_id = user.get('user_id')
-    # course = Course.objects.get(course_id=course_id, user_id=user_id)
-    # course_works = course.course_ids.all()
-    # course_work_list = []
-    # for course_work in course_works:
-    #     course_work_list.append({
-    #         "course_work_id": course_work.course_work_id,
-    #         "course_work_title": course_work.course_work_title,
-    #         "description": course_work.description,
-    #         "materials": course_work.materials,
-    #         "link": course_work.link,
-    #         "update_time": course_work.update_time,
-    #         "due_time": course_work.due_time,
-    #         "creation_time": course_work.creation_time,
-    #         "state": course_work.state,
-    #         "late": course_work.late,
-    #     })
-    return JsonResponse({"course_works": "course_work_list"})
