@@ -71,7 +71,6 @@ def insert_submission_state(user_id, course_id, coursework_id, submission_dict):
     submission.save()
 
 def get_courses_from_db(user_id):
-    print(f"user_id: {user_id}")
     user = User.objects.get(user_id=user_id)
     courses = user.enrolled_courses.all()
     return courses
@@ -83,3 +82,8 @@ def get_courseworkss_from_db(user_id):
         courseworks = course.coursework_set.all()
         courseworkss.append(courseworks)
     return courseworkss
+
+def get_submissions_from_db(user_id):
+    user = User.objects.get(user_id=user_id)
+    submissions = user.submission_set.all()
+    return submissions

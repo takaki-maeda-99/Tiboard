@@ -1,11 +1,12 @@
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 
 import functions.classroom as classroom
 import functions.database as database
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -14,7 +15,6 @@ SCOPES = [
         "https://www.googleapis.com/auth/classroom.course-work.readonly",
         "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
         "https://www.googleapis.com/auth/classroom.coursework.me",
-        "https://www.googleapis.com/auth/classroom.announcements.readonly",
         "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly",
         "https://www.googleapis.com/auth/classroom.rosters.readonly",
         "https://www.googleapis.com/auth/userinfo.email",
@@ -82,7 +82,11 @@ def get_task_board_data(request):
     user_id = request.COOKIES['user_id']
     courses = database.get_courses_from_db(user_id)
     courses = list(courses.values())
-    return courses
+    courseworkss = database.get_courseworkss_from_db(user_id)
+    courseworkss = [list(courseworks.values()) for courseworks in courseworkss]
+    submission = database.get_submissions_from_db(user_id)
+    submission = list(submission.values())
+    return [courses, courseworkss, submission]
 
 def update_courses_data(request):
     creds, user_id, _ = set_or_create_creds(request)
@@ -114,9 +118,6 @@ def update_coursework_data(request):
     
     return course_workss
 
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
 def update_submission_data(request):
     creds, user_id, _ = set_or_create_creds(request)
     
@@ -126,12 +127,11 @@ def update_submission_data(request):
     
     course_and_coursework_ids = []
     
-    now = datetime(2024, 7, 25, 12, 0, 0, tzinfo=ZoneInfo("Asia/Tokyo"))
+    now = datetime(2024, 7, 15, 12, 0, 0, tzinfo=ZoneInfo("Asia/Tokyo"))
 
     for courseworks in courseworkss:
         for coursework in courseworks:
             coursework_due_time = coursework.due_time
-            print(coursework_due_time,now)
             if coursework_due_time is not None:
                 if coursework_due_time < now:
                     continue
