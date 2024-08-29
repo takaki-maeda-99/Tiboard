@@ -86,7 +86,7 @@ def request_courses_info(headers):
     # {'id': '314053235042', 'name': '久方寮Classroom（全体のお知らせ）'}
 
 def request_courseWork_info(headers, courseId=""):
-    COURSEWORK_INFO_FIELDS = "courseWork(courseId,id,title,updateTime,dueDate,dueTime,alternateLink)"
+    COURSEWORK_INFO_FIELDS = "courseWork(courseId,id,title,description,materials,updateTime,dueDate,dueTime,alternateLink)"
     
     response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork?fields={COURSEWORK_INFO_FIELDS}", headers=headers).json()
     if response.get("error", None):
