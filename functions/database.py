@@ -2,7 +2,7 @@ from task_board.models import User, Course, CourseWork
 
 def insert_user_to_db(user_id, user_email):
     try:
-        user = User(user_id=user_id, user_email=user_email)
+        user, _ = User.objects.update_or_create(user_id=user_id, user_email=user_email)
         user.save()
         
     except Exception as e:
@@ -11,7 +11,7 @@ def insert_user_to_db(user_id, user_email):
 def insert_course_to_db(user_id, course_dict):
     try:
         user = User.objects.get(user_id=user_id)
-        course = Course(
+        course, _ = Course.objects.update_or_create(
             user_id=user, 
             course_id=course_dict['id'], 
             course_name=course_dict['name'], 
@@ -25,7 +25,7 @@ def insert_coursework_to_db(user_id, course_id, coursework_dict):
     try:
         user = User.objects.get(user_id=user_id)
         course = Course.objects.get(user_id=user, course_id=course_id)
-        course_work = CourseWork(
+        course_work, _ = CourseWork.objects.update_or_create(
             user_id=user, 
             course_id=course, 
             coursework_id=coursework_dict['id'], 

@@ -35,4 +35,4 @@ class CourseWork(models.Model):
     submission_state = models.CharField(max_length=50, blank=True, default="")
     
     def __str__(self):
-        return f"{self.course_work_title} ({self.course_work_id})"
+        return f"{self.coursework_title} ({self.coursework_id})"
