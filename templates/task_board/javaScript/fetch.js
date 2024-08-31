@@ -2,7 +2,7 @@ async function fetchData(url) {
     try {
         // fetchリクエストを実行
         const response = await fetch(`/task_board/${url}`);
-        
+
         // レスポンスをJSON形式に変換
         const data = await response.json();
 

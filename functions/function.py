@@ -1,16 +1,12 @@
-import os.path
-import requests
-
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 
-from task_board.models import User, Course, CourseWork
+import functions.classroom as classroom
+import functions.database as database
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -19,7 +15,6 @@ SCOPES = [
         "https://www.googleapis.com/auth/classroom.course-work.readonly",
         "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
         "https://www.googleapis.com/auth/classroom.coursework.me",
-        "https://www.googleapis.com/auth/classroom.announcements.readonly",
         "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly",
         "https://www.googleapis.com/auth/classroom.rosters.readonly",
         "https://www.googleapis.com/auth/userinfo.email",
@@ -30,89 +25,121 @@ SCOPES = [
 CREDENTIALS_FILE_PATH = "OAuth/credentials.json"
 TOKENS_FILE_PATH = "OAuth/tokens"
 
-COURSE_INFO_FIELDS = "courses(name,id,updateTime)"
-COURSEWORK_INFO_FIELDS = "courseWork(title,id,updateTime)"
-
-def get_user_info(creds):
-    # classroomAPIを使ってユーザーの情報を取得する
-    # 入力：creds（Credentials）, 出力: user_id, user_mail (dict)
+def set_or_create_creds(request):
     
-    headers = {
-        'Authorization': f'Bearer {creds.token}',
-    }
-    
-    try:
-        response = requests.get(f"https://people.googleapis.com/v1/people/me?personFields=emailAddresses", headers=headers).json()
-        user_info = response.get("emailAddresses", [])[0]
-        user_id = user_info["metadata"]["source"]["id"]
-        user_mail = user_info["value"]
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
-    
-    return {"id": user_id, "mail": user_mail}
-
-def get_courses_info(creds):
-    # set the headers for the request to the Google Classroom API with the access token
-    headers = {
-        'Authorization': f'Bearer {creds.token}',
-    }
-    
-    try:
-        response = requests.get(f"https://classroom.googleapis.com/v1/courses?fields={COURSE_INFO_FIELDS}", headers=headers).json()
-        courses_info = response.get("courses", [])
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
-    
-    return courses_info
-    
-
-def authenticate_user(request):
-    
-    user_id = None
-
     creds = None
+    user_id = None
+    created = False
     
     try:
         # cookieを使ってユーザーの情報を取得する
         user_id = request.COOKIES['user_id']
         
-        # データベースにユーザーが存在するか確認する
-        user = User.objects.get(user_id=user_id)
+        creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
         
-        # トークンファイルが存在する場合は、それを使って認証する
-        if os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
-            creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
-        
-        # トークンファイルが存在しない、またはトークンが無効な場合は、新しいトークンを取得する
-        if not creds or not creds.valid:
-            raise KeyError
-        
-    except KeyError or FileNotFoundError or User.DoesNotExist:
-        # Refresh the token if it has expired
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                CREDENTIALS_FILE_PATH, SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-            
-            user_info = get_user_info(creds)
-            
-            user_id = user_info["id"]
-            user_mail = user_info["mail"]
-            
-            user = User(user_id=user_id, user_mail=user_mail)
-            user.save()
-            
-            # Save the credentials for the next run
-            with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
-                token.write(creds.to_json())
+        
+        if not creds or not creds.valid:
+            raise KeyError
     
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None, None
+    except (KeyError, FileNotFoundError):
+        
+        flow = InstalledAppFlow.from_client_secrets_file(
+            CREDENTIALS_FILE_PATH, SCOPES
+        )
+        creds = flow.run_local_server(port=0)
+        
+        created = True
     
-    return creds, {"id": user.user_id, "mail": user.user_mail}
+    return creds, user_id, created
+
+def authorize(request):
+    creds, user_id, created = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    response = classroom.async_request_user_and_course_info(headers)
+    
+    user_info = response[0]
+    courses = response[1]
+    
+    user_id = user_info.get("user_id", user_id)
+    user_email = user_info.get("user_email", "")
+    
+    database.insert_user_to_db(user_id, user_email)
+    
+    for course in courses:
+        database.add_course_to_user(user_id, course.get("id", ""))
+    
+    if created:
+        with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
+            token.write(creds.to_json())
+    
+    return headers, user_id, created
+
+def get_task_board_data(request):
+    user_id = request.COOKIES['user_id']
+    courses = database.get_courses_from_db(user_id)
+    courses = list(courses.values())
+    courseworkss = database.get_courseworkss_from_db(user_id)
+    courseworkss = [list(courseworks.values()) for courseworks in courseworkss]
+    submission = database.get_submissions_from_db(user_id)
+    submission = list(submission.values())
+    return [courses, courseworkss, submission]
+
+def update_courses_data(request):
+    creds, user_id, _ = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+
+    courses = classroom.request_courses_info(headers)
+    
+    for course in courses:
+        database.insert_course_to_db(course)
+    
+    return courses
+
+def update_coursework_data(request):
+    creds, user_id, _ = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    courses = database.get_courses_from_db(user_id)
+    courses = list(courses.values())
+    
+    course_ids = [course['course_id'] for course in courses]
+    
+    course_workss = classroom.async_request_courseWork_info(headers, course_ids)
+    
+    for course_id, course_works in zip(course_ids, course_workss):
+        for course_work in course_works:
+            database.insert_coursework_to_db(course_id, course_work)
+    
+    return course_workss
+
+def update_submission_data(request):
+    creds, user_id, _ = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    courseworkss = database.get_courseworkss_from_db(user_id)
+    
+    course_and_coursework_ids = []
+    
+    now = datetime(2024, 7, 15, 12, 0, 0, tzinfo=ZoneInfo("Asia/Tokyo"))
+
+    for courseworks in courseworkss:
+        for coursework in courseworks:
+            coursework_due_time = coursework.due_time
+            if coursework_due_time is not None:
+                if coursework_due_time < now:
+                    continue
+            course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
+            
+    submissions = classroom.async_request_submissions_info(headers, course_and_coursework_ids)
+    
+    for (course_id, coursework_id), submission in zip(course_and_coursework_ids, submissions):
+        database.insert_submission_state(user_id, course_id, coursework_id, submission)
+    
+    return submissions
