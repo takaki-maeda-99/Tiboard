@@ -11,26 +11,114 @@
         crossorigin="anonymous"></script>
 
     <style>
-        .field {
+        .gantt-chart {
             display: flex;
+            overflow-x: scroll;
+            white-space: nowrap;
+            padding: 30px;
+            height: fit-content;
+            margin-bottom: 60px;
         }
+        
+        .tasks {
+            display: flex;
+            flex-direction: column;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .task-name {
+            text-align: center;
+            width: 150px;
+            text-align: right;
+            margin: 10px 0;
+            height: 16px;
+        }
+        
+        .chart {
+            position: relative;
+            min-width: fit-content;
+        }
+        
+        .chart-header {
+            display: flex;
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            z-index: 10;
+            border-bottom: 1px solid #ccc;
+            height: 36px;
+        }
+        
+        .chart-header div {
+            width: 60px;
+            text-align: center;
+            font-size: 12px;
+            position: relative;
+            margin: 10px 0;
+        }
+        
+        .chart-footer {
+            position: relative;
+            height: 36px;
+            margin-top: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+            z-index: 5;
+        }
+        
+        .chart-footer .date-label {
+            position: absolute;
+            text-align: center;
+            font-size: 12px;
+            line-height: 36px; /* 高さを中央揃えにするため */
+            height: 100%;
+        }
+        
+        .chart-footer .date-line {
+            position: absolute;
+            height: 100%;
+            width: 1px;
+            background-color: #ddd;
+        }
+        
+        .task-bars {
+            position: relative;
+        }
+        
+        .task-bar {
+            position: absolute;
+            margin: 3px 0;
+            height: 30px;
+            background-color: rgba(76, 175, 80, 1);
+            border-radius: 10px;
+        }
+        
+        .vertical-line {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            background-color: #ddd;
+        }
+        
     </style>
 </head>
 
 <body>
-    <div class=”container” id="status_indicator">
-        <div class="field">
-            <div class="spinner-grow m-1" style="width: 1.5rem; height: 1.5rem;" role="status" id="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <h3 id="status_text">loading...</h3>
+    <!-- ガントチャートを表示する部分 -->
+    <div class="gantt-chart">
+        <div class="tasks">
+            <div class="task-name"><br></div>
+        </div>
+        <div class="chart">
+            <div id="chart-header" class="chart-header"></div>
+            <div id="task-bars" class="task-bars"></div>
+            <div id="chart-footer" class="chart-footer"></div>
+            <div id="current-time-line" class="current-time-line"></div>
         </div>
     </div>
 
-    <h1 id="result">Hello!</h1>
-
     <script>
-
         async function fetchData(url) {
             try {
                 // fetchリクエストを実行
@@ -50,73 +138,213 @@
 
         }
 
-        fetchData("auth/").then(data => {
-            console.log(data);
-            return data;
+        // ガントチャートの描画
+        document.addEventListener('DOMContentLoaded', async function() {
+            // データの取得
+            const authData = await fetchData("auth/");
+            console.log(authData);
+
+            const taskBoardData = await fetchData("get_task_board/");
+            console.log(taskBoardData);
+
+            const courses = await fetchData("update_courses/");
+            console.log(courses);
+
+            const coursework = await fetchData("update_coursework/");
+            console.log(coursework);
+
+            const submissionData = await fetchData("update_submission/");
+            console.log(submissionData);
+
+            // タスクの作成
+            const tasks = coursework.map(works => {
+                return works.map(work => {
+                    const { course_id_id, coursework_title, due_time, update_time } = work;
+
+                    const startTime = new Date(update_time).toISOString();
+
+                    const target_dic = courses.find(item => item.id == course_id_id);
+                    const course_title = target_dic ? target_dic.course_name : "Unknown Course";
+
+                    return {
+                        name: `${course_title} ${coursework_title}`,
+                        startTime: startTime,
+                        endTime: due_time
+                    };
+                });
+            }).flat(); // フラットにして1つの配列にする
+
+            console.log("tasks:", tasks);
+
+            // 以下、ガントチャートの描画コード
+            const chartHeader = document.getElementById('chart-header');
+            const taskBars = document.getElementById('task-bars');
+            const tasksContainer = document.querySelector('.tasks');
+            const chartFooter = document.getElementById('chart-footer');
+            
+            const now = new Date();
+            const startDate = new Date(now);
+            startDate.setHours(0, 0, 0, 0);
+
+            const daysRange = 3; // 表示する日数
+            const hoursPerDay = 24; // 1日あたりの時間
+            const hourToPx = 20; // 1時間当たりのpx
+            const max_px = daysRange * hoursPerDay * hourToPx; // チャートの右端までのpx
+
+            // 時間をピクセルに変換する関数
+            function timeToPixels(time) {
+                const date = new Date(time);
+                const timeDiff = date - startDate;
+
+                if (timeDiff < 0) return -30;
+
+                return (timeDiff / (1000 * 60 * 60)) * hourToPx;
+            }
+
+            // 横軸を生成
+            for (let day = 0; day < daysRange; day++) {
+                for (let hour = 0; hour < hoursPerDay; hour += 3) {
+                    const headerCell = document.createElement('div');
+                    const date = new Date(startDate.getTime());
+                    date.setDate(startDate.getDate() + day);
+                    date.setHours(hour, 0, 0, 0);
+
+                    headerCell.style.width = '60px';
+                    headerCell.style.textAlign = 'center';
+                    headerCell.style.position = 'relative';
+                    headerCell.style.boxSizing = 'border-box';
+                    headerCell.textContent = date.getHours() + ':00';
+
+                    chartHeader.appendChild(headerCell);
+                }
+            }
+
+            // タスク名を動的に追加
+            const margin = 10;
+            const name_height = 16;
+
+            tasks.forEach(task => {
+                const taskNameDiv = document.createElement('div');
+                taskNameDiv.className = 'task-name';
+                taskNameDiv.style.marginTop = `${margin}px`;
+                taskNameDiv.style.marginBottom = `${margin}px`;
+                taskNameDiv.style.height = `${name_height}px`;
+                taskNameDiv.textContent = task.name;
+                tasksContainer.appendChild(taskNameDiv);
+            });
+
+            // タスクバーを追加
+            const taskSpacing = margin * 2 + name_height;
+
+            for (let i = 0; i < chartHeader.children.length; i++) {
+                const verticalLine = document.createElement('div');
+                verticalLine.className = 'vertical-line';
+                verticalLine.style.left = `${30 + i * 60}px`;
+                verticalLine.style.position = 'absolute';
+                verticalLine.style.top = '0';
+                verticalLine.style.bottom = '0';
+                verticalLine.style.width = '1px';
+                verticalLine.style.backgroundColor = '#ddd';
+                verticalLine.style.zIndex = '0';
+                taskBars.appendChild(verticalLine);
+            }
+
+            tasks.forEach((task, index) => {
+                const taskBar = document.createElement('div');
+                taskBar.className = 'task-bar';
+
+                const taskStartPx = timeToPixels(task.startTime) + 30;
+                const taskEndPx = timeToPixels(task.endTime) + 30;
+
+                taskBar.style.left = `${taskStartPx}px`;
+                taskBar.style.width = `${taskEndPx - taskStartPx}px`;
+                taskBar.style.top = `${index * taskSpacing}px`;
+                taskBar.style.zIndex = '1';
+
+                if (taskEndPx > max_px) {
+                    taskBar.style.width = `${max_px - taskStartPx}px`;
+                };
+
+                const dueDateDiv = document.createElement('div');
+                dueDateDiv.className = 'due-date';
+                const endDate = new Date(task.endTime);
+
+                dueDateDiv.textContent = '~' + endDate.toLocaleString('ja-JP', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                }).replace(/\//g, '/');
+
+                dueDateDiv.style.position = 'absolute';
+                dueDateDiv.style.left = `${taskStartPx}px`;
+                dueDateDiv.style.marginLeft = '5px';
+                dueDateDiv.style.top = `${index * taskSpacing + 10}px`;
+                dueDateDiv.style.fontSize = '15px';
+                dueDateDiv.style.color = 'white';
+                dueDateDiv.style.zIndex = '2';
+
+                taskBars.appendChild(taskBar);
+                taskBars.appendChild(dueDateDiv);
+
+                const separatorLine = document.createElement('div');
+                separatorLine.className = 'task-separator';
+                separatorLine.style.position = 'absolute';
+                separatorLine.style.top = `${(index + 1) * taskSpacing}px`;
+                separatorLine.style.left = '0';
+                separatorLine.style.right = '0';
+                separatorLine.style.height = '1px';
+                separatorLine.style.backgroundColor = '#ccc';
+                taskBars.appendChild(separatorLine);
+            });
+
+            const taskBarsHeight = taskBars.scrollHeight;
+            const verticalLines = document.querySelectorAll('.vertical-line');
+            verticalLines.forEach(line => {
+                line.style.height = `${taskBarsHeight}px`;
+            });
+
+            const nowPx = timeToPixels(now.toISOString());
+            const nowLine = document.createElement('div');
+            nowLine.style.position = 'absolute';
+            nowLine.style.left = `${30 + nowPx}px`;
+            nowLine.style.top = '0';
+            nowLine.style.height = `${taskBarsHeight}px`;
+            nowLine.style.width = '2px';
+            nowLine.style.backgroundColor = 'red';
+            nowLine.style.zIndex = '2';
+
+            taskBars.appendChild(nowLine);
+
+            function createDateLabel(date, centerPx) {
+                const label = document.createElement('div');
+                label.className = 'date-label';
+                label.style.left = `${centerPx}px`;
+                label.style.width = '60px';
+                label.textContent = date.toLocaleDateString('ja', { month: 'short', day: 'numeric' });
+                return label;
+            }
+
+            chartFooter.style.marginTop = `${taskBarsHeight}px`;
+
+            for (let day = 0; day < daysRange; day++) {
+                const date = new Date(startDate.getTime());
+                date.setDate(startDate.getDate() + day);
+
+                const centerPx = day * hourToPx * hoursPerDay + hourToPx * hoursPerDay / 2;
+                const leftPx = day * hourToPx * hoursPerDay;
+                const dateLabel = createDateLabel(date, centerPx);
+                chartFooter.appendChild(dateLabel);
+
+                const dateLine = document.createElement('div');
+                dateLine.className = 'date-line';
+                dateLine.style.left = `${leftPx + 30}px`;
+                chartFooter.appendChild(dateLine);
+            }
         });
-
-        fetchData("get_task_board/").then(data => {
-            console.log(data);
-            return data;
-        });
-
-        fetchData("update_courses/").then(data => {
-            console.log(data);
-            return data;
-        });
-
-        fetchData("update_coursework/").then(data => {
-            console.log(data);
-            return data;
-        });
-
-        fetchData("update_submission/").then(data => {
-            console.log(data);
-            return data;
-        });
-
-        const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));//timeはミリ秒
-
-        async function read_database() {
-            document.getElementById('status_text').textContent = 'reading database...';
-            document.getElementById("status").classList.add("text-primary");
-            await sleep(2000);
-            return await 'read_database';
-        }
-
-        async function update_courses() {
-            document.getElementById('status_text').textContent = 'updating courses...';
-            document.getElementById("status").classList.add("text-secondary");
-            await sleep(2000);
-            return await 'update_courses';
-
-        }
-
-        async function update_courseWork() {
-            document.getElementById('status_text').textContent = 'updating courseWork...';
-            document.getElementById("status").classList.add("text-success");
-            await sleep(2000);
-            return await 'update_courseWork';
-        }
-
-        async function main() {
-            const result1 = await read_database();
-            document.getElementById('result').textContent = result1;
-            const result2 = await update_courses();
-            document.getElementById('result').textContent = result2;
-            const result3 = await update_courseWork();
-            document.getElementById('result').textContent = result3;
-            document.getElementById("status_indicator").style.visibility = "hidden";
-            console.log('Hello!');
-        }
-
-        main();
 
     </script>
-
 </body>
-
-
-</html>
 
 {%endblock%}
