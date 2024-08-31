@@ -98,7 +98,9 @@ def update_courses_data(request):
     for course in courses:
         database.insert_course_to_db(course)
     
-    return courses
+    response = database.get_courses_from_db(user_id)
+    
+    return response
 
 def update_coursework_data(request):
     creds, user_id, _ = set_or_create_creds(request)
@@ -116,7 +118,9 @@ def update_coursework_data(request):
         for course_work in course_works:
             database.insert_coursework_to_db(course_id, course_work)
     
-    return course_workss
+    response = database.get_courseworkss_from_db(user_id)
+    
+    return response
 
 def update_submission_data(request):
     creds, user_id, _ = set_or_create_creds(request)
@@ -142,4 +146,6 @@ def update_submission_data(request):
     for (course_id, coursework_id), submission in zip(course_and_coursework_ids, submissions):
         database.insert_submission_state(user_id, course_id, coursework_id, submission)
     
-    return submissions
+    response = database.get_submissions_from_db(user_id)
+    
+    return response
