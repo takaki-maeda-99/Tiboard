@@ -100,6 +100,8 @@ def update_courses_data(request):
     
     response = database.get_courses_from_db(user_id)
     
+    response = list(response.values())
+    
     return response
 
 def update_coursework_data(request):
@@ -119,6 +121,8 @@ def update_coursework_data(request):
             database.insert_coursework_to_db(course_id, course_work)
     
     response = database.get_courseworkss_from_db(user_id)
+    
+    response = [list(courseworks.values()) for courseworks in response]
     
     return response
 
@@ -147,5 +151,7 @@ def update_submission_data(request):
         database.insert_submission_state(user_id, course_id, coursework_id, submission)
     
     response = database.get_submissions_from_db(user_id)
+    
+    response = list(response.values())
     
     return response
