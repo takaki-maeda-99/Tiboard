@@ -11,10 +11,6 @@
         crossorigin="anonymous"></script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        
         .gantt-chart {
             display: flex;
             overflow-x: scroll;
@@ -143,218 +139,210 @@
         }
 
         // ガントチャートの描画
-        document.addEventListener('DOMContentLoaded', function() {
-            async function get_tasks(){
-                const courses = await fetchData("update_courses/");
-                const coursework = await fetchData("update_coursework/");
-                // タスク配列を作成
-                const tasks = coursework.map(works => {
-                    return works.map(work => {
-                        const { course_id_id, coursework_id, coursework_title, description, due_time, id, link, materials, update_time} = work;
+        document.addEventListener('DOMContentLoaded', async function() {
+            // データの取得
+            const authData = await fetchData("auth/");
+            console.log(authData);
 
-                        // 期限の開始時刻（更新時間とおなじ）
-                        const startTime = new Date(update_time).toISOString();
-                        
-                        // courseworkと同じcourse_idが含まれるcourseを取得
-                        const target_dic = courses.find(item => item.id == course_id_id);
+            const taskBoardData = await fetchData("get_task_board/");
+            console.log(taskBoardData);
 
-                        // course_titleを取得
-                        const course_title = target_dic.course_name;
+            const courses = await fetchData("update_courses/");
+            console.log(courses);
 
-                        return {
-                            name: `${course_title} ${coursework_title}`,
-                            startTime: startTime,
-                            endTime: due_time
-                        };
-                    });
-                });
-                const flattend_tasks = tasks.flat()
-                return flattend_tasks
-            }
-            
-            (async () => {
-                const tasks = await get_tasks();
-                console.log("tasks:", tasks);
+            const coursework = await fetchData("update_coursework/");
+            console.log(coursework);
 
-                const chartHeader = document.getElementById('chart-header');
-                const taskBars = document.getElementById('task-bars');
-                const tasksContainer = document.querySelector('.tasks');
-                const chartFooter = document.getElementById('chart-footer');
-            
-                const now = new Date();
-                const startDate = new Date(now);
-                startDate.setHours(0, 0, 0, 0);
-            
-                // 横軸の範囲は3日間
-                const daysRange = 3; // 表示する日数
-                const hoursPerDay = 24; // 1日あたりの時間
-                const hourToPx = 20; // 1時間当たりのpx
-                const max_px = daysRange * hoursPerDay * hourToPx; // チャートの右端までのpx
-            
-                // 時間をピクセルに変換する関数
-                function timeToPixels(time) {
-                    const date = new Date(time);
-                    const timeDiff = date - startDate;
+            const submissionData = await fetchData("update_submission/");
+            console.log(submissionData);
 
-                    // 時間差が負の場合（タスク開始前の場合）は0に設定
-                    if (timeDiff < 0) return -30; // 日をまたいでいても左端から表示されるようにする
-            
-                    return (timeDiff / (1000 * 60 * 60)) * hourToPx; // ミリ秒を時間に変換してピクセルに変換
-                }
-            
-                // 横軸を生成
-                for (let day = 0; day < daysRange; day++) {
-                    for (let hour = 0; hour < hoursPerDay; hour += 3) { // 3時間ごとの目盛り
-                        const headerCell = document.createElement('div');
-                        const date = new Date(startDate.getTime());
-                        date.setDate(startDate.getDate() + day);
-                        date.setHours(hour, 0, 0, 0);
-            
-                        headerCell.style.width = '60px'; // 縦線の幅に合わせる
-                        headerCell.style.textAlign = 'center';
-                        headerCell.style.position = 'relative'; // 相対位置を設定
-                        headerCell.style.boxSizing = 'border-box'; // ボックスサイズを調整
-                        headerCell.textContent = date.getHours() + ':00'; // 時間を表示
-            
-                        chartHeader.appendChild(headerCell);
-                    }
-                }
-            
-                // タスク名を動的に追加
-                const margin = 10;
-                const name_height = 16;
-            
-                tasks.forEach(task => {
-                    const taskNameDiv = document.createElement('div');
-                    taskNameDiv.className = 'task-name';
-                    taskNameDiv.style.marginTop = `${margin}px`;
-                    taskNameDiv.style.marginBottom = `${margin}px`;
-                    taskNameDiv.style.height = `${name_height}px`;
-                    taskNameDiv.textContent = task.name;
-                    tasksContainer.appendChild(taskNameDiv);
-                });
-            
-                // タスクバーを追加
-                const taskSpacing = margin * 2 + name_height; // タスクバーの描画頻度
-            
-                // 縦線を先に追加しておく
-                for (let i = 0; i < chartHeader.children.length; i++) {
-                    const verticalLine = document.createElement('div');
-                    verticalLine.className = 'vertical-line';
-                    verticalLine.style.left = `${30 + i * 60}px`;
-                    verticalLine.style.position = 'absolute';
-                    verticalLine.style.top = '0';
-                    verticalLine.style.bottom = '0';
-                    verticalLine.style.width = '1px';
-                    verticalLine.style.backgroundColor = '#ddd';
-                    verticalLine.style.zIndex = '0'; // 縦線を最背面に
-                    taskBars.appendChild(verticalLine);
-                }
-            
-                tasks.forEach((task, index) => {
-                    const taskBar = document.createElement('div');
-                    taskBar.className = 'task-bar';
-            
-                    const taskStartPx = timeToPixels(task.startTime) + 30;
-                    const taskEndPx = timeToPixels(task.endTime) + 30;
-            
-                    taskBar.style.left = `${taskStartPx}px`;
-                    taskBar.style.width = `${taskEndPx - taskStartPx}px`;
-                    taskBar.style.top = `${index * taskSpacing}px`; // タスクバーの上下の間隔を設定
-                    taskBar.style.zIndex = '1'; // タスクバーを縦線より前面に
-            
-                    if (taskEndPx > max_px){ // 期限が表示されている日付よりも後の場合、右端に合わせる
-                        taskBar.style.width = `${max_px - taskStartPx}px`;
+            // タスクの作成
+            const tasks = coursework.map(works => {
+                return works.map(work => {
+                    const { course_id_id, coursework_title, due_time, update_time } = work;
+
+                    const startTime = new Date(update_time).toISOString();
+
+                    const target_dic = courses.find(item => item.id == course_id_id);
+                    const course_title = target_dic ? target_dic.course_name : "Unknown Course";
+
+                    return {
+                        name: `${course_title} ${coursework_title}`,
+                        startTime: startTime,
+                        endTime: due_time
                     };
-            
-                    // 期限の日付を表示するための div を作成
-                    const dueDateDiv = document.createElement('div');
-                    dueDateDiv.className = 'due-date';
-                    const endDate = new Date(task.endTime);
-            
-                    // 日付を YYYY/MM/DD HH:MM の形式にフォーマット
-                    dueDateDiv.textContent = endDate.toLocaleString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    }).replace(/\//g, '/'); // スラッシュで区切る
-                    dueDateDiv.textContent = '~' + dueDateDiv.textContent
-            
-                    // 日付をタスクバーの左に寄せて上下中央に配置
-                    dueDateDiv.style.position = 'absolute';
-                    dueDateDiv.style.left = `${taskStartPx}px`;
-                    dueDateDiv.style.marginLeft = '5px';
-                    dueDateDiv.style.top = `${index * taskSpacing + 10}px`;
-                    dueDateDiv.style.fontSize = '15px';
-                    dueDateDiv.style.color = 'white';
-                    dueDateDiv.style.zIndex = '2'; // 日付をタスクバーの上に表示
-            
-                    taskBars.appendChild(taskBar);
-                    taskBars.appendChild(dueDateDiv);
-            
-                    // タスクごとに区切り線を追加
-                    const separatorLine = document.createElement('div');
-                    separatorLine.className = 'task-separator';
-                    separatorLine.style.position = 'absolute';
-                    separatorLine.style.top = `${(index + 1) * taskSpacing}px`; // 各タスクの下に線を追加
-                    separatorLine.style.left = '0';
-                    separatorLine.style.right = '0';
-                    separatorLine.style.height = '1px';
-                    separatorLine.style.backgroundColor = '#ccc';
-                    taskBars.appendChild(separatorLine);
                 });
+            }).flat(); // フラットにして1つの配列にする
+
+            console.log("tasks:", tasks);
+
+            // 以下、ガントチャートの描画コード
+            const chartHeader = document.getElementById('chart-header');
+            const taskBars = document.getElementById('task-bars');
+            const tasksContainer = document.querySelector('.tasks');
+            const chartFooter = document.getElementById('chart-footer');
             
-                // 縦線追加の仕上げ
-                const taskBarsHeight = taskBars.scrollHeight;
-                const verticalLines = document.querySelectorAll('.vertical-line');
-                verticalLines.forEach(line => {
-                    line.style.height = `${taskBarsHeight}px`;
-                });
-            
-                // 現在の時刻に赤い縦線を追加
-                const nowPx = timeToPixels(now.toISOString());
-                const nowLine = document.createElement('div');
-                nowLine.style.position = 'absolute';
-                nowLine.style.left = `${30 + nowPx}px`;
-                nowLine.style.top = '0';
-                nowLine.style.height = `${taskBarsHeight}px`;
-                nowLine.style.width = '2px';
-                nowLine.style.backgroundColor = 'red';
-                nowLine.style.zIndex = '2'; // 現在の時刻の縦線をタスクバーの上に表示
-            
-                taskBars.appendChild(nowLine);
-            
-                // チャートの下部に日付を表示
-                function createDateLabel(date, centerPx) {
-                    const label = document.createElement('div');
-                    label.className = 'date-label';
-                    label.style.left = `${centerPx}px`;
-                    label.style.width = '60px'; // 横幅に合わせて調整
-                    label.textContent = date.toLocaleDateString('ja', { month: 'short', day: 'numeric' });
-                    return label;
-                }
-            
-                chartFooter.style.marginTop = `${taskBarsHeight}px`
-            
-                for (let day = 0; day < daysRange; day++) {
+            const now = new Date();
+            const startDate = new Date(now);
+            startDate.setHours(0, 0, 0, 0);
+
+            const daysRange = 3; // 表示する日数
+            const hoursPerDay = 24; // 1日あたりの時間
+            const hourToPx = 20; // 1時間当たりのpx
+            const max_px = daysRange * hoursPerDay * hourToPx; // チャートの右端までのpx
+
+            // 時間をピクセルに変換する関数
+            function timeToPixels(time) {
+                const date = new Date(time);
+                const timeDiff = date - startDate;
+
+                if (timeDiff < 0) return -30;
+
+                return (timeDiff / (1000 * 60 * 60)) * hourToPx;
+            }
+
+            // 横軸を生成
+            for (let day = 0; day < daysRange; day++) {
+                for (let hour = 0; hour < hoursPerDay; hour += 3) {
+                    const headerCell = document.createElement('div');
                     const date = new Date(startDate.getTime());
                     date.setDate(startDate.getDate() + day);
-            
-                    const centerPx = day * hourToPx * hoursPerDay + hourToPx * hoursPerDay / 2; // 日付ラベルの中央位置を設定
-                    const leftPx = day * hourToPx * hoursPerDay; // 日付ラベルの左位置を設定
-                    const dateLabel = createDateLabel(date, centerPx);
-                    chartFooter.appendChild(dateLabel);
-            
-                    // 日付ラベルの真下に線を引く
-                    const dateLine = document.createElement('div');
-                    dateLine.className = 'date-line';
-                    dateLine.style.left = `${leftPx + 30}px`; // ラベルの中央に線を引く
-                    chartFooter.appendChild(dateLine);
+                    date.setHours(hour, 0, 0, 0);
+
+                    headerCell.style.width = '60px';
+                    headerCell.style.textAlign = 'center';
+                    headerCell.style.position = 'relative';
+                    headerCell.style.boxSizing = 'border-box';
+                    headerCell.textContent = date.getHours() + ':00';
+
+                    chartHeader.appendChild(headerCell);
                 }
-            })();
-        });        
+            }
+
+            // タスク名を動的に追加
+            const margin = 10;
+            const name_height = 16;
+
+            tasks.forEach(task => {
+                const taskNameDiv = document.createElement('div');
+                taskNameDiv.className = 'task-name';
+                taskNameDiv.style.marginTop = `${margin}px`;
+                taskNameDiv.style.marginBottom = `${margin}px`;
+                taskNameDiv.style.height = `${name_height}px`;
+                taskNameDiv.textContent = task.name;
+                tasksContainer.appendChild(taskNameDiv);
+            });
+
+            // タスクバーを追加
+            const taskSpacing = margin * 2 + name_height;
+
+            for (let i = 0; i < chartHeader.children.length; i++) {
+                const verticalLine = document.createElement('div');
+                verticalLine.className = 'vertical-line';
+                verticalLine.style.left = `${30 + i * 60}px`;
+                verticalLine.style.position = 'absolute';
+                verticalLine.style.top = '0';
+                verticalLine.style.bottom = '0';
+                verticalLine.style.width = '1px';
+                verticalLine.style.backgroundColor = '#ddd';
+                verticalLine.style.zIndex = '0';
+                taskBars.appendChild(verticalLine);
+            }
+
+            tasks.forEach((task, index) => {
+                const taskBar = document.createElement('div');
+                taskBar.className = 'task-bar';
+
+                const taskStartPx = timeToPixels(task.startTime) + 30;
+                const taskEndPx = timeToPixels(task.endTime) + 30;
+
+                taskBar.style.left = `${taskStartPx}px`;
+                taskBar.style.width = `${taskEndPx - taskStartPx}px`;
+                taskBar.style.top = `${index * taskSpacing}px`;
+                taskBar.style.zIndex = '1';
+
+                if (taskEndPx > max_px) {
+                    taskBar.style.width = `${max_px - taskStartPx}px`;
+                };
+
+                const dueDateDiv = document.createElement('div');
+                dueDateDiv.className = 'due-date';
+                const endDate = new Date(task.endTime);
+
+                dueDateDiv.textContent = '~' + endDate.toLocaleString('ja-JP', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                }).replace(/\//g, '/');
+
+                dueDateDiv.style.position = 'absolute';
+                dueDateDiv.style.left = `${taskStartPx}px`;
+                dueDateDiv.style.marginLeft = '5px';
+                dueDateDiv.style.top = `${index * taskSpacing + 10}px`;
+                dueDateDiv.style.fontSize = '15px';
+                dueDateDiv.style.color = 'white';
+                dueDateDiv.style.zIndex = '2';
+
+                taskBars.appendChild(taskBar);
+                taskBars.appendChild(dueDateDiv);
+
+                const separatorLine = document.createElement('div');
+                separatorLine.className = 'task-separator';
+                separatorLine.style.position = 'absolute';
+                separatorLine.style.top = `${(index + 1) * taskSpacing}px`;
+                separatorLine.style.left = '0';
+                separatorLine.style.right = '0';
+                separatorLine.style.height = '1px';
+                separatorLine.style.backgroundColor = '#ccc';
+                taskBars.appendChild(separatorLine);
+            });
+
+            const taskBarsHeight = taskBars.scrollHeight;
+            const verticalLines = document.querySelectorAll('.vertical-line');
+            verticalLines.forEach(line => {
+                line.style.height = `${taskBarsHeight}px`;
+            });
+
+            const nowPx = timeToPixels(now.toISOString());
+            const nowLine = document.createElement('div');
+            nowLine.style.position = 'absolute';
+            nowLine.style.left = `${30 + nowPx}px`;
+            nowLine.style.top = '0';
+            nowLine.style.height = `${taskBarsHeight}px`;
+            nowLine.style.width = '2px';
+            nowLine.style.backgroundColor = 'red';
+            nowLine.style.zIndex = '2';
+
+            taskBars.appendChild(nowLine);
+
+            function createDateLabel(date, centerPx) {
+                const label = document.createElement('div');
+                label.className = 'date-label';
+                label.style.left = `${centerPx}px`;
+                label.style.width = '60px';
+                label.textContent = date.toLocaleDateString('ja', { month: 'short', day: 'numeric' });
+                return label;
+            }
+
+            chartFooter.style.marginTop = `${taskBarsHeight}px`;
+
+            for (let day = 0; day < daysRange; day++) {
+                const date = new Date(startDate.getTime());
+                date.setDate(startDate.getDate() + day);
+
+                const centerPx = day * hourToPx * hoursPerDay + hourToPx * hoursPerDay / 2;
+                const leftPx = day * hourToPx * hoursPerDay;
+                const dateLabel = createDateLabel(date, centerPx);
+                chartFooter.appendChild(dateLabel);
+
+                const dateLine = document.createElement('div');
+                dateLine.className = 'date-line';
+                dateLine.style.left = `${leftPx + 30}px`;
+                chartFooter.appendChild(dateLine);
+            }
+        });
 
     </script>
 </body>
