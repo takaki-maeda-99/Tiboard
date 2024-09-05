@@ -60,7 +60,7 @@ def insert_submission_state(user_id, course_id, coursework_id, submission_dict):
     user = User.objects.get(user_id=user_id)
     course = Course.objects.get(course_id=course_id)
     coursework = CourseWork.objects.get(course_id=course, coursework_id=coursework_id)
-    submission, _ = Submission.objects.get_or_create(
+    submission, created = Submission.objects.get_or_create(
         user_id=user,
         course_id=course,
         coursework_id=coursework,
@@ -68,6 +68,10 @@ def insert_submission_state(user_id, course_id, coursework_id, submission_dict):
             'submission_state': submission_dict.get('state', 'No state'),
             'submission_created_time': convert_utc_to_jst(utc_date=submission_dict.get('creationTime')),
         })
+    if not created: # 既存であるとき
+        new_state = submission_dict.get('state', 'No state')
+        if submission.submission_state != new_state:
+            submission.submission_state = new_state
     submission.save()
 
 def get_courses_from_db(user_id):
