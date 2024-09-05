@@ -122,7 +122,7 @@
         const MARGIN = 10;
         const TASK_BAR_HEIGHT = 30; // タスクバーの縦の長さ
         const TASK_BAR_UNIT = 36;
-        const TASK_BAR_FONT＿SIZE = 15;
+        const TASK_BAR_FONT_SIZE = 15;
         const BACK_GROUND_COLOR = '#ddd'; // チャートの枠線と同じ色
         const SEPARATOR_THINNESS = 1;
         const NAME_HEIGHT = 16;
@@ -342,8 +342,8 @@
                 dueDateDiv.style.position = 'absolute';
                 dueDateDiv.style.left = `${taskStartPx}px`;
                 dueDateDiv.style.marginLeft = '5px';
-                dueDateDiv.style.top = `${index * taskSpacing + TASK_BAR_HEIGHT - TASK_BAR_FONT＿SIZE * 1.5}px`;
-                dueDateDiv.style.fontSize = `${TASK_BAR_FONT＿SIZE}px`;
+                dueDateDiv.style.top = `${index * taskSpacing + TASK_BAR_HEIGHT - TASK_BAR_FONT_SIZE * 1.5}px`;
+                dueDateDiv.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
                 if (taskBarWidth < MAX_DUE_DATE_PX){
                     dueDateDiv.style.color = 'black';
                 } else{
