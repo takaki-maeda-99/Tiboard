@@ -95,11 +95,17 @@
             width: 1px;
             background-color: #ddd;
         }
-        
+
+        #loading-message{
+            text-align: center;
+            font-size: 24px;
+        }
     </style>
 </head>
 
 <body>
+    <div id="loading-message" style="display: none;">更新中です<span id="dots"></span></div>
+
     <!-- ガントチャートを表示する部分 -->
     <div class="gantt-chart">
         <div class="tasks"></div>
@@ -530,10 +536,42 @@
             startNowLineUpdates(taskBarsHeight);
         };
         
+        // 更新中の処理
+        let dotCount = 0;
+
+        function animateDots() {
+            const dotsElement = document.getElementById('dots');
+            dotCount = (dotCount + 1) % 4;  // dotCountを0～3の範囲でループ
+            const dots = ".".repeat(dotCount);
+            dotsElement.textContent = dots;
+        }
+
+        let loadingAnimationInterval;
+
+        // アニメーションを表示
+        function showLoadingMessage() {
+            const loadingMessage = document.getElementById('loading-message');
+            loadingMessage.style.display = 'block';
+
+            // アニメーションを開始
+            loadingAnimationInterval = setInterval(animateDots, 400);
+        }
+
+        // アニメーションを非表示
+        function hideLoadingMessage() {
+            const loadingMessage = document.getElementById('loading-message');
+            loadingMessage.style.display = 'none';
+        
+            // アニメーションを停止
+            clearInterval(loadingAnimationInterval);
+        }
+
         // 処理の実行
         document.addEventListener('DOMContentLoaded', async function() {
+            showLoadingMessage();
             await initializationChart();
             await updateChart();
+            hideLoadingMessage();
         });
     </script>
 </body>
