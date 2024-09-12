@@ -18,7 +18,8 @@ class Course(models.Model):
     link = models.URLField(max_length=100, default="")
     
     def __str__(self):
-        return f"{self.course_id} ({self.course_name})"
+        # return f"{self.course_id} ({self.course_name})"
+        return f"{self.course_name}"
 
 class CourseWork(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE, default="")
