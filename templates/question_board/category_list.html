@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>カテゴリ一覧</h1>
+<ul>
+    {% for category in categories %}
+    <li>
+        <a href="{% url 'question_board:category_detail' category.id %}">{{ category.name }}</a> - {{ category.description }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
