@@ -1,23 +1,31 @@
-{% extends "../base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>情報共有・質問掲示板</h1>
 <h2>Categories</h2>
     {% for category in context.categories %}
-        <li>{{ category }}</li>
+        <li>category: {{ category.name }}, id: {{ category.id }}</li>
     {% endfor %}
 <h2>Posts</h2>
 <ul>
     {% for post in context.posts %}
-        <li>{{ post.category }} {{ post.title }}</li>
+        <li>post: {{ post }}</li>
         <ul>
             {% for comment in post.comments.all %}
-                <li>{{ comment.content }} (by {{ comment.author.user_id }}, created at {{ comment.created_at }})</li>
+                <li>comment: {{ comment }}</li>
             {% empty %}
                 <li>No comments in this category.</li>
             {% endfor %}
         </ul>
     {% endfor %}
-    <br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a
+</ul>
+
+<h1>カテゴリ一覧</h1>
+<ul>
+    {% for category in context.categories %}
+    <li>
+        <a href="{% url 'question_board:category_detail' category.id %}">{{ category.name }}</a> - {{ category.id }}
+    </li>
+    {% endfor %}
 </ul>
 
 {%endblock%}

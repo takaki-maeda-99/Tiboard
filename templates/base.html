@@ -231,7 +231,7 @@
                 </div>
                 <ul class="submenu">
                     {% for category in context.categories %}
-                        <li><a href="#">{{ category }}</a></li>
+                        <li><a href="{% url 'question_board:category_detail' category.id %}">{{ category.name }}</a></li>
                     {% endfor %}
                 </ul>
             </li>

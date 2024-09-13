@@ -1,9 +1,11 @@
 from django.db import models
 from task_board.models import User
+import uuid
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500, null=True, blank=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -14,6 +16,7 @@ class Post(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.title

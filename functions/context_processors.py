@@ -8,9 +8,13 @@ def info_and_posts(request):
         'courseworks': courseworks,
     }
     categories = Category.objects.all()
+    category_data = [
+        {'id': category.id, 'name': category.name, 'description': category.description}
+        for category in categories
+    ]
     posts = Post.objects.all().prefetch_related('comments')
     context = {
-        'categories': categories,
+        'categories': category_data,
         'posts': posts,
     }
     return {'tasks': tasks, 'context': context}
