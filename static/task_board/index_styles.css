@@ -1,0 +1,89 @@
+.gantt-chart {
+    display: flex;
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding: 30px;
+    height: fit-content;
+    margin-bottom: 60px;
+}
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.task-name {
+    text-align: center;
+    width: 150px;
+    margin: 10px 0;
+    height: 16px;
+}
+
+.chart {
+    position: relative;
+    min-width: fit-content;
+}
+
+.chart-header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+    border-bottom: 1px solid #ccc;
+    height: 36px;
+}
+
+.chart-header div {
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+    margin: 10px 0;
+}
+
+.chart-footer {
+    position: relative;
+    height: 36px;
+    margin-top: 10px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    z-index: 5;
+}
+
+.chart-footer .date-label {
+    position: absolute;
+    text-align: center;
+    font-size: 12px;
+    line-height: 36px; /* 高さを中央揃えにするため */
+    height: 100%;
+}
+
+.chart-footer .date-line {
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background-color: #ddd;
+}
+
+.task-bars {
+    position: relative;
+}
+
+.task-bar {
+    position: absolute;
+    border-radius: 10px;
+}
+
+.vertical-line {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    background-color: #ddd;
+}
+
+#loading-message{
+    text-align: center;
+    font-size: 24px;
+}
