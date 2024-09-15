@@ -38,23 +38,20 @@ async function fetchDatum(url) {
 
 };
 
-async function fetchTaskBoard(){
-    // 先にauth
-    const authData = await fetchDatum("auth/");
-    
+async function fetchTaskBoard() {
+
     // 次にタスクボード
     const taskBoardData = await fetchDatum("get_task_board/");
 
-    console.log("auth:", authData);
     console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
 
-    return [authData, taskBoardData];
+    return [0, taskBoardData];
 };
 
-async function fetchUpdatedData(){
+async function fetchUpdatedData() {
     const [courses, coursework] = await Promise.all([
-    fetchDatum("update_courses/"),
-    fetchDatum("update_coursework/"),
+        fetchDatum("update_courses/"),
+        fetchDatum("update_coursework/"),
     ]);
 
     const submissionData = await fetchDatum("update_submission/");
@@ -67,7 +64,7 @@ async function fetchUpdatedData(){
 };
 
 // タスクの作成
-function makeTasks(courses, coursework, submissionData){
+function makeTasks(courses, coursework, submissionData) {
     const tasks = coursework.map((work, index) => {
         const { course_id_id, coursework_title, due_time, update_time, id, link } = work;
 
@@ -77,7 +74,7 @@ function makeTasks(courses, coursework, submissionData){
         const courseTitle = targetDic ? targetDic.course_name : "Unknown Course";
 
         const submission = submissionData.find(sub => sub.coursework_id_id == id);
-        
+
         // submission 情報があれば追加
         const submissionState = submission ? submission.submission_state : null;
 
@@ -108,7 +105,7 @@ function timeToPixels(time) {
 };
 
 // 時間を区切る垂直な直線を引く
-function drawVerticalLine(){
+function drawVerticalLine() {
     const chartHeader = document.getElementById('chart-header');
     const taskBars = document.getElementById('task-bars');
     for (let i = 0; i < chartHeader.children.length; i++) {
@@ -126,7 +123,7 @@ function drawVerticalLine(){
 };
 
 // brタグの追加
-function addBrTag(){
+function addBrTag() {
     const tasksContainer = document.querySelector('.tasks');
     const brTag = document.createElement('div');
     brTag.className = 'br-tag';
@@ -140,7 +137,7 @@ function addBrTag(){
 };
 
 // タスク名の追加
-function addTaskName(tasks){
+function addTaskName(tasks) {
     tasks = filterTasks(tasks);
     tasks.forEach((task, index) => {
         const tasksContainer = document.querySelector('.tasks');
@@ -160,7 +157,7 @@ function addTaskName(tasks){
 };
 
 // タスクバーの色を決める
-function setTaskBarColor(task){
+function setTaskBarColor(task) {
     // 現在の時刻を取得
     const now = new Date();
     const endTime = new Date(task.endTime);
@@ -180,11 +177,11 @@ function setTaskBarColor(task){
 };
 
 // タスクバーを追加
-function addTaskBar(tasks){
+function addTaskBar(tasks) {
     const taskSpacing = MARGIN * 2 + NAME_HEIGHT;
     const chartHeader = document.getElementById('chart-header');
     const taskBars = document.getElementById('task-bars');
-    
+
     drawVerticalLine()
 
     tasks = filterTasks(tasks);
@@ -204,13 +201,13 @@ function addTaskBar(tasks){
         taskBar.style.top = `${index * taskSpacing}px`;
         taskBar.style.zIndex = '1';
         taskBar.style.backgroundColor = setTaskBarColor(task);
-        
+
         const maxPx = DAYS_RANGE * HOURS_PER_DAY * HOUR_TO_PX; // チャートの右端までのpx
 
         if (taskEndPx > maxPx) {
             taskBar.style.width = `${maxPx - taskStartPx}px`;
         };
-        
+
         taskBars.appendChild(taskBar);
 
         const dueDateDiv = document.createElement('div');
@@ -230,15 +227,15 @@ function addTaskBar(tasks){
         dueDateDiv.style.marginLeft = '5px';
         dueDateDiv.style.top = `${index * taskSpacing + TASK_BAR_HEIGHT - TASK_BAR_FONT_SIZE * 1.5}px`;
         dueDateDiv.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
-        if (taskBarWidth < MAX_DUE_DATE_PX){
+        if (taskBarWidth < MAX_DUE_DATE_PX) {
             dueDateDiv.style.color = 'black';
-        } else{
+        } else {
             dueDateDiv.style.color = 'white';
         };
-        
+
         dueDateDiv.style.zIndex = '2';
 
-        
+
         taskBars.appendChild(dueDateDiv);
 
         const separatorLine = document.createElement('div');
@@ -264,7 +261,7 @@ function createDateLabel(date, centerPx) {
 };
 
 // 横軸を生成
-function makeHorizontalLabel(){
+function makeHorizontalLabel() {
     const now = new Date();
     const startDate = new Date(now);
     startDate.setHours(0, 0, 0, 0);
@@ -290,7 +287,7 @@ function makeHorizontalLabel(){
 // 現在の時間の位置に線を引く関数
 function drawNowLine(taskBarsHeight) {
     const taskBars = document.getElementById('task-bars');
-    
+
     // 古い線があれば削除
     if (nowLineElement) {
         nowLineElement.remove();
@@ -298,7 +295,7 @@ function drawNowLine(taskBarsHeight) {
 
     const now = new Date();  // 現在の時間を取得
     const nowPx = timeToPixels(now.toISOString(), 20);  // 現在の時間をピクセルに変換
-    
+
     nowLineElement = document.createElement('div');  // 新しい線を作成
     nowLineElement.style.position = 'absolute';
     nowLineElement.style.left = `${CHART_LEFT_MARGIN + nowPx}px`;
@@ -316,11 +313,11 @@ function startNowLineUpdates(taskBarsHeight) {
     drawNowLine(taskBarsHeight);  // 最初に呼び出し
     setInterval(() => {
         drawNowLine(taskBarsHeight);  // 毎秒線を更新
-    }, 1000*INTERVAL);  // interval秒ごとに更新
+    }, 1000 * INTERVAL);  // interval秒ごとに更新
 };
 
 // チャートのフッターに日付の区切り線を描く
-function drawFooterLine(){
+function drawFooterLine() {
     const now = new Date();
     const startDate = new Date(now);
     startDate.setHours(0, 0, 0, 0);
@@ -342,7 +339,7 @@ function drawFooterLine(){
 };
 
 // チャートの初期化
-async function initializationChart(){
+async function initializationChart() {
     const [authData, taskBoardData] = await fetchTaskBoard();
     const courses = taskBoardData[0];
     const coursework = taskBoardData[1].flat();
@@ -367,7 +364,7 @@ async function updateChart(){
 };
 
 // チャートの削除
-async function clearChart(){
+async function clearChart() {
     const chartHeader = document.getElementById('chart-header');
     const taskBars = document.getElementById('task-bars');
     const tasksContainer = document.querySelector('.tasks');
@@ -381,7 +378,7 @@ async function clearChart(){
 };
 
 // 期限過ぎているかどうかの判定
-function judgeDueTime(task){
+function judgeDueTime(task) {
     const now = new Date();
     const endTime = new Date(task.endTime);
     return (endTime < now);
@@ -393,14 +390,14 @@ function filterTasks(tasks) {
 };
 
 // チャートの描画
-function drawChart(tasks){
+function drawChart(tasks) {
     const chartHeader = document.getElementById('chart-header');
     const tasksContainer = document.querySelector('.tasks');
     const chartFooter = document.getElementById('chart-footer');
     const taskSpacing = MARGIN * 2 + NAME_HEIGHT;  // タスク間のスペースを調整
 
     makeHorizontalLabel()
-    
+
     tasks = filterTasks(tasks);
 
     addBrTag(); // 改行してタスク名の行の高さを調節
@@ -413,7 +410,7 @@ function drawChart(tasks){
     verticalLines.forEach(line => {
         line.style.height = `${taskBarsHeight}px`;
     });
-    
+
     drawNowLine(taskBarsHeight);
 
     chartFooter.style.marginTop = `${taskBarsHeight}px`;
@@ -454,7 +451,7 @@ function hideLoadingMessage() {
 }
 
 // 処理の実行
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     showLoadingMessage();
     await initializationChart();
     await updateChart();
