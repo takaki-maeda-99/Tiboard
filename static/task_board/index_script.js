@@ -349,9 +349,16 @@ async function initializationChart() {
 };
 
 // チャートの更新
-async function updateChart() {
-    const [updatedCourses, updatedCoursework, updatedSubmission] = await fetchUpdatedData();
-    const updatedTasks = makeTasks(updatedCourses, updatedCoursework.flat(), updatedSubmission.flat());
+async function updateChart(){
+    let [updatedCourses, updatedCoursework, updatedSubmission] = await fetchUpdatedData();
+    let updatedTasks;
+    if (updatedSubmission.length !== 0) {
+        updatedSubmission = updatedSubmission.flat();
+    }
+    if (updatedCoursework.length !== 0) {
+        updatedCoursework = updatedCoursework.flat();
+    }
+    updatedTasks = makeTasks(updatedCourses, updatedCoursework, updatedSubmission);
     clearChart();
     drawChart(updatedTasks);
 };
