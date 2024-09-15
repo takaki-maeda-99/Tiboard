@@ -10,6 +10,20 @@
 </head>
 
 <body>
+    <script>
+        try {
+            var auth_url = "{% url 'dash_board:auth' %}";
+            var current_url = window.location.href;
+            if (!current_url.includes("auth=")) {
+                // nextパラメータをURLに追加してリダイレクト
+                auth_url += "?next=" + encodeURIComponent(current_url);
+                window.location.href = auth_url;
+            }
+        } catch (error) {
+            // エラーが発生した場合は、エラーメッセージをコンソールに表示
+            console.error("Error:", error);
+        }
+    </script>
     <div id="side_bar" class="sidebar">
         <ul class="include-accordion">
             <li class="dashboard">
@@ -31,7 +45,7 @@
                 </div>
                 <ul class="submenu">
                     {% for course in tasks.courses %}
-                        <li><a href="#">{{ course }}</a></li>
+                    <li><a href="#">{{ course }}</a></li>
                     {% endfor %}
                 </ul>
             </li>
@@ -48,25 +62,25 @@
                 </div>
                 <ul class="submenu">
                     {% for category in context.categories %}
-                        <li><a href="{% url 'question_board:category_detail' category.id %}">{{ category.name }}</a></li>
+                    <li><a href="{% url 'question_board:category_detail' category.id %}">{{ category.name }}</a></li>
                     {% endfor %}
                 </ul>
             </li>
-            
+
             <li class="scoreboard">
                 <a href="http://127.0.0.1:8000/score_board">
                     <i class="scoreboard"></i>
                     <span class="sidebar_text">Scoreboard</span>
                 </a>
             </li>
-        </ul>       
+        </ul>
     </div>
 
     <div class="body">
         <div class="main-content">{% block content %} {% endblock %}</div>
     </div>
 
-    <script src="{% static "base/script.js" %}"></script>
+    <script src="{% static " base/script.js" %}"></script>
 
 </body>
 

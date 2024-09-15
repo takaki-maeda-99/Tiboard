@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.http import JsonResponse
 from django.views import View
 
 from functions.GCAPItest import get_coursework_title_and_name
@@ -41,6 +41,7 @@ import functions.classroom as classroom
 import functions.database as database
 
 def google_login(request):
+    
     # Google OAuth Flowを初期化
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE_ABSOLUTE_PATH,
@@ -51,6 +52,7 @@ def google_login(request):
     # 認証URLを生成してリダイレクト
     authorization_url, state = flow.authorization_url()
     request.session['state'] = state
+
     return redirect(authorization_url)
 
 def google_callback(request):
@@ -67,17 +69,18 @@ def google_callback(request):
     if not request.session['state'] == request.GET.get('state'):
         return redirect('dash_board:google_login')  # 状態が一致しない場合はリトライ
 
+    # セッションから不要になったデータを削除
+    request.session.pop('state', None)
+
     # 認証情報を取得
     creds = flow.credentials
     
     headers = {"Authorization": f"Bearer {creds.token}"}
     
-    response = classroom.async_request_user_and_course_info(headers)
+    user_and_course_info = classroom.async_request_user_and_course_info(headers)
     
-    print(response)
-    
-    user_info = response[0]
-    courses = response[1]
+    user_info = user_and_course_info[0]
+    courses = user_and_course_info[1]
     
     user_id = user_info.get("user_id", "")
     user_email = user_info.get("user_email", "")
@@ -90,5 +93,38 @@ def google_callback(request):
     
     with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
             token.write(creds.to_json())
+
+    auth_url = "https://127.0.0.1:8000/auth"
     
-    return redirect('dash_board:index')
+    response = redirect(auth_url)
+
+    # 元のページにリダイレクト
+    return response
+
+def auth(request):
+    try:
+        next_url = request.GET.get('next', '/') + "?auth=success"
+        
+        # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
+        from django.utils.http import url_has_allowed_host_and_scheme
+        if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+            next_url = '/'
+        
+        user_id = request.COOKIES['user_id']
+        database.get_courses_from_db(user_id)
+        if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
+            raise FileNotFoundError
+        
+        response = redirect(next_url)
+        response.set_cookie('user_id', user_id)
+        return response
+    except Exception as e:
+        print(f"(auth) An error occurred: {e}")
+        redirect_url = "https://127.0.0.1:8000/google/login/"
+        return redirect(redirect_url)
+    
+    
+
+        
+        
+    

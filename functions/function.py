@@ -26,57 +26,18 @@ CREDENTIALS_FILE_PATH = "OAuth/credentials.json"
 TOKENS_FILE_PATH = "OAuth/tokens"
 
 def set_or_create_creds(request):
-    
     creds = None
     user_id = None
-    created = False
     
-    try:
-        # cookieを使ってユーザーの情報を取得する
-        user_id = request.COOKIES['user_id']
-        
-        creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
-        
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        
-        if not creds or not creds.valid:
-            raise KeyError
+    # cookieを使ってユーザーの情報を取得する
+    user_id = request.COOKIES['user_id']
     
-    except (KeyError, FileNotFoundError):
-        
-        flow = InstalledAppFlow.from_client_secrets_file(
-            CREDENTIALS_FILE_PATH, SCOPES
-        )
-        creds = flow.run_local_server(port=0)
-        
-        created = True
+    creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
     
-    return creds, user_id, created
-
-def authorize(request):
-    creds, user_id, created = set_or_create_creds(request)
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
     
-    headers = {"Authorization": f"Bearer {creds.token}"}
-    
-    response = classroom.async_request_user_and_course_info(headers)
-    
-    user_info = response[0]
-    courses = response[1]
-    
-    user_id = user_info.get("user_id", user_id)
-    user_email = user_info.get("user_email", "")
-    
-    database.insert_user_to_db(user_id, user_email)
-    
-    for course in courses:
-        database.add_course_to_user(user_id, course.get("id", ""))
-    
-    if created:
-        with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
-            token.write(creds.to_json())
-    
-    return headers, user_id, created
+    return creds, user_id
 
 def get_task_board_data(request):
     user_id = request.COOKIES['user_id']
@@ -89,7 +50,7 @@ def get_task_board_data(request):
     return [courses, courseworkss, submission]
 
 def update_courses_data(request):
-    creds, user_id, _ = set_or_create_creds(request)
+    creds, user_id = set_or_create_creds(request)
     
     headers = {"Authorization": f"Bearer {creds.token}"}
 
@@ -105,7 +66,7 @@ def update_courses_data(request):
     return response
 
 def update_coursework_data(request):
-    creds, user_id, _ = set_or_create_creds(request)
+    creds, user_id = set_or_create_creds(request)
     
     headers = {"Authorization": f"Bearer {creds.token}"}
     
@@ -127,7 +88,7 @@ def update_coursework_data(request):
     return response
 
 def update_submission_data(request):
-    creds, user_id, _ = set_or_create_creds(request)
+    creds, user_id = set_or_create_creds(request)
     
     headers = {"Authorization": f"Bearer {creds.token}"}
     
