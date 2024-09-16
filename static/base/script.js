@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var openArrow = openItem.querySelector('.arrow');
                     if (openArrow) openArrow.classList.remove('up');
                     if (openArrow) openArrow.classList.add('down');
-                }
+                };
             });
 
             // クリックされたメニューをトグル（開閉）する
@@ -29,5 +29,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 arrow.classList.toggle('up');
             }
         });
+    });
+
+    const sideBar = document.getElementById('side_bar');
+    const hoverArea = document.getElementById('hover_area');
+
+    // 左端にカーソルが移動したらサイドバーを表示
+    hoverArea.addEventListener('mouseenter', function() {
+        sideBar.classList.add('open');
+    });
+
+    // サイドバーからカーソルが外れたら非表示にする
+    sideBar.addEventListener('mouseleave', function() {
+        sideBar.classList.remove('open');
     });
 });
