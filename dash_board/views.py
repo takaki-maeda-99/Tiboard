@@ -1,14 +1,60 @@
 from django.http import JsonResponse
 from django.views import View
 
-from functions.GCAPItest import get_coursework_title_and_name
-from functions.for_update_data import update_course_data
-
 # Create your views here.
 
 class IndexView(View):
     def get(self, request):
         return render(request, "dash_board/frontpage.html")
+
+# class AuthView(View):
+#     def get(self, request):
+#         try:
+#             next_url = request.GET.get('next', '/') + "?auth=success"
+            
+#             # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
+#             from django.utils.http import url_has_allowed_host_and_scheme
+#             if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+#                 next_url = '/'
+            
+#             user_id = request.COOKIES['user_id']
+#             database.get_courses_from_db(user_id)
+#             if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
+#                 raise FileNotFoundError
+            
+#             response = redirect(next_url)
+#             return response
+#         except Exception as e:
+#             print(f"(auth) An error occurred: {e}")
+#             return render(request, "dash_board/login.html")
+            
+#     def post(self, request):
+
+#             redirect_url = f"{settings.BASE_URL}/google/login/"
+#             return redirect(redirect_url)
+
+
+def auth(request):
+    try:
+        next_url = request.GET.get('next', '/') + "?auth=success"
+        
+        # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
+        from django.utils.http import url_has_allowed_host_and_scheme
+        if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+            next_url = '/'
+        
+        user_id = request.COOKIES['user_id']
+        database.get_courses_from_db(user_id)
+        if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
+            raise FileNotFoundError
+        
+        response = redirect(next_url)
+        return response
+    except Exception as e:
+        print(f"(auth) An error occurred: {e}")
+        redirect_url = f"{settings.BASE_URL}/google/login/"
+        return redirect(redirect_url)
+
 
 #Viewクラスを継承したIndexViewをas_viewメソッドでビュー関数に変換
 index = IndexView.as_view()
@@ -97,34 +143,7 @@ def google_callback(request):
     auth_url = f"{settings.BASE_URL}/auth"
     
     response = redirect(auth_url)
+    response.set_cookie('user_id', user_id)
 
     # 元のページにリダイレクト
     return response
-
-def auth(request):
-    try:
-        next_url = request.GET.get('next', '/') + "?auth=success"
-        
-        # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
-        from django.utils.http import url_has_allowed_host_and_scheme
-        if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-            next_url = '/'
-        
-        user_id = request.COOKIES['user_id']
-        database.get_courses_from_db(user_id)
-        if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
-            raise FileNotFoundError
-        
-        response = redirect(next_url)
-        response.set_cookie('user_id', user_id)
-        return response
-    except Exception as e:
-        print(f"(auth) An error occurred: {e}")
-        redirect_url = f"{settings.BASE_URL}/google/login/"
-        return redirect(redirect_url)
-    
-    
-
-        
-        
-    
