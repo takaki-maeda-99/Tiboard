@@ -194,3 +194,67 @@
 .submenu li a {
     background-color: #4c637a;
 }
+
+*{
+    margin:0px;
+    padding:0px;
+}
+
+header{
+    background-color: #34495e;
+    height:100px;
+    width:100%;
+    position:sticky;
+}
+
+.header-list li{
+    color:white;
+    float:left;
+    list-style-type: none;
+    padding:25px 14px;
+    text-align: center;
+    font-size:30px;
+    font-weight: bold;
+    height: 50px;
+    /* border-right:1px solid #fff; */
+}
+
+.header-logo{
+    color:white;
+    font-size:50px;
+    font-weight:bolder;
+    float:left;
+    padding:12px 40px;
+}
+
+.header ul{
+    overflow: hidden;
+}
+
+.line-right{
+    display:block;
+    position:absolute;
+    height:80px;
+    top:20px;
+    right:0;
+    width:2px;
+    background-color: #fff;
+}
+
+.board_data{
+    text-decoration: none;
+    color:#fff;
+}
+
+.board_data:hover{
+    color:aqua;
+}
+
+.front_data{
+    text-decoration: none;
+    color:#fff;
+}
+
+.front_data:hover{
+    color:aqua;
+}
