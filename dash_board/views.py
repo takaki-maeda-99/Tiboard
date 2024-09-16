@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
+from .forms import EmailForm
 
 # Create your views here.
 
@@ -7,57 +8,89 @@ class IndexView(View):
     def get(self, request):
         return render(request, "dash_board/frontpage.html")
 
-# class AuthView(View):
-#     def get(self, request):
-#         try:
-#             next_url = request.GET.get('next', '/') + "?auth=success"
+class AuthView(View):
+    def get(self, request):
+        try:
+            if request.GET.get('regist', 'false') == 'true':
+                redirect_url = f"{settings.BASE_URL}/google/login/"
+                return redirect(redirect_url)
             
-#             # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
-#             from django.utils.http import url_has_allowed_host_and_scheme
-#             if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-#                 next_url = '/'
+            next_url = request.GET.get('next', '/') + "?auth=success"
             
-#             user_id = request.COOKIES['user_id']
-#             database.get_courses_from_db(user_id)
-#             if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
-#                 raise FileNotFoundError
+            # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
+            from django.utils.http import url_has_allowed_host_and_scheme
+            if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                next_url = '/'
             
-#             response = redirect(next_url)
-#             return response
-#         except Exception as e:
-#             print(f"(auth) An error occurred: {e}")
-#             return render(request, "dash_board/login.html")
+            user_id = request.COOKIES['user_id']
+            database.get_courses_from_db(user_id)
+            if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
+                raise FileNotFoundError
             
-#     def post(self, request):
+            response = redirect(next_url)
+            return response
+        except FileNotFoundError:
+            redirect_url = f"{settings.BASE_URL}/google/login/"
+            return redirect(redirect_url)
+        except Exception as e:
+            print(f"(auth) An error occurred: {e}")
+            form = EmailForm()
+            return render(request, "dash_board/login.html", {"form": form})
+            
+    def post(self, request):
+            form = EmailForm(request.POST)
+            if form.is_valid():
+                user_email = form.cleaned_data['user_email']
+                try:
+                    user_id = database.get_user_id_from_email(user_email)
+                    response = redirect(f"{settings.BASE_URL}/auth")
+                    response.set_cookie('user_id', user_id)
+                    return response
+                except Exception as e:
+                    form.add_error('user_email', 'User not found')
+                    return render(request, "dash_board/login.html", {"form": form})
+            else:
+                return render(request, "dash_board/login.html", {"form": form})
+            
 
-#             redirect_url = f"{settings.BASE_URL}/google/login/"
-#             return redirect(redirect_url)
 
-
-def auth(request):
-    try:
-        next_url = request.GET.get('next', '/') + "?auth=success"
+# def auth(request):
+#     try:
+#         next_url = request.GET.get('next', '/') + "?auth=success"
         
-        # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
-        from django.utils.http import url_has_allowed_host_and_scheme
-        if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-            next_url = '/'
+#         # セキュリティ対策として、next_urlが許可されたホストのものであるか確認
+#         from django.utils.http import url_has_allowed_host_and_scheme
+#         if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+#             next_url = '/'
         
-        user_id = request.COOKIES['user_id']
-        database.get_courses_from_db(user_id)
-        if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
-            raise FileNotFoundError
+#         user_id = request.COOKIES['user_id']
+#         database.get_courses_from_db(user_id)
+#         if not os.path.exists(f"{TOKENS_FILE_PATH}/{user_id}token.json"):
+#             raise FileNotFoundError
         
-        response = redirect(next_url)
-        return response
-    except Exception as e:
-        print(f"(auth) An error occurred: {e}")
-        redirect_url = f"{settings.BASE_URL}/google/login/"
-        return redirect(redirect_url)
+#         response = redirect(next_url)
+#         return response
+#     except Exception as e:
+#         print(f"(auth) An error occurred: {e}")
+#         redirect_url = f"{settings.BASE_URL}/google/login/"
+#         return redirect(redirect_url)
 
 
 #Viewクラスを継承したIndexViewをas_viewメソッドでビュー関数に変換
 index = IndexView.as_view()
+auth = AuthView.as_view()
+
+# 日本語：君は休みをどこで過ごしたの？
+# ドイツ語：Wo hast du die ferien verbracht?
+
+# 日本語：私は休みを家で過ごしました。
+# ドイツ語：Ich habe die Ferien zu Hause verbracht.
+# ドイツ語：Die Ferien habe ich zu Hause verbracht.
+
+# あなたは何か買いましたか？
+# Haben Sie etwas gekauft?
+# カロリーメイトを買いました。
+# Ich habe eine CalorieMate gekauft.
 
 from django.shortcuts import redirect, render
 from google_auth_oauthlib.flow import Flow

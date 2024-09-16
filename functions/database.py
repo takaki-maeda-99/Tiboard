@@ -91,3 +91,7 @@ def get_submissions_from_db(user_id):
     user = User.objects.get(user_id=user_id)
     submissions = user.submission_set.all()
     return submissions
+
+def get_user_id_from_email(user_email):
+    user = User.objects.get(user_email=user_email)
+    return user.user_id
