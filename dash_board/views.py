@@ -94,7 +94,7 @@ def google_callback(request):
     with open(f"{TOKENS_FILE_PATH}/{user_id}token.json", "w") as token:
             token.write(creds.to_json())
 
-    auth_url = "https://127.0.0.1:8000/auth"
+    auth_url = f"{settings.BASE_URL}/auth"
     
     response = redirect(auth_url)
 
@@ -120,7 +120,7 @@ def auth(request):
         return response
     except Exception as e:
         print(f"(auth) An error occurred: {e}")
-        redirect_url = "https://127.0.0.1:8000/google/login/"
+        redirect_url = f"{settings.BASE_URL}/google/login/"
         return redirect(redirect_url)
     
     
