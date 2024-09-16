@@ -73,10 +73,10 @@ function makeTasks(courses, coursework, submissionData) {
         const targetDic = courses.find(item => item.id == course_id_id);
         const courseTitle = targetDic ? targetDic.course_name : "Unknown Course";
 
-        const submission = submissionData.find(sub => sub.coursework_id_id == id);
+        const submission = submissionData.find(sub => sub.coursework_id_id == id) || [{"default": 0}];
 
         // submission 情報があれば追加
-        const submissionState = submission ? submission.submission_state : null;
+        const submissionState = submission.length > 0 ? submission.submission_state : null;
 
         return {
             name: `${courseTitle} ${coursework_title}`,
@@ -355,8 +355,12 @@ async function updateChart(){
     if (updatedSubmission.length !== 0) {
         updatedSubmission = updatedSubmission.flat();
     }
+    console.log("updatedSubmission:", updatedSubmission);
     if (updatedCoursework.length !== 0) {
         updatedCoursework = updatedCoursework.flat();
+    }
+    if ("error" in updatedSubmission) {
+        updatedSubmission = [{"default": 0}]
     }
     updatedTasks = makeTasks(updatedCourses, updatedCoursework, updatedSubmission);
     clearChart();
