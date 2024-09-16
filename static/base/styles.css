@@ -5,10 +5,25 @@
     background-color: #2c3e50;
     position: fixed;
     top: 0;
+    left: -200px; /* 画面の外に隠す */
+    bottom: 0;
+    transition: left 0.3s ease; /* スライドインのアニメーション */
+    z-index: 100;
+}
+
+/* サイドバーが表示されているときのスタイル */
+#side_bar.open {
+    left: 0; /* 画面内に表示 */
+}
+
+/* スクリーンの左端にカーソルを検出するための透明なエリア */
+#hover_area {
+    position: fixed;
+    top: 0;
     left: 0;
-    bottom: 0; 
-    padding: 0;
-    overflow-y: auto;
+    width: 10px; /* カーソルを検出するエリアの幅 */
+    height: 100vh;
+    z-index: 99;
 }
 
 #side_bar ul {
@@ -61,7 +76,6 @@
 }
 
 .body{
-    margin-left: 200px;
     font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', 'Helvetica', 'Arial', sans-serif;
 }
 
