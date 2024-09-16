@@ -15,6 +15,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+HOST_IP = "10.32.75.179"
+
+BASE_URL = f"https://{HOST_IP}:8000"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-w^m-_yjc9eq&4(0=-2%s6(a-e+y!@cf7$i&mba7l7gtw&urv*p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [HOST_IP]
 
 
 # Application definition
