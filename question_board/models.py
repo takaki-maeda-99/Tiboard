@@ -1,32 +1,23 @@
 from django.db import models
-from task_board.models import User
-import uuid
+from task_board.models import User, Course
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
+class Thread(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     description = models.TextField(max_length=500, null=True, blank=True)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
+    @property
+    def name(self):
+        return self.course.course_name
 
     def __str__(self):
         return self.name
 
 class Post(models.Model):
-    title = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, related_name='posts', on_delete=models.CASCADE)
+    thread = models.ForeignKey(Thread, related_name='posts', on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
 
     def __str__(self):
-        return self.title
-
-
-class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Comment by {self.author} on {self.post}"
+        return self.thread.course.course_name

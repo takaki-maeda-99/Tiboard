@@ -352,11 +352,11 @@ async function initializationChart() {
 async function updateChart(){
     let [updatedCourses, updatedCoursework, updatedSubmission] = await fetchUpdatedData();
     let updatedTasks;
-    if (updatedSubmission.length !== 0) {
+    if (Array.isArray(updatedSubmission) &&  updatedSubmission.length !== 0) {
         updatedSubmission = updatedSubmission.flat();
     }
     console.log("updatedSubmission:", updatedSubmission);
-    if (updatedCoursework.length !== 0) {
+    if (Array.isArray(updatedCoursework) &&  updatedCoursework.length !== 0) {
         updatedCoursework = updatedCoursework.flat();
     }
     if ("error" in updatedSubmission) {
