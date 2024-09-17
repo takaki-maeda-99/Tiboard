@@ -3,11 +3,11 @@ from task_board.models import User
 
 class EmailForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['user_email']  # コメント内容のみを入力
+        model = User  # Userモデルに適応
+        fields = ['user_email']  # 'user_email' フィールドのみをフォームに表示
         widgets = {
-            'user_email': forms.Textarea(attrs={
-                'class': 'form-control', 
-                'placeholder': 'Enter your email here',
-                }),
+            'user_email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': '入力してください'
+            }),
         }

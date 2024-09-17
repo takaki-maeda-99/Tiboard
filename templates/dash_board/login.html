@@ -64,12 +64,17 @@
 </head>
 
 <body>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Login">
-    </form>
-    <a href="{% url 'dash_board:auth' %}?regist=true"">regist</a>
+    <div class="login-container">
+        <h1>Guild Login</h1>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button-container">
+                <button class="register" href="{% url 'dash_board:auth' %}?regist=true">Regist</button>
+                <button type="submit" class="login">Login</button>
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>
