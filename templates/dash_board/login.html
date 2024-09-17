@@ -51,6 +51,15 @@
             cursor: pointer;
         }
 
+        .button-container a {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         .button-container .register {
             background-color: #ccc;
             color: #000;
@@ -65,12 +74,12 @@
 
 <body>
     <div class="login-container">
-        <h1>Guild Login</h1>
+        <h1>GuildS Login</h1>
         <form action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="button-container">
-                <button class="register" href="{% url 'dash_board:auth' %}?regist=true">Regist</button>
+                <a class="register" href="{% url 'dash_board:auth' %}?regist=true">Regist</a>
                 <button type="submit" class="login">Login</button>
             </div>
         </form>
