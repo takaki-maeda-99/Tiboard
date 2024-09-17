@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<h1>Thread: {{ thread.name }}</h1>
+<p>{{ thread.description }}</p>
+<ul>
+    {% for post in posts %}
+    <li>
+        <p>{{ post.author}} posted at {{ post.created_at }} Post ID: {{ post.id }} </p>
+        <p>{{ post.content }}</p>
+        <!-- 返信ボタン -->
+        <button class="reply-btn" data-postid="{{ post.id }}">Reply</button>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- フォーム -->
+<form method="POST" id="reply-form" action="{% url 'question_board:thread_detail' thread.id %}">
+    {% csrf_token %}
+    <!-- post_idを保持する隠しフィールド -->
+    <textarea id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
+    <input type="hidden" id="post-id-input" name="post_id">
+    <button type="submit">Send</button>
+</form>
+
+<script src="{% static "question_board/thread_detail_script.js" %}"></script>
+
+{% endblock %}

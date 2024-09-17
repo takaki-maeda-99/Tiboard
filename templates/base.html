@@ -75,8 +75,8 @@
                     </div>
                 </div>
                 <ul class="submenu">
-                    {% for category in context.categories %}
-                    <li><a href="{% url 'question_board:category_detail' category.id %}">{{ category.name }}</a></li>
+                    {% for thread in threads %}
+                    <li><a href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a></li>
                     {% endfor %}
                 </ul>
             </li>
