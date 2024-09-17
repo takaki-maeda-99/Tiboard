@@ -54,6 +54,10 @@
     background-color: #1abc9c;
 }
 
+#header{
+    z-index:90;
+}
+
 .sidebar-text {
     flex-grow: 1;
     padding: 15px;
@@ -211,11 +215,13 @@ header{
     color:white;
     float:left;
     list-style-type: none;
-    padding:25px 14px;
+    padding:25px 10px;
     text-align: center;
     font-size:30px;
     font-weight: bold;
     height: 50px;
+    
+
     /* border-right:1px solid #fff; */
 }
 
@@ -224,21 +230,7 @@ header{
     font-size:50px;
     font-weight:bolder;
     float:left;
-    padding:12px 40px;
-}
-
-.header ul{
-    overflow: hidden;
-}
-
-.line-right{
-    display:block;
-    position:absolute;
-    height:80px;
-    top:20px;
-    right:0;
-    width:2px;
-    background-color: #fff;
+    padding:12px 30px;
 }
 
 .board_data{
@@ -257,4 +249,103 @@ header{
 
 .front_data:hover{
     color:aqua;
+}
+
+.button-wrap {
+    position: relative;
+}
+
+.button-list {
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: #34495e;
+    width: 130px;
+    transition: all 0.3s ease;
+    height: 50px;
+    align-items: center;
+    border-radius: 3px;
+    background: #ffff4c;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    position: absolute;
+    margin-top: 25px;
+    margin-left: 1130px;
+    border: 1px solid #000000;
+    z-index:100;
+}
+
+.button-wrap:hover .button-list{
+    color: aqua;
+    background-color: #34495e;
+}
+
+.dropdown-lists {
+    /* visibility: hidden;
+    opacity: 0;
+    transition: all .3s; */
+    transform: scaleY(0);
+    transform-origin:top ;
+    transition:all .3s;
+    position: absolute; 
+    top: 90px;
+    left: 1130px;
+    width: 130px;
+    background-color: #34495e;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border: 1px solid #000000;
+    z-index:1000;
+}
+
+.button-wrap:hover .dropdown-lists {
+    /* visibility: visible;
+    opacity: 1; */
+    transform: scaleY(1);
+}
+
+.dropdown-list {
+    background-color: #5c7996;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-list:hover{
+    background-color: #1abc9c;
+}
+
+.dropdown-list:not(:first-child)::before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: #000000;
+    position: absolute;
+    top: 0;
+}
+
+.dropdown-list a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
+.button-wrap::after {
+    content: "";
+    position: absolute;
+    top: 70px;
+    left: 1130px;
+    width: 130px;
+    height: 50px; 
+    z-index:100;
 }
