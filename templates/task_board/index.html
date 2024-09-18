@@ -1,13 +1,13 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
 {% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taskboard</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'task_board/index_styles.css' %}">
-</head>
+{% block title %}Taskboard{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'task_board/index_styles.css' %}">
+{% endblock %}
+
+{% block content %}
 <body>
     <!-- ロード中の文字 -->
     <div id="loading-message" style="display: none;">更新中です<span id="dots"></span></div>
@@ -26,4 +26,4 @@
     <script src="{% static "task_board/index_script.js" %}"></script>
 </body>
 
-{%endblock%}
+{%endblock content%}
