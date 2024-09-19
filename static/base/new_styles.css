@@ -15,10 +15,10 @@
 
 .content-side {
     background-color: #7fb76f30;
-    height: 78vh;
+    min-height: 78vh;
 }
 
 .content-main {
     background-color: #ee74744b;
-    height: 78vh;
+    min-height: 78vh;
 }
