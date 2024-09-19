@@ -33,14 +33,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const sideBar = document.getElementById('side_bar');
     const hoverArea = document.getElementById('hover_area');
-
-    // 左端にカーソルが移動したらサイドバーを表示
-    hoverArea.addEventListener('mouseenter', function() {
-        sideBar.classList.add('open');
-    });
-
-    // サイドバーからカーソルが外れたら非表示にする
-    sideBar.addEventListener('mouseleave', function() {
-        sideBar.classList.remove('open');
-    });
 });

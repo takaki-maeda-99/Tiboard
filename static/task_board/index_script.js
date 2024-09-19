@@ -15,6 +15,7 @@ const NAME_HEIGHT = 16;
 const MAX_WIDTH = 200;
 const MAX_DUE_DATE_PX = 127; // タスクバーのラベルの幅は126.34px
 const INTERVAL = 30; // 現在時間の更新間隔
+const DEFAULT_DATE = new Date();
 
 let nowLineElement = null;  // グローバル変数で現在の線を管理
 
@@ -66,12 +67,29 @@ async function fetchUpdatedData() {
     return [courses, coursework, submissionData];
 };
 
+// 無効な時間の場合にデフォルトの時間を渡す
+function getValidDate(dateString) {
+    try {
+        const date = new Date(dateString);
+        
+        // 無効な日付であれば throw する
+        if (isNaN(date.getTime())) {
+            throw new Error('Invalid Date');
+        }
+
+        return date.toISOString();
+    } catch (error) {
+        return DEFAULT_DATE.toISOString();  // デフォルトの日時
+    }
+};
+
+
 // タスクの作成
 function makeTasks(courses, coursework, submissionData) {
     const tasks = coursework.map((work, index) => {
         const { course_id_id, coursework_title, due_time, update_time, id, link } = work;
 
-        const startTime = new Date(update_time).toISOString();
+        const startTime = getValidDate(update_time);
 
         const targetDic = courses.find(item => item.id == course_id_id);
         const courseTitle = targetDic ? targetDic.course_name : "Unknown Course";
@@ -340,12 +358,22 @@ function drawFooterLine() {
     };
 };
 
+// フラット化できるかの判定と処理
+function flatData(data) {
+    if (Array.isArray(data) && data.length !== 0) {
+        data = data.flat();
+    } else {
+        data = [{"default": 0}];
+    };
+    return data;
+};
+
 // チャートの初期化
 async function initializationChart() {
     const [authData, taskBoardData] = await fetchTaskBoard();
-    const courses = taskBoardData[0];
-    const coursework = taskBoardData[1].flat();
-    const submissionData = taskBoardData[2].flat();
+    const courses = flatData(taskBoardData[0]);
+    const coursework = flatData(taskBoardData[1]);
+    const submissionData = flatData(taskBoardData[2]);
     const tasks = makeTasks(courses, coursework, submissionData);
     drawChart(tasks);
 };
@@ -360,7 +388,7 @@ async function updateChart() {
     let updatedSubmission = await fetchUpdatedData();
 
     let updatedTasks;
-
+  
     if (Array.isArray(coursework) && coursework.length !== 0) {
         coursework = coursework.flat();
     }
