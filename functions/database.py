@@ -2,6 +2,7 @@ from task_board.models import User, Course, CourseWork, Submission
 
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import re
 
 def convert_utc_to_jst(utc_date=None, date_dict=None, time_dict=None):
     jst_time = datetime(1970, 1, 1, tzinfo=ZoneInfo("Asia/Tokyo"))
@@ -34,12 +35,16 @@ def add_course_to_user(user_id, course_id):
     user.save()
 
 def insert_course_to_db(course_dict):
+    course_name = course_dict.get('name', 'No name')
+    if course_name:
+        course_name = re.sub(r'B\d{1,7}[_\d]*\s*', '', course_name)
     course, _ = Course.objects.get_or_create(
         course_id=course_dict.get('id', 'No id'),
         defaults={
-            'course_name': course_dict.get('name', 'No name'),
+            'course_name': course_name,
             'link': course_dict.get('alternateLink', '')})
     course.save()
+
 
 def insert_coursework_to_db(course_id, coursework_dict):
     course = Course.objects.get(course_id=course_id)
