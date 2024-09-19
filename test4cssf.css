@@ -1,0 +1,61 @@
+.sidebar {
+    background-color: #202225;
+    color: #b9bbbe;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-right: 1px solid #2f3136;
+}
+
+.channel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.channel-item {
+    padding: 8px 10px;
+    /* Discord風にコンパクトにする */
+    margin-bottom: 4px;
+    /* チャンネル間のスペース */
+    border-radius: 5px;
+    /* 角を丸くする */
+    cursor: pointer;
+    color: #b9bbbe;
+    /* デフォルトのチャンネル文字色 */
+    font-size: 0.9rem;
+}
+
+.channel-item:hover {
+    background-color: #393c43;
+    /* ホバー時の背景色 */
+    color: white;
+    /* ホバー時の文字色 */
+}
+
+.channel-item.active {
+    background-color: #5865f2;
+    /* アクティブなチャンネルの背景色 */
+    color: white;
+    /* アクティブなチャンネルの文字色 */
+}
+
+/* スクロールバーのカスタマイズ */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #2f3136;
+    /* スクロールバーの色 */
+    border-radius: 10px;
+}
+
+/* メインエリアのカスタムスタイル */
+.main-content {
+    /* ナビゲーションバーの高さ分の余白 */
+    padding: 20px;
+    background-color: #36393f;
+    color: white;
+    overflow-y: auto;
+}
