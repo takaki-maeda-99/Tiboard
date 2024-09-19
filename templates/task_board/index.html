@@ -1,4 +1,4 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Taskboard{% endblock %}
@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content_main %}
+
 <body>
     <!-- ロード中の文字 -->
     <div id="loading-message" style="display: none;">更新中です<span id="dots"></span></div>
@@ -23,7 +24,9 @@
         </div>
     </div>
 
-    <script src="{% static "task_board/index_script.js" %}"></script>
+    <script src="{% static 'task_board/index_script.js' %}"></script>
+    <script src="{% static 'task_board/data.js' %}"></script>
+
 </body>
 
 {% endblock %}
