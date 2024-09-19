@@ -45,16 +45,19 @@ async function fetchTaskBoard() {
 
     console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
 
-    return [0, taskBoardData];
+    return taskBoardData;
 };
 
 async function fetchUpdatedData() {
-    const [courses, coursework] = await Promise.all([
+    console.time('Execution Time');
+
+    const [courses, coursework, submissionData] = await Promise.all([
         fetchDatum("update_courses/"),
         fetchDatum("update_coursework/"),
+        fetchDatum("update_submission/")
     ]);
 
-    const submissionData = await fetchDatum("update_submission/");
+    console.timeEnd('Execution Time');
 
     console.log("courses:", courses);
     console.log("coursework:", coursework);
@@ -73,7 +76,7 @@ function makeTasks(courses, coursework, submissionData) {
         const targetDic = courses.find(item => item.id == course_id_id);
         const courseTitle = targetDic ? targetDic.course_name : "Unknown Course";
 
-        const submission = submissionData.find(sub => sub.coursework_id_id == id) || [{"default": 0}];
+        const submission = submissionData.find(sub => sub.coursework_id_id == id) || [{ "default": 0 }];
 
         // submission 情報があれば追加
         const submissionState = submission.length > 0 ? submission.submission_state : null;
@@ -162,7 +165,6 @@ function setTaskBarColor(task) {
     const now = new Date();
     const endTime = new Date(task.endTime);
     const timeDifference = endTime - now; // タスクの終了時間と現在の時間差を計算
-
     // タスクバーの色を条件によって変更
     if (timeDifference < 0) {
         // 期限が過ぎている場合は赤色
@@ -349,20 +351,31 @@ async function initializationChart() {
 };
 
 // チャートの更新
-async function updateChart(){
-    let [updatedCourses, updatedCoursework, updatedSubmission] = await fetchUpdatedData();
+async function updateChart() {
+    const [authData, taskBoardData] = await fetchTaskBoard();
+
+    const courses = taskBoardData[0];
+    const coursework = taskBoardData[1];
+
+    let updatedSubmission = await fetchUpdatedData();
+
     let updatedTasks;
-    if (Array.isArray(updatedSubmission) &&  updatedSubmission.length !== 0) {
+
+    if (Array.isArray(coursework) && coursework.length !== 0) {
+        coursework = coursework.flat();
+    }
+
+    if (Array.isArray(updatedSubmission) && updatedSubmission.length !== 0) {
         updatedSubmission = updatedSubmission.flat();
     }
+
     console.log("updatedSubmission:", updatedSubmission);
-    if (Array.isArray(updatedCoursework) &&  updatedCoursework.length !== 0) {
-        updatedCoursework = updatedCoursework.flat();
-    }
+
+
     if ("error" in updatedSubmission) {
-        updatedSubmission = [{"default": 0}]
+        updatedSubmission = [{ "default": 0 }]
     }
-    updatedTasks = makeTasks(updatedCourses, updatedCoursework, updatedSubmission);
+    updatedTasks = makeTasks(courses, coursework, updatedSubmission);
     clearChart();
     drawChart(updatedTasks);
 };
@@ -454,10 +467,13 @@ function hideLoadingMessage() {
     clearInterval(loadingAnimationInterval);
 }
 
-// 処理の実行
+
+//---------------------------- 処理の実行-----------------------------------
+
 document.addEventListener('DOMContentLoaded', async function () {
+    console.time('Execution Time');
     showLoadingMessage();
-    await initializationChart();
-    await updateChart();
+    await main();
     hideLoadingMessage();
+    console.timeEnd('Execution Time');
 });

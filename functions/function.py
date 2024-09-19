@@ -94,8 +94,9 @@ def update_submission_data(request):
     courseworkss = database.get_courseworkss_from_db(user_id)
     
     course_and_coursework_ids = []
+    return_coursework_ids = []
     
-    now = datetime(2024, 7, 15, 12, 0, 0, tzinfo=ZoneInfo("Asia/Tokyo"))
+    now = datetime.now(ZoneInfo("Asia/Tokyo"))
 
     for courseworks in courseworkss:
         for coursework in courseworks:
@@ -103,7 +104,8 @@ def update_submission_data(request):
             if coursework_due_time is not None:
                 if coursework_due_time < now:
                     continue
-            course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
+                return_coursework_ids.append(coursework.id)
+                course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
             
     submissions = classroom.async_request_submissions_info(headers, course_and_coursework_ids)
     
@@ -113,5 +115,7 @@ def update_submission_data(request):
     response = database.get_submissions_from_db(user_id)
     
     response = list(response.values())
+    
+    response = [submission for submission in response if submission["coursework_id_id"] in return_coursework_ids]
     
     return response
