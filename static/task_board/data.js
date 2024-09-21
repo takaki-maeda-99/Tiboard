@@ -26,10 +26,12 @@ async function update_task_board() {
 
 async function main() {
 
+    makeHorizontalLabel()
+
     get_task_board().then((taskBoardData) => {
         const courses = taskBoardData[0];
-        const coursework = taskBoardData[1].flat();
-        const submission = taskBoardData[2].flat();
+        const coursework = flatData(taskBoardData[1]);
+        const submission = flatData(taskBoardData[2]);
 
         console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
 
@@ -39,8 +41,8 @@ async function main() {
 
     update_task_board().then((taskBoardData) => {
         const courses = taskBoardData[0];
-        const coursework = taskBoardData[1].flat();
-        const submission = taskBoardData[2].flat();
+        const coursework = flatData(taskBoardData[1]);
+        const submission = flatData(taskBoardData[2]);
 
         if ("error" in submission) {
             submission = [{ "default": 0 }]
@@ -58,7 +60,7 @@ function makeTasks(courses, coursework, submissionData) {
     // 期限が過ぎているものは除外
     coursework = coursework.filter(work => work.due_time > new Date().toISOString());
 
-    const tasks = coursework.map((work, index) => {
+    const tasks = coursework.map(work => {
         const { course_id_id, coursework_title, due_time, update_time, id, link } = work;
 
         const startTime = new Date(update_time).toISOString();

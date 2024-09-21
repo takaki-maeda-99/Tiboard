@@ -23,7 +23,7 @@ let nowLineElement = null;  // グローバル変数で現在の線を管理
 function getValidDate(dateString) {
     try {
         const date = new Date(dateString);
-
+        
         // 無効な日付であれば throw する
         if (isNaN(date.getTime())) {
             throw new Error('Invalid Date');
@@ -280,7 +280,7 @@ function flatData(data) {
     if (Array.isArray(data) && data.length !== 0) {
         data = data.flat();
     } else {
-        data = [{ "default": 0 }];
+        data = [{"default": 0}];
     };
     return data;
 };
@@ -305,7 +305,7 @@ async function updateChart() {
     let updatedSubmission = await fetchUpdatedData();
 
     let updatedTasks;
-
+  
     if (Array.isArray(coursework) && coursework.length !== 0) {
         coursework = coursework.flat();
     }

@@ -1,4 +1,4 @@
-.gantt-chart {
+.gantt {
     display: flex;
     white-space: nowrap;
     height: fit-content;
@@ -14,12 +14,17 @@
 
 .task-name {
     text-align: center;
-    margin: 10px 0;;
+    margin: 10px 0;
     height: 16px;
 }
 
-.chart {
+.task-bars {
     position: absolute;
+}
+
+.task-bar {
+    position: absolute;
+    border-radius: 10px;
 }
 
 .chart-header {
@@ -60,23 +65,9 @@
     background-color: #ddd;
 }
 
-.task-bars {
-    position: absolute;
-}
-
-.task-bar {
-    position: absolute;
-    border-radius: 10px;
-}
-
 .vertical-line {
     position: absolute;
     top: 0;
     width: 1px;
     background-color: #ddd;
-}
-
-#loading-message{
-    text-align: center;
-    font-size: 24px;
 }
