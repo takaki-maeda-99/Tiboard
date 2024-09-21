@@ -100,3 +100,16 @@ def get_submissions_from_db(user_id):
 def get_user_id_from_email(user_email):
     user = User.objects.get(user_email=user_email)
     return user.user_id
+
+def get_users_from_db():
+    users = User.objects.all()
+    return users
+
+def get_all_courses_from_db():
+    courses = Course.objects.all()
+    return courses
+
+def get_users_from_course(course_id):
+    course = Course.objects.get(course_id=course_id)
+    users = course.user_set.all()
+    return users

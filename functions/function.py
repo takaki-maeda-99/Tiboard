@@ -119,3 +119,25 @@ def update_submission_data(request):
     response = [submission for submission in response if submission["coursework_id_id"] in return_coursework_ids]
     
     return response
+
+def update_polling():
+    courses = database.get_all_courses_from_db()
+    headerss = []
+    
+    for course in courses:
+        enrolled_users = database.get_users_from_course(course.course_id)
+        enrolled_first_user_id = list(enrolled_users.values())[0]["user_id"]
+        creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{enrolled_first_user_id}token.json", SCOPES)
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        headers = {"Authorization": f"Bearer {creds.token}"}
+        headerss.append(headers)
+    
+    course_ids = [course.course_id for course in courses]
+    course_workss = classroom.async_request_all_courseWork_info(headerss, course_ids)
+    
+    for course_id, course_works in zip(course_ids, course_workss):
+            for course_work in course_works:
+                database.insert_coursework_to_db(course_id, course_work)
+    
+    print("update_polling")
