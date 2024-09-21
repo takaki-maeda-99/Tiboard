@@ -2,9 +2,9 @@
 const DAYS_RANGE = 3; // 表示する日数
 const HOURS_PER_DAY = 24; // 1日あたりの時間
 const HOUR_TO_PX = 20; // 1時間当たりのpx
+const INTERVAL_HOURS = 3; // 横軸に何時間刻みで時間を表示するか
 const SECONDS_PER_HOUR = 1000 * 60 * 60 // 1時間当たりの秒数
 const CHART_LEFT_MARGIN = 30; // チャートの左端の調整用
-const SEPARATOR_MARGIN = 60;
 const MARGIN = 10;
 const TASK_BAR_HEIGHT = 30; // タスクバーの縦の長さ
 const TASK_BAR_UNIT = 36;
@@ -80,7 +80,6 @@ function getValidDate(dateString) {
     }
 };
 
-
 // タスクの作成
 function makeTasks(courses, coursework, submissionData) {
     const tasks = coursework.map((work, index) => {
@@ -129,7 +128,7 @@ function drawVerticalLine() {
     for (let i = 0; i < chartHeader.children.length; i++) {
         const verticalLine = document.createElement('div');
         verticalLine.className = 'vertical-line';
-        verticalLine.style.left = `${CHART_LEFT_MARGIN + i * SEPARATOR_MARGIN}px`;
+        verticalLine.style.left = `${CHART_LEFT_MARGIN + i * HOUR_TO_PX * INTERVAL_HOURS}px`;
         verticalLine.style.position = 'absolute';
         verticalLine.style.top = '0';
         verticalLine.style.bottom = '0';
@@ -140,37 +139,25 @@ function drawVerticalLine() {
     };
 };
 
-// brタグの追加
-function addBrTag() {
-    const tasksContainer = document.querySelector('.tasks');
-    const brTag = document.createElement('div');
-    brTag.className = 'br-tag';
-    brTag.innerHTML = '<br>';
-    brTag.style.marginTop = `${MARGIN}px`;
-    brTag.style.marginBottom = `${MARGIN}px`;
-    brTag.style.height = `${NAME_HEIGHT}px`;
-    brTag.style.lineHeight = `${NAME_HEIGHT}px`;
-    brTag.style.MAX_WIDTH = `${MAX_WIDTH}px`;
-    tasksContainer.appendChild(brTag);
-};
-
 // タスク名の追加
 function addTaskName(tasks) {
     tasks = filterTasks(tasks);
-    tasks.forEach((task, index) => {
-        const tasksContainer = document.querySelector('.tasks');
-        const taskNameDiv = document.createElement('div');
-        taskNameDiv.className = 'task-name';
-        taskNameDiv.style.marginTop = `${MARGIN}px`;
-        taskNameDiv.style.marginBottom = `${MARGIN}px`;
-        taskNameDiv.style.height = `${NAME_HEIGHT}px`;
-        taskNameDiv.style.lineHeight = `${NAME_HEIGHT}px`;
-        taskNameDiv.style.max_width = `${MAX_WIDTH}px`;
-        taskNameDiv.style.overflow = 'hidden'; // オーバーフローを隠す
-        taskNameDiv.style.whiteSpace = 'nowrap'; // 改行しない
-        taskNameDiv.style.textOverflow = 'ellipsis'; // 省略記号を表示
-        taskNameDiv.textContent = task.name;
-        tasksContainer.appendChild(taskNameDiv);
+    const taskContainers = document.querySelectorAll('.tasks');
+    taskContainers.forEach(tasksContainer => {
+        tasks.forEach(task => {
+            const taskNameDiv = document.createElement('div');
+            taskNameDiv.className = 'task-name';
+            taskNameDiv.style.marginTop = `${MARGIN}px`;
+            taskNameDiv.style.marginBottom = `${MARGIN}px`;
+            taskNameDiv.style.height = `${NAME_HEIGHT}px`;
+            taskNameDiv.style.lineHeight = `${NAME_HEIGHT}px`;
+            taskNameDiv.style.max_width = `${MAX_WIDTH}px`;
+            taskNameDiv.style.overflow = 'hidden'; // オーバーフローを隠す
+            taskNameDiv.style.whiteSpace = 'nowrap'; // 改行しない
+            taskNameDiv.style.textOverflow = 'ellipsis'; // 省略記号を表示
+            taskNameDiv.textContent = task.name;
+            tasksContainer.appendChild(taskNameDiv);
+        });
     });
 };
 
@@ -291,7 +278,7 @@ function makeHorizontalLabel() {
             date.setDate(startDate.getDate() + day);
             date.setHours(hour, 0, 0, 0);
 
-            headerCell.style.width = `${SEPARATOR_MARGIN}px`;
+            headerCell.style.width = `${HOUR_TO_PX * INTERVAL_HOURS}px`;
             headerCell.style.textAlign = 'center';
             headerCell.style.position = 'relative';
             headerCell.style.boxSizing = 'border-box';
@@ -302,19 +289,21 @@ function makeHorizontalLabel() {
     };
 };
 
-// 現在の時間の位置に線を引く関数
-function drawNowLine(taskBarsHeight) {
-    const taskBars = document.getElementById('task-bars');
+const nowLineElements = {};
 
-    // 古い線があれば削除
-    if (nowLineElement) {
-        nowLineElement.remove();
+function drawNowLine(taskBarsHeight, className) {
+    const element = document.getElementById(className);
+
+    // クラスに対応する古い線があれば削除
+    if (nowLineElements[className]) {
+        nowLineElements[className].remove();
     }
 
     const now = new Date();  // 現在の時間を取得
     const nowPx = timeToPixels(now.toISOString(), 20);  // 現在の時間をピクセルに変換
 
-    nowLineElement = document.createElement('div');  // 新しい線を作成
+    const nowLineElement = document.createElement('div');  // 新しい線を作成
+    nowLineElement.classList.add("now-time");
     nowLineElement.style.position = 'absolute';
     nowLineElement.style.left = `${CHART_LEFT_MARGIN + nowPx}px`;
     nowLineElement.style.top = '0';
@@ -323,14 +312,19 @@ function drawNowLine(taskBarsHeight) {
     nowLineElement.style.backgroundColor = 'red';
     nowLineElement.style.zIndex = '2';
 
-    taskBars.appendChild(nowLineElement);
+    // 新しい線を追加
+    if (element) {
+        element.appendChild(nowLineElement);
+        // 新しい線をオブジェクトに保存
+        nowLineElements[className] = nowLineElement;
+    }
 };
 
 // 一定間隔でdrawNowLineを更新する
-function startNowLineUpdates(taskBarsHeight) {
-    drawNowLine(taskBarsHeight);  // 最初に呼び出し
+function startNowLineUpdates(taskBarsHeight, className) {
+    drawNowLine(taskBarsHeight, className);  // 最初に呼び出し
     setInterval(() => {
-        drawNowLine(taskBarsHeight);  // 毎秒線を更新
+        drawNowLine(taskBarsHeight, className);  // 毎秒線を更新
     }, 1000 * INTERVAL);  // interval秒ごとに更新
 };
 
@@ -391,16 +385,16 @@ async function updateChart(){
 
 // チャートの削除
 async function clearChart() {
-    const chartHeader = document.getElementById('chart-header');
     const taskBars = document.getElementById('task-bars');
-    const tasksContainer = document.querySelector('.tasks');
+    const tasksContainers = document.querySelectorAll('.tasks');
     const chartFooter = document.getElementById('chart-footer');
 
     // 現在のチャートをクリア
     while (taskBars.firstChild) taskBars.removeChild(taskBars.firstChild);
-    while (tasksContainer.firstChild) tasksContainer.removeChild(tasksContainer.firstChild);
-    while (chartHeader.firstChild) chartHeader.removeChild(chartHeader.firstChild);
     while (chartFooter.firstChild) chartFooter.removeChild(chartFooter.firstChild);
+    tasksContainers.forEach(container => {
+        while (container.firstChild) container.removeChild(container.firstChild);
+    });
 };
 
 // 期限過ぎているかどうかの判定
@@ -417,16 +411,12 @@ function filterTasks(tasks) {
 
 // チャートの描画
 function drawChart(tasks) {
-    const chartHeader = document.getElementById('chart-header');
-    const tasksContainer = document.querySelector('.tasks');
     const chartFooter = document.getElementById('chart-footer');
     const taskSpacing = MARGIN * 2 + NAME_HEIGHT;  // タスク間のスペースを調整
 
-    makeHorizontalLabel()
-
     tasks = filterTasks(tasks);
 
-    addBrTag(); // 改行してタスク名の行の高さを調節
+    makeHorizontalLabel()
     addTaskName(tasks); // タスク名を動的に追加
     addTaskBar(tasks); // タスクバーを追加
 
@@ -443,43 +433,42 @@ function drawChart(tasks) {
 
     drawFooterLine()
 
-    startNowLineUpdates(taskBarsHeight);
+    const classList = ['task-bars', 'chart-header']
+    
+    classList.forEach(className => {
+        startNowLineUpdates(taskBarsHeight, className);
+    });
 };
 
-// 更新中の処理
-let dotCount = 0;
+document.addEventListener('DOMContentLoaded', function() {
+    const headBarMain = document.querySelector('.head-bar-main');
+    const contentMain = document.querySelector('.content-main');
 
-function animateDots() {
-    const dotsElement = document.getElementById('dots');
-    dotCount = (dotCount + 1) % 4;  // dotCountを0～3の範囲でループ
-    const dots = ".".repeat(dotCount);
-    dotsElement.textContent = dots;
-}
+    if (headBarMain && contentMain) {
+        headBarMain.addEventListener('scroll', function() {
+            contentMain.scrollLeft = headBarMain.scrollLeft;
+        });
 
-let loadingAnimationInterval;
+        contentMain.addEventListener('scroll', function() {
+            headBarMain.scrollLeft = contentMain.scrollLeft;
+        });
+    }
+});
 
-// アニメーションを表示
-function showLoadingMessage() {
-    const loadingMessage = document.getElementById('loading-message');
-    loadingMessage.style.display = 'block';
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleButton = document.querySelector('.toggle-btn');
 
-    // アニメーションを開始
-    loadingAnimationInterval = setInterval(animateDots, 400);
-}
-
-// アニメーションを非表示
-function hideLoadingMessage() {
-    const loadingMessage = document.getElementById('loading-message');
-    loadingMessage.style.display = 'none';
-
-    // アニメーションを停止
-    clearInterval(loadingAnimationInterval);
-}
+    if (toggleButton && sidebar) {
+        toggleButton.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+            toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
+        });
+    }
+});
 
 // 処理の実行
 document.addEventListener('DOMContentLoaded', async function () {
-    showLoadingMessage();
     await initializationChart();
     await updateChart();
-    hideLoadingMessage();
 });

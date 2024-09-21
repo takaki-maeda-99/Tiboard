@@ -7,23 +7,34 @@
 <link rel="stylesheet" type="text/css" href="{% static 'task_board/index_styles.css' %}">
 {% endblock %}
 
-{% block content_main %}
-<body>
-    <!-- ロード中の文字 -->
-    <div id="loading-message" style="display: none;">更新中です<span id="dots"></span></div>
+{% block head_bar_side %}
 
-    <!-- ガントチャートを表示する部分 -->
-    <div class="gantt-chart">
-        <div class="tasks"></div>
-        <div class="chart">
-            <div id="chart-header" class="chart-header"></div>
-            <div id="task-bars" class="task-bars"></div>
-            <div id="chart-footer" class="chart-footer"></div>
-            <div id="current-time-line" class="current-time-line"></div>
-        </div>
+{% endblock %}
+
+{% block head_bar_main %}
+<div class="gantt-chart">
+    <div class="chart">
+        <div id="chart-header" class="chart-header"></div>
     </div>
+</div>
 
-    <script src="{% static "task_board/index_script.js" %}"></script>
-</body>
+{% endblock %}
 
+{% block content_side %}
+<div class="tasks"></div>
+{% endblock %}
+
+{% block content_main %}
+<div class="gantt-chart">
+    <div class="chart">
+        <div id="task-bars" class="task-bars"></div>
+        <div id="chart-footer" class="chart-footer"></div>
+        <div id="current-time-line" class="current-time-line"></div>
+    </div>
+</div>
+<div class="sidebar">
+    <button class="toggle-btn">&gt;</button>
+    <div class="tasks"></div>
+</div>
+<script src="{% static "task_board/index_script.js" %}" defer></script>
 {% endblock %}
