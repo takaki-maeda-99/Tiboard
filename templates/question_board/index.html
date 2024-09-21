@@ -6,11 +6,13 @@
 
 <h1>情報共有・質問掲示板</h1>
 <h2>Threads</h2>
-    {% for thread in threads %}
-    <li>
-        <a href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a> - {{ thread.description }}
-    </li>
-    {% endfor %}
+    <ul>
+        {% for thread in threads %}
+        <li>
+            <a href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a> - {{ thread.description }}
+        </li>
+        {% endfor %}
+    </ul>
     
 
 {%endblock%}

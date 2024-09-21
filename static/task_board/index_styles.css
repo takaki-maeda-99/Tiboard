@@ -1,10 +1,8 @@
 .gantt-chart {
     display: flex;
-    overflow-x: scroll;
     white-space: nowrap;
-    padding: 30px;
     height: fit-content;
-    margin-bottom: 60px;
+    position: relative;
 }
 
 .tasks {
@@ -16,22 +14,18 @@
 
 .task-name {
     text-align: center;
-    width: 150px;
-    margin: 10px 0;
+    margin: 10px 0;;
     height: 16px;
 }
 
 .chart {
-    position: relative;
-    min-width: fit-content;
+    position: absolute;
 }
 
 .chart-header {
     display: flex;
     position: sticky;
     top: 0;
-    z-index: 10;
-    border-bottom: 1px solid #ccc;
     height: 36px;
 }
 
@@ -55,7 +49,8 @@
     text-align: center;
     font-size: 12px;
     line-height: 36px; /* 高さを中央揃えにするため */
-    height: 100%;
+    top: 0;
+    bottom: 0;
 }
 
 .chart-footer .date-line {
@@ -66,7 +61,7 @@
 }
 
 .task-bars {
-    position: relative;
+    position: absolute;
 }
 
 .task-bar {

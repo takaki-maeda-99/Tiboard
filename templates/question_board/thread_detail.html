@@ -11,16 +11,13 @@
     <li>
         <p>{{ post.author}} posted at {{ post.created_at }} Post ID: {{ post.id }} </p>
         <p style="white-space: pre-wrap;">{{ post.content }}</p>
-        <!-- 返信ボタン -->
         <button class="reply-btn" data-postid="{{ post.id }}">Reply</button>
     </li>
     {% endfor %}
 </ul>
 
-<!-- フォーム -->
 <form method="POST" id="reply-form" action="{% url 'question_board:thread_detail' thread.id %}">
     {% csrf_token %}
-    <!-- post_idを保持する隠しフィールド -->
     <textarea id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
     <input type="hidden" id="post-id-input" name="post_id">
     <button type="submit">Send</button>
