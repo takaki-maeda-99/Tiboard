@@ -7,3 +7,5 @@ class TaskBoardConfig(AppConfig):
     
     def ready(self):
         import task_board.signals
+        from task_board.update import start
+        start()
