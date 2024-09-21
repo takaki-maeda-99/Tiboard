@@ -174,6 +174,12 @@ async def async_function(function, *args):
 async def async_functions(functions):
     return await asyncio.gather(*functions)
 
+def async_request_all_courseWork_info(headerss, course_ids):
+    tasks = []
+    for headers, course_id in zip(headerss, course_ids):
+        tasks.append(async_function(request_courseWork_info, headers, course_id))
+    return asyncio.run(async_functions(tasks))
+
 def async_request_user_and_course_info(headers):
     tasks = [
         async_function(request_person_info, headers),
