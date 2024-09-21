@@ -19,54 +19,6 @@ const DEFAULT_DATE = new Date();
 
 let nowLineElement = null;  // グローバル変数で現在の線を管理
 
-// データ取得の関数
-async function fetchDatum(url) {
-    try {
-        // fetchリクエストを実行
-        const response = await fetch(`/task_board/${url}`);
-
-        // レスポンスをJSON形式に変換
-        const data = await response.json();
-
-        return data;
-
-    } catch (error) {
-        // エラーが発生した場合は、エラーメッセージをコンソールに表示
-        console.error("Error:", error);
-
-        return { error: error };
-    }
-
-};
-
-async function fetchTaskBoard() {
-
-    // 次にタスクボード
-    const taskBoardData = await fetchDatum("get_task_board/");
-
-    console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
-
-    return taskBoardData;
-};
-
-async function fetchUpdatedData() {
-    console.time('Execution Time');
-
-    const [courses, coursework, submissionData] = await Promise.all([
-        fetchDatum("update_courses/"),
-        fetchDatum("update_coursework/"),
-        fetchDatum("update_submission/")
-    ]);
-
-    console.timeEnd('Execution Time');
-
-    console.log("courses:", courses);
-    console.log("coursework:", coursework);
-    console.log("submission:", submissionData);
-
-    return [courses, coursework, submissionData];
-};
-
 // 無効な時間の場合にデフォルトの時間を渡す
 function getValidDate(dateString) {
     try {
@@ -81,34 +33,6 @@ function getValidDate(dateString) {
     } catch (error) {
         return DEFAULT_DATE.toISOString();  // デフォルトの日時
     }
-};
-
-// タスクの作成
-function makeTasks(courses, coursework, submissionData) {
-    const tasks = coursework.map((work, index) => {
-        const { course_id_id, coursework_title, due_time, update_time, id, link } = work;
-
-        const startTime = getValidDate(update_time);
-
-        const targetDic = courses.find(item => item.id == course_id_id);
-        const courseTitle = targetDic ? targetDic.course_name : "Unknown Course";
-
-        const submission = submissionData.find(sub => sub.coursework_id_id == id) || [{ "default": 0 }];
-
-        // submission 情報があれば追加
-        const submissionState = submission.length > 0 ? submission.submission_state : null;
-
-        return {
-            name: `${courseTitle} ${coursework_title}`,
-            startTime: startTime,
-            endTime: due_time,
-            sybmissionState: submissionState,
-            link: link,
-        };
-    });
-    const sortedTasks = tasks.sort((a, b) => new Date(a.endTime) - new Date(b.endTime));
-    console.log("tasks:", sortedTasks);
-    return sortedTasks;
 };
 
 // 時間をピクセルに変換する関数
@@ -186,7 +110,6 @@ function setTaskBarColor(task) {
 // タスクバーを追加
 function addTaskBar(tasks) {
     const taskSpacing = MARGIN * 2 + NAME_HEIGHT;
-    const chartHeader = document.getElementById('chart-header');
     const taskBars = document.getElementById('task-bars');
 
     drawVerticalLine()
@@ -435,7 +358,6 @@ function drawChart(tasks) {
 
     tasks = filterTasks(tasks);
 
-    makeHorizontalLabel()
     addTaskName(tasks); // タスク名を動的に追加
     addTaskBar(tasks); // タスクバーを追加
 
@@ -459,6 +381,7 @@ function drawChart(tasks) {
     });
 };
 
+// 横スクロールの同期
 document.addEventListener('DOMContentLoaded', function() {
     const headBarMain = document.querySelector('.head-bar-main');
     const contentMain = document.querySelector('.content-main');
@@ -474,6 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// サイドバーの開閉
 document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.querySelector('.sidebar');
     const toggleButton = document.querySelector('.toggle-btn');
@@ -491,9 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', async function () {
     console.time('Execution Time');
-    showLoadingMessage();
     await main();
-    hideLoadingMessage();
     console.timeEnd('Execution Time');
 
 });
