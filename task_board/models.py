@@ -29,6 +29,7 @@ class CourseWork(models.Model):
     description = models.CharField(default='No description', max_length=100)
     materials = models.TextField(blank=True, default="")
     link = models.URLField(blank=True, default="")
+    publish_time = models.DateTimeField(null=True, blank=True)
     update_time = models.DateTimeField(null=True, blank=True)
     due_time = models.DateTimeField(null=True, blank=True)
     
