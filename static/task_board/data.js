@@ -54,6 +54,10 @@ async function main() {
         clearChart();
         drawChart(updatedTasks);
     });
+
+    fetchDatum("get_tasks/").then((tasks) => {
+        console.log("renew_tasks:", tasks);
+    });
 }
 
 function makeTasks(courses, coursework, submissionData) {
