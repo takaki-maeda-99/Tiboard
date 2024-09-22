@@ -40,6 +40,8 @@ async function main() {
     });
 
     update_task_board().then((taskBoardData) => {
+        console.time('Execution Time');
+
         const courses = taskBoardData[0];
         const coursework = flatData(taskBoardData[1]);
         const submission = flatData(taskBoardData[2]);
@@ -53,6 +55,8 @@ async function main() {
         let updatedTasks = makeTasks(courses, coursework, submission);
         clearChart();
         drawChart(updatedTasks);
+
+        console.timeEnd('Execution Time');
     });
 
     fetchDatum("get_tasks/").then((tasks) => {
