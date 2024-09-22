@@ -138,6 +138,7 @@ def get_tasks_from_db(user_id):
             'course_name': coursework.course_id.course_name,
             'coursework_title': coursework.coursework_title,
             'submission_state': submission.submission_state,
+            'submission_created_time': submission.submission_created_time,
             'publish_time': coursework.publish_time,
             'due_time': coursework.due_time,
             'link': coursework.link
