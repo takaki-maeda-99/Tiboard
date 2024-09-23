@@ -156,6 +156,13 @@ function addTaskBar(tasks) {
         const dueDateDiv = document.createElement('div');
         dueDateDiv.className = 'due-date';
         const endDate = new Date(task.endTime);
+        // const now = new Date();
+        // const timeDiff = endDate - now;
+
+        // const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        // const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        // dueDateDiv.textContent = `あと${days}日と${hours}時間`;
 
         dueDateDiv.textContent = '~' + endDate.toLocaleString('ja-JP', {
             year: 'numeric',
@@ -185,7 +192,7 @@ function addTaskBar(tasks) {
     });
 };
 
-// チャートの下の日付を設定する
+// チャートに日付を設定する
 function createDateLabel(date, centerPx) {
     const label = document.createElement('div');
     label.className = 'date-label';
@@ -202,15 +209,22 @@ function makeHorizontalLabel() {
     startDate.setHours(0, 0, 0, 0);
     const chartHeader = document.getElementById('chart-header');
     for (let day = 0; day < DAYS_RANGE; day++) {
-        for (let hour = 0; hour < HOURS_PER_DAY; hour += 3) {
+        for (let hour = 0; hour < HOURS_PER_DAY; hour += INTERVAL_HOURS) {
             const headerCell = document.createElement('div');
             const date = new Date(startDate.getTime());
             date.setDate(startDate.getDate() + day);
             date.setHours(hour, 0, 0, 0);
 
+            headerCell.className = 'header-cell';
             headerCell.style.width = `${HOUR_TO_PX * INTERVAL_HOURS}px`;
-            headerCell.textContent = date.getHours() + ':00';
 
+            const timeText = document.createElement('div');
+            timeText.className = 'time-text';
+            timeText.style.width = 'fit-content';
+            timeText.style.marginLeft = '20px';
+            timeText.textContent = date.getHours() + ':00';
+
+            headerCell.appendChild(timeText);
             chartHeader.appendChild(headerCell);
         };
     };
@@ -234,12 +248,13 @@ function drawNowLine(taskBarsHeight, className) {
     nowLineElement.classList.add("now-time");
     nowLineElement.style.position = 'absolute';
     nowLineElement.style.top = '0';
+    nowLineElement.style.bottom = '0';
     nowLineElement.style.width = '2px';
     nowLineElement.style.backgroundColor = '#ff000099'; // red(0xff0000)のopacity: 0x99
     nowLineElement.style.zIndex = '2';
     
     if (className === 'task-bars') {
-        nowLineElement.style.height = `${taskBarsHeight + 36}px`;
+        nowLineElement.style.height = `${taskBarsHeight}px`;
         nowLineElement.style.left = `${CHART_LEFT_MARGIN + nowPx}px`;
     } else {
         nowLineElement.style.height = '100%';
@@ -368,7 +383,6 @@ function drawChart(tasks) {
         return;
     }
 
-    const chartFooter = document.getElementById('chart-footer');
     const taskSpacing = MARGIN * 2 + NAME_HEIGHT;  // タスク間のスペースを調整
 
     addTaskName(tasks); // タスク名を動的に追加
@@ -382,8 +396,6 @@ function drawChart(tasks) {
     });
 
     drawNowLine(taskBarsHeight);
-
-    chartFooter.style.marginTop = `${taskBarsHeight}px`;
 
     drawFooterLine()
 

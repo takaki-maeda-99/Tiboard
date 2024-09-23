@@ -47,6 +47,7 @@
 
 .sidebar {
     position: absolute;
+    top: 0;
     height: 0;
     transform: translateX(-100%); /* 初期状態では画面外に配置 */
 }

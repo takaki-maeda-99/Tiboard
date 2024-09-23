@@ -46,7 +46,6 @@
 .chart-header {
     display: flex;
     top: 0;
-    height: 36px;
     text-align: center;
     font-size: 12px;
     position: relative;
@@ -55,9 +54,6 @@
 
 .chart-footer {
     position: relative;
-    height: 36px;
-    margin-top: 10px;
-    border-top: 1px solid #ccc;
     z-index: 5;
 }
 
@@ -65,8 +61,6 @@
     position: absolute;
     text-align: center;
     font-size: 12px;
-    line-height: 36px;
-    height: 36px;
     top: 0;
     bottom: 0;
 }
