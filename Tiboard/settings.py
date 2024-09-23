@@ -19,6 +19,8 @@ HOST_IP = "127.0.0.1" #"10.27.75.190"
 
 BASE_URL = f"https://{HOST_IP}:8000"
 
+POLLING_INTERVAL = 60
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
