@@ -141,3 +141,8 @@ def update_polling():
                 database.insert_coursework_to_db(course_id, course_work)
     
     print("update_polling")
+    
+def get_tasks_data(request):
+    user_id = request.COOKIES['user_id']
+    tasks = database.get_tasks_from_db(user_id)
+    return tasks
