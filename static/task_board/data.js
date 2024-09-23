@@ -71,13 +71,17 @@ function makeTasks(courses, coursework, submissionData) {
         const submission = submissionData.find(sub => sub.coursework_id_id == id) || [{ "default": 0 }];
 
         // submission 情報があれば追加
-        const submissionState = submission.length > 0 ? submission.submission_state : null;
+        const submissionState = Object.keys(submission).length ? submission.submission_state : null;
+
+        if (submissionState == "RETURNED") {
+            return;
+        }
 
         return {
             name: `${courseTitle} ${coursework_title}`,
             startTime: startTime,
             endTime: due_time,
-            sybmissionState: submissionState,
+            submissionState: submissionState,
             link: link,
         };
     });
