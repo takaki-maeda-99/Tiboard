@@ -29,3 +29,10 @@
 <script src="{% static "task_board/index_script.js" %}"></script>
 <script src="{% static 'task_board/data.js' %}"></script>
 {% endblock %}
+
+{% block other_content %}
+<div class="sidebar">
+    <button class="toggle-btn">&gt;</button>
+    <div class="tasks"></div>
+</div>
+{% endblock %}
