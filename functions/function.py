@@ -4,7 +4,7 @@ from google.oauth2.credentials import Credentials
 import functions.classroom as classroom
 import functions.database as database
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 # If modifying these scopes, delete the file token.json.
@@ -120,7 +120,11 @@ def update_submission_data(request):
     
     return response
 
+import time
+
 def update_polling():
+    start_time = time.time()
+    
     courses = database.get_all_courses_from_db()
     headerss = []
     
@@ -140,4 +144,41 @@ def update_polling():
             for course_work in course_works:
                 database.insert_coursework_to_db(course_id, course_work)
     
-    print("update_polling")
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"update_polling 実行時間: {execution_time}秒")
+    
+def get_tasks_data(request):
+    user_id = request.COOKIES['user_id']
+    tasks = database.get_tasks_from_db(user_id)
+    calc_scores(tasks)
+    return tasks
+
+def calc_scores(tasks):
+    K = 0.01
+    # tasks = [{
+        # 'course_name': 'course_name', 
+        # 'coursework_title': 'coursework_title', 
+        # 'submission_state': 'submission_state', 
+        # 'submission_created_time': 'submission_created_time',
+        # 'publish_time': 'publish_time', 
+        # 'due_time': 'due_time', 
+        # 'link': 'link'}, ...]
+    
+    scores = []
+    for task in tasks:
+        time_to_due = max(task['due_time'] - task['publish_time'], timedelta(seconds=1)) 
+        turn_in_time = task['due_time'] - task['submission_created_time'] if task["submission_state"] == "TURNED_IN" else timedelta(seconds=0)
+        score_rate = turn_in_time.total_seconds() / time_to_due.total_seconds()
+        score_max = round(time_to_due.total_seconds()*K)
+        score = {
+            "score_rate": score_rate, 
+            "score_max": score_max,
+            "score": round(score_rate * score_max),
+            "course_name": task['course_name'],
+            "coursework_title": task['coursework_title'],
+            "submission_state": task['submission_state']
+        }
+        scores.append(score)
+
+    return scores

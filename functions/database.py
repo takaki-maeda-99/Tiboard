@@ -45,10 +45,9 @@ def insert_course_to_db(course_dict):
             'link': course_dict.get('alternateLink', '')})
     course.save()
 
-
 def insert_coursework_to_db(course_id, coursework_dict):
     course = Course.objects.get(course_id=course_id)
-    coursework, _ = CourseWork.objects.get_or_create(
+    coursework, created = CourseWork.objects.get_or_create(
         course_id=course, 
         coursework_id=coursework_dict.get('id', 'No id'),
         defaults={
@@ -56,9 +55,19 @@ def insert_coursework_to_db(course_id, coursework_dict):
             'description': coursework_dict.get('description', 'No description'),
             'materials': coursework_dict.get('materials', ''),
             'link': coursework_dict.get('alternateLink', ''),
+            'publish_time': convert_utc_to_jst(utc_date=coursework_dict.get('updateTime')),
             'update_time': convert_utc_to_jst(utc_date=coursework_dict.get('updateTime')),
             'due_time': convert_utc_to_jst(date_dict=coursework_dict.get('dueDate'), time_dict=coursework_dict.get('dueTime')),
         })
+    if not created: # 既存であるときupdate_timeを比較
+        new_update_time = convert_utc_to_jst(utc_date=coursework_dict.get('updateTime'))
+        if coursework.update_time != new_update_time:# 更新があるとき、publish_time以外の情報を更新
+            coursework.coursework_title = coursework_dict.get('title', 'No title')
+            coursework.description = coursework_dict.get('description', 'No description')
+            coursework.materials = coursework_dict.get('materials', '')
+            coursework.link = coursework_dict.get('alternateLink', '')
+            coursework.update_time = new_update_time
+            coursework.due_time = convert_utc_to_jst(date_dict=coursework_dict.get('dueDate'), time_dict=coursework_dict.get('dueTime'))
     coursework.save()
 
 def insert_submission_state(user_id, course_id, coursework_id, submission_dict):
@@ -113,3 +122,25 @@ def get_users_from_course(course_id):
     course = Course.objects.get(course_id=course_id)
     users = course.user_set.all()
     return users
+
+def get_tasks_from_db(user_id):
+    user = User.objects.get(user_id=user_id)
+    submissions = user.submission_set.all()
+    enrolled_courseworks = []
+    for submission in submissions:
+        enrolled_courseworks.append(submission.coursework_id)
+    
+    tasks = []
+    for coursework, submission in zip(enrolled_courseworks, submissions):
+        if coursework.due_time < datetime.now(ZoneInfo("Asia/Tokyo")):
+            continue
+        tasks.append({
+            'course_name': coursework.course_id.course_name,
+            'coursework_title': coursework.coursework_title,
+            'submission_state': submission.submission_state,
+            'submission_created_time': submission.submission_created_time,
+            'publish_time': coursework.publish_time,
+            'due_time': coursework.due_time,
+            'link': coursework.link
+            })
+    return tasks

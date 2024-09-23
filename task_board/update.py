@@ -5,6 +5,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from functions.function import update_polling
 
+from django.conf import settings
+
 def start():
     """
     Scheduling data update
@@ -12,6 +14,6 @@ def start():
     """
     scheduler = BackgroundScheduler()
     
-    scheduler.add_job(update_polling, 'interval', seconds=30) # schedule
+    scheduler.add_job(update_polling, 'interval', seconds= settings.POLLING_INTERVAL)
     scheduler.start()
 

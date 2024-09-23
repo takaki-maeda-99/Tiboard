@@ -388,7 +388,7 @@ function drawChart(tasks) {
     drawFooterLine()
 
     const classList = ['task-bars', 'head-bar-main']
-    
+
     classList.forEach(className => {
         startNowLineUpdates(taskBarsHeight, className);
     });
@@ -401,11 +401,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentSide = document.querySelector('.content-side');
 
     if (headBarMain && contentMain) {
-        headBarMain.addEventListener('scroll', function() {
+        headBarMain.addEventListener('scroll', function () {
             contentMain.scrollLeft = headBarMain.scrollLeft;
         });
 
-        contentMain.addEventListener('scroll', function() {
+        contentMain.addEventListener('scroll', function () {
             headBarMain.scrollLeft = contentMain.scrollLeft;
         });
     }
@@ -423,12 +423,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // サイドバーの開閉
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const sidebar = document.querySelector('.sidebar');
     const toggleButton = document.querySelector('.toggle-btn');
 
     if (toggleButton && sidebar) {
-        toggleButton.addEventListener('click', function() {
+        toggleButton.addEventListener('click', function () {
             sidebar.classList.toggle('show');
             toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
         });
@@ -439,8 +439,5 @@ document.addEventListener('DOMContentLoaded', function() {
 //---------------------------- 処理の実行-----------------------------------
 
 document.addEventListener('DOMContentLoaded', async function () {
-    console.time('Execution Time');
     await main();
-    console.timeEnd('Execution Time');
-
 });
