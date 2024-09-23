@@ -1,7 +1,7 @@
 // 定数の定義
-const DAYS_RANGE = 3; // 表示する日数
+const DAYS_RANGE = 7; // 表示する日数
 const HOURS_PER_DAY = 24; // 1日あたりの時間
-const HOUR_TO_PX = 20; // 1時間当たりのpx
+const HOUR_TO_PX = 10; // 1時間当たりのpx
 const INTERVAL_HOURS = 3; // 横軸に何時間刻みで時間を表示するか
 const SECONDS_PER_HOUR = 1000 * 60 * 60 // 1時間当たりの秒数
 const CHART_LEFT_MARGIN = 30; // チャートの左端の調整用

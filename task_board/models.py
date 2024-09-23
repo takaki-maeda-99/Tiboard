@@ -7,6 +7,7 @@ class User(models.Model):
     
     user_email = models.EmailField(max_length=100 ,default="")
     enrolled_courses = models.ManyToManyField('Course', blank=True)
+    assignment_courseworks = models.ManyToManyField('CourseWork', blank=True)
 
     def __str__(self):
         return f"{self.user_id}"
@@ -29,7 +30,6 @@ class CourseWork(models.Model):
     description = models.CharField(default='No description', max_length=100)
     materials = models.TextField(blank=True, default="")
     link = models.URLField(blank=True, default="")
-    publish_time = models.DateTimeField(null=True, blank=True)
     update_time = models.DateTimeField(null=True, blank=True)
     due_time = models.DateTimeField(null=True, blank=True)
     
@@ -46,6 +46,11 @@ class Submission(models.Model):
     
     submission_state = models.CharField(max_length=50, blank=True, default="")
     submission_created_time = models.DateTimeField(null=True, blank=True)
+    submission_updated_time = models.DateTimeField(null=True, blank=True)
+    
+    score_rate = models.FloatField(default=0)
+    score_max = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
     
     def __str__(self):
         return f"{self.coursework_id} ({self.submission_state})"

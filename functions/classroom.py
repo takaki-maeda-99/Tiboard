@@ -142,7 +142,7 @@ def request_courseWork_info(headers, courseId=""):
     # {'id': '645154192638', 'title': '複素関数_第01回_クイズ', 'alternateLink': 'https://classroom.google.com/c/NjQ1MTU0MTkyNTk4/a/NjQ1MTU0MTkyNjM4/details', 'updateTime': '2024-04-11T00:20:01.186Z', 'dueDate': {'year': 2024, 'month': 4, 'day': 11}, 'dueTime': {'hours': 1, 'minutes': 20}}
 
 def reqeust_submissions_info(headers, courseId="", courseWorkId=""):
-    SUBMISSION_INFO_FIELDS = "studentSubmissions(courseWorkId,creationTime,state)"
+    SUBMISSION_INFO_FIELDS = "studentSubmissions(courseWorkId,creationTime,updateTime,state)"
     
     response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions?fields={SUBMISSION_INFO_FIELDS}", headers=headers).json()
     if response.get("error", None):
