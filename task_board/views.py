@@ -59,3 +59,12 @@ def get_tasks(request):
         response = JsonResponse({"get_tasks": "failed", "error": f"{e}"})
 
     return response
+
+def update_assignments(request):
+    try:
+        response = JsonResponse(function.update_assignments(request),safe=False)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        response = JsonResponse({"update_assignments": "failed", "error": f"{e}"})
+
+    return response

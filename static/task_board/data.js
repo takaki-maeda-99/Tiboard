@@ -62,6 +62,10 @@ async function main() {
     fetchDatum("get_tasks/").then((tasks) => {
         console.log("renew_tasks:", tasks);
     });
+
+    fetchDatum("update_assignments/").then((assignments) => {
+        console.log("update_assignments:", assignments);
+    });
 }
 
 function makeTasks(courses, coursework, submissionData) {

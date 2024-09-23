@@ -91,25 +91,27 @@ def update_submission_data(request):
     
     headers = {"Authorization": f"Bearer {creds.token}"}
     
-    courseworkss = database.get_courseworkss_from_db(user_id)
+    courseworks = database.get_assignments_from_db(user_id)
     
     course_and_coursework_ids = []
     return_coursework_ids = []
     
     now = datetime.now(ZoneInfo("Asia/Tokyo"))
 
-    for courseworks in courseworkss:
-        for coursework in courseworks:
-            coursework_due_time = coursework.due_time
-            if coursework_due_time is not None:
-                if coursework_due_time < now:
-                    continue
-                return_coursework_ids.append(coursework.id)
-                course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
-            
+    for coursework in courseworks:
+        coursework_due_time = coursework.due_time
+        if coursework_due_time is not None:
+            if coursework_due_time < now:
+                continue
+            return_coursework_ids.append(coursework.id)
+            course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
+                
     submissions = classroom.async_request_submissions_info(headers, course_and_coursework_ids)
     
     for (course_id, coursework_id), submission in zip(course_and_coursework_ids, submissions):
+        if submission.get("error", None) is not None:
+            database.remove_coursework_from_user(user_id, coursework_id)
+            continue
         database.insert_submission_state(user_id, course_id, coursework_id, submission)
     
     response = database.get_submissions_from_db(user_id)
@@ -151,20 +153,10 @@ def update_polling():
 def get_tasks_data(request):
     user_id = request.COOKIES['user_id']
     tasks = database.get_tasks_from_db(user_id)
-    calc_scores(tasks)
     return tasks
 
 def calc_scores(tasks):
     K = 0.01
-    # tasks = [{
-        # 'course_name': 'course_name', 
-        # 'coursework_title': 'coursework_title', 
-        # 'submission_state': 'submission_state', 
-        # 'submission_created_time': 'submission_created_time',
-        # 'publish_time': 'publish_time', 
-        # 'due_time': 'due_time', 
-        # 'link': 'link'}, ...]
-    
     scores = []
     for task in tasks:
         time_to_due = max(task['due_time'] - task['publish_time'], timedelta(seconds=1)) 
@@ -182,3 +174,24 @@ def calc_scores(tasks):
         scores.append(score)
 
     return scores
+
+def update_assignments(request):
+    creds, user_id = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    course_ids = database.get_courses_from_db(user_id)
+    
+    course_ids = [course.course_id for course in course_ids]
+    
+    courseworkss = classroom.async_request_courseWork_info(headers, course_ids)
+    
+    for course_works in courseworkss:
+        for course_work in course_works:
+            database.add_coursework_to_user(user_id, course_work["id"])
+    
+    assignments = database.get_assignments_from_db(user_id)
+    
+    response = list(assignments.values())
+    
+    return response
