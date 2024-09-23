@@ -109,6 +109,9 @@ def update_submission_data(request):
     submissions = classroom.async_request_submissions_info(headers, course_and_coursework_ids)
     
     for (course_id, coursework_id), submission in zip(course_and_coursework_ids, submissions):
+        if submission.get("error", None) is not None:
+            database.remove_coursework_from_user(user_id, coursework_id)
+            continue
         database.insert_submission_state(user_id, course_id, coursework_id, submission)
     
     response = database.get_submissions_from_db(user_id)

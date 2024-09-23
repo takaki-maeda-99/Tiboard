@@ -146,7 +146,7 @@ def reqeust_submissions_info(headers, courseId="", courseWorkId=""):
     
     response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions?fields={SUBMISSION_INFO_FIELDS}", headers=headers).json()
     if response.get("error", None):
-        raise Exception(response.get("error", {}).get("message", "An error occurred"))
+        return {"error": response.get("error", {}).get("message", "An error occurred"), "courseId": courseId, "courseWorkId": courseWorkId}
     return response.get("studentSubmissions", [])[0]
 
     # submission

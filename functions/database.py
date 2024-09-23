@@ -40,6 +40,12 @@ def add_coursework_to_user(user_id, coursework_id):
     coursework = CourseWork.objects.get(coursework_id=coursework_id)
     user.assignment_courseworks.add(coursework)
     user.save()
+    
+def remove_coursework_from_user(user_id, coursework_id):
+    user = User.objects.get(user_id=user_id)
+    coursework = CourseWork.objects.get(coursework_id=coursework_id)
+    user.assignment_courseworks.remove(coursework)
+    user.save()
 
 def insert_course_to_db(course_dict):
     course_name = course_dict.get('name', 'No name')
@@ -167,3 +173,4 @@ def get_assignments_from_db(user_id):
     user = User.objects.get(user_id=user_id)
     assignments = user.assignment_courseworks.all()
     return assignments
+
