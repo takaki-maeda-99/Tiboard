@@ -15,6 +15,7 @@
 <div class="gantt">
     <div id="chart-header" class="chart-header"></div>
 </div>
+<div id="chart-footer" class="chart-footer"></div>
 {% endblock %}
 
 {% block content_side %}
@@ -24,14 +25,14 @@
 {% block content_main %}
 <div class="gantt">
     <div id="task-bars" class="task-bars"></div>
-    <div id="chart-footer" class="chart-footer"></div>
-    <div id="current-time-line" class="current-time-line"></div>
-    </div>
 </div>
+<script src="{% static "task_board/index_script.js" %}"></script>
+<script src="{% static 'task_board/data.js' %}"></script>
+{% endblock %}
+
+{% block other_content %}
 <div class="sidebar">
     <button class="toggle-btn">&gt;</button>
     <div class="tasks"></div>
 </div>
-<script src="{% static "task_board/index_script.js" %}"></script>
-<script src="{% static 'task_board/data.js' %}"></script>
 {% endblock %}

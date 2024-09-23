@@ -26,26 +26,29 @@
     </script>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 base-header">
+            <div class="col-12 base-header" id="base-header">
                 {% block base_header %}{% endblock %}
             </div>
         </div>
         <div class="row">
-            <div class="col-md-3 head-bar-side">
+            <div class="col-md-3 head-bar-side" id="head-bar-side">
                 {% block head_bar_side %}{% endblock %}
             </div>
-            <div class="col-md-9 head-bar-main overflow-x-scroll">
+            <div class="col-md-9 head-bar-main overflow-x-scroll" id="head-bar-main">
                 {% block head_bar_main %}{% endblock %}
             </div>
         </div>
             
         <div class="row">
-            <div class="col-md-3 content-side overflow-y-scroll">
+            <div class="col-md-3 content-side overflow-y-scroll" id="content-side">
                 {% block content_side %}{% endblock %}
             </div>
-            <div class="col-md-9 content-main overflow-x-scroll overflow-y-scroll">
+            <div class="col-md-9 content-main overflow-x-scroll overflow-y-scroll" id="content-main">
                 {% block content_main %}{% endblock %}
             </div>
+        </div>
+        <div class="other_content">
+            {% block other_content %}{% endblock %}
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
