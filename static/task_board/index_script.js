@@ -406,8 +406,9 @@ function drawChart(tasks) {
     });
 };
 
-// スクロールの同期
+
 document.addEventListener('DOMContentLoaded', function() {
+    // スクロールの同期
     const headBarMain = document.querySelector('.head-bar-main');
     const contentMain = document.querySelector('.content-main');
     const contentSide = document.querySelector('.content-side');
@@ -432,10 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-});
-
-// サイドバーの開閉
-document.addEventListener('DOMContentLoaded', function () {
+    // サイドバーの開閉
     const sidebar = document.querySelector('.sidebar');
     const toggleButton = document.querySelector('.toggle-btn');
 
@@ -445,7 +443,36 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
         });
     }
+
+    // サイドバー外側をクリックした場合にサイドバーを閉じる処理
+    document.addEventListener('click', function (event) {
+        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+            if (sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+                toggleButton.textContent = '>';
+            }
+        }
+    });
+
+    document.addEventListener('touchstart', function (event) {
+        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+            if (sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+                toggleButton.textContent = '>';
+            }
+        }
+    });
+
+    // サイドバー内のクリックを伝播させないようにする
+    sidebar.addEventListener('click', function (event) {
+        event.stopPropagation();
+    });
+
+    sidebar.addEventListener('touchstart', function (event) {
+        event.stopPropagation();
+    });
 });
+
 
 
 //---------------------------- 処理の実行-----------------------------------
