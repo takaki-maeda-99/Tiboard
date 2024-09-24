@@ -115,7 +115,7 @@
         height: 100%;
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* サイドバーの影 */
         z-index: 999; /* 他のコンテンツより前面に表示 */
-        transition: .3s ease;/* スライドイン・アウトのアニメーション */
+        transition: .3s ease-in;/* スライドイン・アウトのアニメーション */
     }
 
     .sidebar.show {
