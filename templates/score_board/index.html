@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ScoreBoard{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block head_bar_side %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Score</h1>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block head_bar_main %}
+<h1>score_view</h1>
+{% endblock %}
+
+{% block content_side %}
+{% endblock %}
+
+{% block content_main %}
+<table>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>score</th>
+        <th>created_at</th>
+        <th>updated_at</th>
+    </tr>
+    {% for score in scores %}
+    <tr>
+        <td>{{ score.id }}</td>
+        <td>{{ score.name }}</td>
+        <td>{{ score.score }}</td>
+        <td>{{ score.created_at }}</td>
+        <td>{{ score.updated_at }}</td>
+        {% endfor %}
+</table>
+{% endblock %}
+
+{% block other_content %}
+<div class="sidebar">
+    <button class="toggle-btn">&gt;</button>
+    <div class="tasks"></div>
+</div>
+{% endblock %}
