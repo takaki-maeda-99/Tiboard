@@ -195,3 +195,22 @@ def update_assignments(request):
     response = list(assignments.values())
     
     return response
+
+def get_ranking_data(coursework_id):
+    submissions = database.get_submissions_from_coursework(coursework_id).order_by("score")
+    submissions = list(submissions.values("user_id_id", "score"))
+    
+    user_names = []
+    for submission in submissions:
+        user = database.get_user_from_db(submission["user_id_id"])
+        user_names.append(user.user_email)
+        
+    ranking = []
+    for user_name, submission in zip(user_names, submissions):
+        ranking.append({
+            "user_name": user_name,
+            "score": submission["score"]
+        })
+    return ranking
+
+# print(get_ranking_data(718884185399))

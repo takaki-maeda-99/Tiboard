@@ -174,3 +174,11 @@ def get_assignments_from_db(user_id):
     assignments = user.assignment_courseworks.all()
     return assignments
 
+def get_submissions_from_coursework(coursework_id):
+    coursework = CourseWork.objects.get(coursework_id=coursework_id)
+    submissions = coursework.submission_set.all()
+    return submissions
+
+def get_user_from_db(user_id):
+    user = User.objects.get(id=user_id)
+    return user
