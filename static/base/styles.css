@@ -4,24 +4,22 @@
 }
 
 #head-bar-side {
-    background-color: #6fadb752;
     height: 10vh;
 }
 
 #head-bar-main {
-    background-color: #a16fd64d;
     height: 10vh;
     position: relative;
 }
 
 #content-side {
-    background-color: #7fb76f30;
     height: 78vh;
+    z-index:100;
 }
 
 #content-main {
-    background-color: #ee74744b;
     height: 78vh;
+    z-index:300;
 }
 
 .content-main::-webkit-scrollbar,

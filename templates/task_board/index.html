@@ -8,7 +8,25 @@
 {% endblock %}
 
 {% block head_bar_side %}
-
+<div>
+    <label for="time-interval">時間の表示間隔</label>
+    <select id="time-interval">
+        <option value="2">2時間</option>
+        <option value="3">3時間</option>
+        <option value="4">4時間</option>
+        <option value="6">6時間</option>
+        <option value="8">8時間</option>
+        <option value="12">12時間</option>
+    </select><br>
+    <label for="days-range">表示日数</label>
+    <select id="days-range">
+        <option value="3">3日</option>
+        <option value="5">5日</option>
+        <option value="7">7日</option>
+        <option value="10">10日</option>
+        <option value="14">14日</option>
+    </select>
+</div>
 {% endblock %}
 
 {% block head_bar_main %}
