@@ -1,6 +1,6 @@
 // 定数の定義
 const HOURS_PER_DAY = 24; // 1日あたりの時間
-const HOUR_TO_PX = 20; // 1時間当たりのpx
+const HOUR_TO_PX = 10; // 1時間当たりのpx
 const SECONDS_PER_HOUR = 1000 * 60 * 60 // 1時間当たりの秒数
 const CHART_LEFT_MARGIN = 30; // チャートの左端の調整用
 const MARGIN = 10;

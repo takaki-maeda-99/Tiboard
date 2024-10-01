@@ -1,6 +1,7 @@
 from task_board.models import User, Course, CourseWork, Submission
 
-from datetime import datetime
+from datetime import datetime, timedelta
+
 from zoneinfo import ZoneInfo
 import re
 
@@ -33,6 +34,18 @@ def add_course_to_user(user_id, course_id):
     course = Course.objects.get(course_id=course_id)
     user.enrolled_courses.add(course)
     user.save()
+    
+def add_coursework_to_user(user_id, coursework_id):
+    user = User.objects.get(user_id=user_id)
+    coursework = CourseWork.objects.get(coursework_id=coursework_id)
+    user.assignment_courseworks.add(coursework)
+    user.save()
+    
+def remove_coursework_from_user(user_id, coursework_id):
+    user = User.objects.get(user_id=user_id)
+    coursework = CourseWork.objects.get(coursework_id=coursework_id)
+    user.assignment_courseworks.remove(coursework)
+    user.save()
 
 def insert_course_to_db(course_dict):
     course_name = course_dict.get('name', 'No name')
@@ -47,46 +60,41 @@ def insert_course_to_db(course_dict):
 
 def insert_coursework_to_db(course_id, coursework_dict):
     course = Course.objects.get(course_id=course_id)
-    coursework, created = CourseWork.objects.get_or_create(
+    coursework, created = CourseWork.objects.update_or_create(
         course_id=course, 
-        coursework_id=coursework_dict.get('id', 'No id'),
+        coursework_id = coursework_dict.get('id', 'No id'),
         defaults={
             'coursework_title': coursework_dict.get('title', 'No title'),
             'description': coursework_dict.get('description', 'No description'),
             'materials': coursework_dict.get('materials', ''),
             'link': coursework_dict.get('alternateLink', ''),
-            'publish_time': convert_utc_to_jst(utc_date=coursework_dict.get('updateTime')),
             'update_time': convert_utc_to_jst(utc_date=coursework_dict.get('updateTime')),
             'due_time': convert_utc_to_jst(date_dict=coursework_dict.get('dueDate'), time_dict=coursework_dict.get('dueTime')),
-        })
-    if not created: # 既存であるときupdate_timeを比較
-        new_update_time = convert_utc_to_jst(utc_date=coursework_dict.get('updateTime'))
-        if coursework.update_time != new_update_time:# 更新があるとき、publish_time以外の情報を更新
-            coursework.coursework_title = coursework_dict.get('title', 'No title')
-            coursework.description = coursework_dict.get('description', 'No description')
-            coursework.materials = coursework_dict.get('materials', '')
-            coursework.link = coursework_dict.get('alternateLink', '')
-            coursework.update_time = new_update_time
-            coursework.due_time = convert_utc_to_jst(date_dict=coursework_dict.get('dueDate'), time_dict=coursework_dict.get('dueTime'))
-    coursework.save()
+            })
 
 def insert_submission_state(user_id, course_id, coursework_id, submission_dict):
     user = User.objects.get(user_id=user_id)
     course = Course.objects.get(course_id=course_id)
     coursework = CourseWork.objects.get(course_id=course, coursework_id=coursework_id)
-    submission, created = Submission.objects.get_or_create(
+    
+    submission_state = submission_dict['state']
+    score_rate, score_max, score = 0, 0, 0
+    
+    if submission_state == 'TURNED_IN' or submission_state == 'RETURNED':
+        score_rate, score_max, score = calc_score(submission_dict, coursework)
+    
+    submission, created = Submission.objects.update_or_create(
         user_id=user,
         course_id=course,
         coursework_id=coursework,
         defaults={
-            'submission_state': submission_dict.get('state', 'No state'),
+            'submission_state': submission_state,
             'submission_created_time': convert_utc_to_jst(utc_date=submission_dict.get('creationTime')),
-        })
-    if not created: # 既存であるとき
-        new_state = submission_dict.get('state', 'No state')
-        if submission.submission_state != new_state:
-            submission.submission_state = new_state
-    submission.save()
+            'submission_updated_time': convert_utc_to_jst(utc_date=submission_dict.get('updateTime')),
+            'score_rate': score_rate,
+            'score_max': score_max,
+            'score': score
+            })
 
 def get_courses_from_db(user_id):
     user = User.objects.get(user_id=user_id)
@@ -139,8 +147,38 @@ def get_tasks_from_db(user_id):
             'coursework_title': coursework.coursework_title,
             'submission_state': submission.submission_state,
             'submission_created_time': submission.submission_created_time,
-            'publish_time': coursework.publish_time,
+            'submission_updated_time': submission.submission_updated_time,
             'due_time': coursework.due_time,
             'link': coursework.link
             })
     return tasks
+
+def calc_score(submission_dict, coursework):
+    K = 0.01
+    created_time = convert_utc_to_jst(utc_date=submission_dict['creationTime'])
+    updated_time = convert_utc_to_jst(utc_date=submission_dict['updateTime'])
+    time_to_due = max(coursework.due_time - created_time, timedelta(seconds=1)) 
+    turn_in_time = coursework.due_time - updated_time
+    score_rate = turn_in_time.total_seconds() / time_to_due.total_seconds()
+    score_max = round(time_to_due.total_seconds()*K)
+    score = round(score_rate * score_max)
+    
+    return score_rate, score_max, score
+
+def get_coursework_from_db(coursework_id):
+    coursework = CourseWork.objects.get(coursework_id=coursework_id)
+    return coursework
+
+def get_assignments_from_db(user_id):
+    user = User.objects.get(user_id=user_id)
+    assignments = user.assignment_courseworks.all()
+    return assignments
+
+def get_submissions_from_coursework(coursework_id):
+    coursework = CourseWork.objects.get(coursework_id=coursework_id)
+    submissions = coursework.submission_set.all()
+    return submissions
+
+def get_user_from_db(user_id):
+    user = User.objects.get(id=user_id)
+    return user
