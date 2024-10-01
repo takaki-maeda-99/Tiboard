@@ -1,0 +1,40 @@
+{% load static %} 
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="//127.0.0.1:8000/">
+        <img src="{% static 'icons/rogo.png' %}" alt="Guild Logo" width="50vh" height="50vh" class="d-inline-block align-text-top">
+        </a>
+        <a class="navbar-brand" href="//127.0.0.1:8000/">
+        Guild S
+            
+        </a>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            {% comment %} <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Guild S</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div> {% endcomment %}
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link mx-lg-2"href="//127.0.0.1:8000/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-lg-2" href="//127.0.0.1:8000/task_board">Taskboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-lg-2" href="//127.0.0.1:8000/question_board">Questionboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-lg-2" href="//127.0.0.1:8000/score_board">Scoreborad</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+

@@ -22,3 +22,256 @@
     background-color: #ee74744b;
     min-height: 78vh;
 }
+
+.navbar{
+    background-color: #34495e;
+    height: 12vh;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand{
+    align-items: center;
+    font-weight: 500;
+    font-size:4vh;
+    color: #fff;
+    transition:0.3s color;
+    display: flex;
+    margin-left:0vw;
+    padding:0;
+}
+
+.navbar-brand:hover{
+    color:aqua;
+}
+
+.d-inline-block{
+    margin:0;
+    padding:0;
+}
+
+.offcanvas-body{
+    background-color: #34495e;
+}
+
+.offcanvas-header{
+    background-color: #34495e;
+}
+
+.navbar-toggler{
+    position:fixed;
+    right:1.5vw;
+    border: none;
+}
+
+.navbar-toggler:focus, .btn-close:focus{
+    box-shadow: none;
+    outline:none;
+}
+
+.navbar-nav{
+    height: 6vh;
+    display: flex;
+    background-color: #34495e;
+    align-items: center;
+}
+
+.nav-link{
+    position:relative;
+    display: flex;
+    margin: 0;
+    padding-top: 0;
+    color:#fff;
+    font-size:3vh;
+}
+
+.nav-link:hover, .nav-link.active{
+    color:aqua;
+}
+
+@media (min-width: 991px){
+    .nav-link::before{
+        content:"";
+        position: absolute;
+        top:7vh;
+        left:50%;
+        transform: translateX(-50%);
+        width:0;
+        height: 0.4vh;
+        background-color: aqua;
+        visibility: hidden;
+        transition: 0.3s ease-in-out;
+    }
+    .nav-link:hover::before, .nav-link.active::before{
+        width: 100%;
+        visibility: visible;
+    }
+
+    .slide-menu{
+        display: none;
+    }
+
+
+}
+
+@media (max-width: 991px){
+    .base-header{
+        display: none;
+    }
+    .head-bar-side {
+        background-color: #6fadb752;
+        height: 12vh;
+    }
+    
+    .head-bar-main {
+        background-color: #a16fd64d;
+        height: 12vh;
+    }
+    
+    .content-side {
+        background-color: #7fb76f30;
+        min-height: 88vh;
+    }
+    
+    .content-main {
+        background-color: #ee74744b;
+        min-height: 88vh;
+    }
+
+    .menu-button{
+        overflow-x: hidden;
+      }
+      .header-area{
+        position:fixed;
+        z-index:100;
+      }
+      .hamburger{
+        position: fixed;
+        width: 40vw;
+        height: 12vh;
+        margin-left:60vw;
+        margin-top:0;
+        transition: .5s;/* 追記 */
+      }
+      .hamburger span{
+        position: absolute;
+        right:10%;
+        width: 15%;
+        height: 2px;
+        background-color: rgb(255, 255, 255);
+        transition: .5s;/* 追記 */
+      }
+      .hamburger span:first-of-type{/* ハンバーガーメニューの1番目の線 */
+        top: 30%;
+      }
+      .hamburger span:nth-of-type(2){/* ハンバーガーメニューの2番目の線 */
+        top: 50%;
+      }
+      .hamburger span:last-of-type{/* ハンバーガーメニューの3番目の線 */
+        top: 70%;
+      }
+
+
+      .slide-menu{
+        position: fixed;
+        margin-right:0;
+        background-color: #34495e; 
+        top: 0;
+        padding-top: 12vh;
+        width: 40%;
+        height: 100vh;
+        right: 0;
+        opacity: 0;
+        transition: .5s;/* 追記 */
+        z-index:50;
+      }
+
+    
+      .slide-menu li{
+        color: #fff;
+        line-height: 400%;
+        list-style: none;
+        top:12vh;
+      }
+      .hamburger.active{/* 追記 */
+        background-color: #34495e00;/
+      }
+      .hamburger.active span:first-of-type{/* ハンバーガーメニューの1番目の線 */
+        top: 50%;
+        width: 7vh;
+        transform: rotate(45deg);
+      }
+      .hamburger.active span:nth-of-type(2){/* ハンバーガーメニューの2番目の線 */
+        opacity: 0;/* 透明にする */
+      }
+      .hamburger.active span:last-of-type{/* ハンバーガーメニューの3番目の線 */
+        top: 50%;
+        width: 7vh;
+        transform: rotate(-45deg);
+      }
+      .slide-menu.active{
+       opacity: 1;
+      }
+    
+      .hamburger:hover{
+        color: aqua;
+      }
+    
+      .menu-lists{
+        text-decoration: none;
+        color: #fff;
+      }
+    
+      .menu-lists:hover{
+        color: aqua;
+      }
+}
+
+*{
+    margin:0px;
+    padding:0px;
+}
+
+body::-webkit-scrollbar{
+    display: none;
+}
+/* 
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(52,73,94,255)' stroke-width='1' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+    width: 10vh;
+    height: 8vh;
+    margin-top: 1vh;
+}
+
+
+.navbar-toggler-icon:hover {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,255,255,255)' stroke-width='1' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+    border-radius: .6vh;
+    background-color: #34495e;
+}
+
+
+
+.menu-lists{
+    position: absolute;
+    margin-left:70vw;
+    text-align: left;
+    width:30vw;
+    transition: all 0.3s ease;
+    list-style-type: none;
+    height: 100vh;
+    width:30vw;
+    background-color: aquamarine;
+    transform: scaleX(0);
+    transform-origin:right;
+}
+
+.navbar-toggler-icon:checked .menu-lists{
+    transform: scaleX(1);
+} */
+
+
+
+
+
+
