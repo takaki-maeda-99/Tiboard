@@ -25,8 +25,9 @@ async function update_task_board() {
 };
 
 async function main() {
-
-    makeHorizontalLabel()
+    intervalHours = parseInt(localStorage.getItem('timeInterval'), 10) || 3;
+    daysRange = parseInt(localStorage.getItem('daysRange'), 10) || 3;
+    makeHorizontalLabel();
 
     get_task_board().then((taskBoardData) => {
         const courses = taskBoardData[0];
@@ -54,6 +55,7 @@ async function main() {
 
         let updatedTasks = makeTasks(courses, coursework, submission);
         clearChart();
+        makeHorizontalLabel();
         drawChart(updatedTasks);
 
         console.timeEnd('Execution Time');
