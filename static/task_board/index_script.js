@@ -1,15 +1,13 @@
 // 定数の定義
-const DAYS_RANGE = 3; // 表示する日数
 const HOURS_PER_DAY = 24; // 1日あたりの時間
 const HOUR_TO_PX = 20; // 1時間当たりのpx
-const INTERVAL_HOURS = 3; // 横軸に何時間刻みで時間を表示するか
 const SECONDS_PER_HOUR = 1000 * 60 * 60 // 1時間当たりの秒数
 const CHART_LEFT_MARGIN = 30; // チャートの左端の調整用
 const MARGIN = 10;
 const TASK_BAR_HEIGHT = 30; // タスクバーの縦の長さ
 const TASK_BAR_UNIT = 36;
 const TASK_BAR_FONT_SIZE = 15;
-const BACK_GROUND_COLOR = '#ddd'; // チャートの枠線と同じ色
+const BACK_GROUND_COLOR = '#913e0b80';
 const SEPARATOR_THINNESS = 1;
 const NAME_HEIGHT = 16;
 const MAX_WIDTH = 200;
@@ -55,7 +53,7 @@ function drawVerticalLine() {
     for (let i = 0; i < chartHeader.children.length; i++) {
         const verticalLine = document.createElement('div');
         verticalLine.className = 'vertical-line';
-        verticalLine.style.left = `${CHART_LEFT_MARGIN + i * HOUR_TO_PX * INTERVAL_HOURS}px`;
+        verticalLine.style.left = `${CHART_LEFT_MARGIN + i * HOUR_TO_PX * intervalHours}px`;
         verticalLine.style.width = `${SEPARATOR_THINNESS}px`;
         verticalLine.style.backgroundColor = BACK_GROUND_COLOR;
         taskBars.appendChild(verticalLine);
@@ -79,7 +77,6 @@ function addTaskName(tasks) {
             taskLink.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
             taskLink.target = '_blank';
             taskLink.rel = 'noopener noreferrer';
-            taskLink.style.textDecoration = 'none';
 
             if (task.submissionState == 'TURNED_IN') {
                 taskLink.textContent = `✓${task.name}`;
@@ -145,7 +142,7 @@ function addTaskBar(tasks) {
         taskBar.style.top = `${index * taskSpacing}px`;
         taskBar.style.backgroundColor = setTaskBarColor(task);
 
-        const maxPx = DAYS_RANGE * HOURS_PER_DAY * HOUR_TO_PX; // チャートの右端までのpx
+        const maxPx = daysRange * HOURS_PER_DAY * HOUR_TO_PX; // チャートの右端までのpx
 
         if (taskEndPx > maxPx) {
             taskBar.style.width = `${maxPx - taskStartPx}px`;
@@ -208,15 +205,15 @@ function makeHorizontalLabel() {
     const startDate = new Date(now);
     startDate.setHours(0, 0, 0, 0);
     const chartHeader = document.getElementById('chart-header');
-    for (let day = 0; day < DAYS_RANGE; day++) {
-        for (let hour = 0; hour < HOURS_PER_DAY; hour += INTERVAL_HOURS) {
+    for (let day = 0; day < daysRange; day++) {
+        for (let hour = 0; hour < HOURS_PER_DAY; hour += intervalHours) {
             const headerCell = document.createElement('div');
             const date = new Date(startDate.getTime());
             date.setDate(startDate.getDate() + day);
             date.setHours(hour, 0, 0, 0);
 
             headerCell.className = 'header-cell';
-            headerCell.style.width = `${HOUR_TO_PX * INTERVAL_HOURS}px`;
+            headerCell.style.width = `${HOUR_TO_PX * intervalHours}px`;
 
             const timeText = document.createElement('div');
             timeText.className = 'time-text';
@@ -277,13 +274,13 @@ function startNowLineUpdates(taskBarsHeight, className) {
     }, 1000 * INTERVAL);  // interval秒ごとに更新
 };
 
-// チャートのフッターに日付の区切り線を描く
+// 日付の区切り線を描く
 function drawFooterLine() {
     const now = new Date();
     const startDate = new Date(now);
     startDate.setHours(0, 0, 0, 0);
     const chartFooter = document.getElementById('chart-footer');
-    for (let day = 0; day < DAYS_RANGE; day++) {
+    for (let day = 0; day < daysRange; day++) {
         const date = new Date(startDate.getTime());
         date.setDate(startDate.getDate() + day);
 
@@ -354,10 +351,12 @@ async function clearChart() {
     const taskBars = document.getElementById('task-bars');
     const tasksContainers = document.querySelectorAll('.tasks');
     const chartFooter = document.getElementById('chart-footer');
+    const chartHeader = document.getElementById('chart-header');
 
     // 現在のチャートをクリア
     while (taskBars.firstChild) taskBars.removeChild(taskBars.firstChild);
     while (chartFooter.firstChild) chartFooter.removeChild(chartFooter.firstChild);
+    while (chartHeader.firstChild) chartHeader.removeChild(chartHeader.firstChild);
     tasksContainers.forEach(container => {
         while (container.firstChild) container.removeChild(container.firstChild);
     });
@@ -405,7 +404,6 @@ function drawChart(tasks) {
         startNowLineUpdates(taskBarsHeight, className);
     });
 };
-
 
 document.addEventListener('DOMContentLoaded', function() {
     // スクロールの同期
@@ -473,7 +471,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// ユーザーが選択した時間の表示間隔を時間軸に適用
+document.getElementById('time-interval').addEventListener('change', function() {
+    const selectedInterval = parseInt(this.value, 10);
+    localStorage.setItem('timeInterval', selectedInterval);
+    location.reload();
+});
 
+// ページロード時に保存された時間間隔を適用
+window.addEventListener('load', function() {
+    intervalHours = parseInt(localStorage.getItem('timeInterval'), 10) || 3;
+    document.getElementById('time-interval').value = intervalHours;
+});
+
+// ユーザーが選択した表示日数を適用
+document.getElementById('days-range').addEventListener('change', function() {
+    const selectedRange = parseInt(this.value, 10);
+    localStorage.setItem('daysRange', selectedRange);
+    location.reload();
+});
+
+// ページロード時に保存された表示日数を適用
+window.addEventListener('load', function() {
+    daysRange = parseInt(localStorage.getItem('daysRange'), 10) || 3;
+    document.getElementById('days-range').value = daysRange;
+});
 
 //---------------------------- 処理の実行-----------------------------------
 
