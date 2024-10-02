@@ -1,202 +1,230 @@
-
-/* メインメニューのスタイル */
-#side_bar {
-    width: 200px;
-    background-color: #2c3e50;
-    position: fixed;
-    top: 0;
-    left: -200px; /* 画面の外に隠す */
-    bottom: 0;
-    transition: left 0.3s ease; /* スライドインのアニメーション */
-    z-index: 100;
+.base-header {
+    background-color: #4057ec30;
+    height: 12vh;
 }
 
-/* サイドバーが表示されているときのスタイル */
-#side_bar.open {
-    left: 0; /* 画面内に表示 */
+.head-bar-side {
+    background-color: #6fadb752;
+    height: 10vh;
 }
 
-/* スクリーンの左端にカーソルを検出するための透明なエリア */
-#hover_area {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 10px; /* カーソルを検出するエリアの幅 */
-    height: 100vh;
-    z-index: 99;
+.head-bar-main {
+    background-color: #a16fd64d;
+    height: 10vh;
 }
 
-#side_bar ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto;
+.content-side {
+    background-color: #7fb76f30;
+    min-height: 78vh;
 }
 
-#side_bar li {
-    border-top: 1px solid black;
+.content-main {
+    background-color: #ee74744b;
+    min-height: 78vh;
 }
 
-#side_bar li a {
-    font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', 'Helvetica', 'Arial', sans-serif;
-    display: block;
-    padding: 15px;
-    text-decoration: none;
-    color: #ecf0f1;
+.navbar{
     background-color: #34495e;
-    transition: .3s;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#side_bar li a:hover {
-    background-color: #1abc9c;
-}
-
-#header{
-    z-index:90;
-}
-
-.sidebar-text {
-    flex-grow: 1;
-    padding: 15px;
-    text-decoration: none;
-    color: #ecf0f1;
-    background-color: #34495e;
-    transition: .3s;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidebar-text:hover {
-    background-color: #1abc9c;
-}
-
-/* 矢印部分のホバースタイル */
-.arrow:hover {
-    background-color: #1abc9c;
-}
-
-.body{
-    font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', 'Helvetica', 'Arial', sans-serif;
-}
-
-.scoreboard {
-    border-bottom: 1px solid black;
-}
-
-/* 矢印のスタイル */
-.arrow {
-    font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', 'Helvetica', 'Arial', sans-serif;
-    transition: .3s;
-    padding: 15px;
-    align-content: center;
-    color: white;
-    background-color: #34495e;
-}
-
-.arrow.down::before {
-    content: "▼";
-}
-
-.arrow.up::before {
-    content: "▲";
-}
-
-.arrow-container {
-    width: 30px;
+    height: 12vh;
     display: flex;
-    justify-content: flex-end;
     align-items: center;
 }
 
-/* ボタンの設定 */
-.menu_index {
-    width: 200px;
-    padding: 10px;
+.navbar-brand{
+    align-items: center;
+    font-weight: 500;
+    font-size:4vh;
+    color: #fff;
+    transition:0.3s color;
     display: flex;
-    position: relative;
-    z-index: 2;
-    background-color: white;
-    border: solid 1px;
-    cursor: pointer;
+    margin-left:0vw;
+    padding:0;
 }
 
-.toggle_btn {
-    position: relative;
-    width: 1rem;
-    height: 1rem;
+.navbar-brand:hover{
+    color:aqua;
 }
 
-.toggle_btn::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background-color: black;
-    transition: .3s;
+.d-inline-block{
+    margin:0;
+    padding:0;
 }
 
-.toggle_btn::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background-color: black;
-    transform: rotate(90deg);
-    transition: .3s;
+.offcanvas-body{
+    background-color: #34495e;
 }
 
-.toggle_btn.active::after {
-    transform: rotate(0deg);
+.offcanvas-header{
+    background-color: #34495e;
 }
 
-/* サブメニューの設定*/
-.menu_outer {
-    width: fit-content;
-    height: fit-content;
-    overflow: hidden;
+.navbar-toggler{
+    position:fixed;
+    right:1.5vw;
+    border: none;
 }
 
-/* アコーディオンのアニメーション */
-.has-submenu .submenu {
-    max-height: 0;
-    transition: max-height .5s ease;
-    overflow: hidden;
+.navbar-toggler:focus, .btn-close:focus{
+    box-shadow: none;
+    outline:none;
 }
 
-.has-submenu.open .submenu {
-    max-height: 330px; /* 最大高さを設定。これを超えるとスクロール発生 */
-    overflow-y: auto;  /* コンテンツが収まりきらない場合にスクロール */
-    transition: max-height .5s ease; /* アニメーションで開閉 */
-    background-color: lightcyan;
-    overflow-y: auto;
+.navbar-nav{
+    height: 6vh;
+    display: flex;
+    background-color: #34495e;
+    align-items: center;
 }
 
-.submenu {
-    z-index: 1;
+.nav-link{
+    position:relative;
+    display: flex;
+    margin: 0;
+    padding-top: 0;
+    color:#fff;
+    font-size:3vh;
 }
 
-.submenu li {
-    cursor: pointer;
-    width: 100%;
+.nav-link:hover, .nav-link.active{
+    color:aqua;
 }
 
-.submenu li:hover {
-    background-color: darkcyan;
-    color: white;
+@media (min-width: 991px){
+    .nav-link::before{
+        content:"";
+        position: absolute;
+        top:7vh;
+        left:50%;
+        transform: translateX(-50%);
+        width:0;
+        height: 0.4vh;
+        background-color: aqua;
+        visibility: hidden;
+        transition: 0.3s ease-in-out;
+    }
+    .nav-link:hover::before, .nav-link.active::before{
+        width: 100%;
+        visibility: visible;
+    }
+
+    .slide-menu{
+        display: none;
+    }
+
+
 }
 
-.submenu li a {
-    background-color: #4c637a;
+@media (max-width: 991px){
+    .base-header{
+        display: none;
+    }
+    .head-bar-side {
+        background-color: #6fadb752;
+        height: 12vh;
+    }
+    
+    .head-bar-main {
+        background-color: #a16fd64d;
+        height: 12vh;
+    }
+    
+    .content-side {
+        background-color: #7fb76f30;
+        min-height: 88vh;
+    }
+    
+    .content-main {
+        background-color: #ee74744b;
+        min-height: 88vh;
+    }
+
+    .menu-button{
+        overflow-x: hidden;
+      }
+      .header-area{
+        position:fixed;
+        z-index:100;
+      }
+      .hamburger{
+        position: fixed;
+        width: 40vw;
+        height: 12vh;
+        margin-left:60vw;
+        margin-top:0;
+        transition: .5s;/* 追記 */
+      }
+      .hamburger span{
+        position: absolute;
+        right:10%;
+        width: 15%;
+        height: 2px;
+        background-color: rgb(255, 255, 255);
+        transition: .5s;/* 追記 */
+      }
+      .hamburger span:first-of-type{/* ハンバーガーメニューの1番目の線 */
+        top: 30%;
+      }
+      .hamburger span:nth-of-type(2){/* ハンバーガーメニューの2番目の線 */
+        top: 50%;
+      }
+      .hamburger span:last-of-type{/* ハンバーガーメニューの3番目の線 */
+        top: 70%;
+      }
+
+
+      .slide-menu{
+        position: fixed;
+        margin-right:0;
+        background-color: #34495e; 
+        top: 0;
+        padding-top: 12vh;
+        width: 40%;
+        height: 100vh;
+        right: 0;
+        opacity: 0;
+        transition: .5s;/* 追記 */
+        z-index:50;
+      }
+
+    
+      .slide-menu li{
+        color: #fff;
+        line-height: 400%;
+        list-style: none;
+        top:12vh;
+      }
+      .hamburger.active{/* 追記 */
+        background-color: #34495e00;/
+      }
+      .hamburger.active span:first-of-type{/* ハンバーガーメニューの1番目の線 */
+        top: 50%;
+        width: 7vh;
+        transform: rotate(45deg);
+      }
+      .hamburger.active span:nth-of-type(2){/* ハンバーガーメニューの2番目の線 */
+        opacity: 0;/* 透明にする */
+      }
+      .hamburger.active span:last-of-type{/* ハンバーガーメニューの3番目の線 */
+        top: 50%;
+        width: 7vh;
+        transform: rotate(-45deg);
+      }
+      .slide-menu.active{
+       opacity: 1;
+      }
+    
+      .hamburger:hover{
+        color: aqua;
+      }
+    
+      .menu-lists{
+        text-decoration: none;
+        color: #fff;
+      }
+    
+      .menu-lists:hover{
+        color: aqua;
+      }
 }
 
 *{
@@ -204,152 +232,13 @@
     padding:0px;
 }
 
-body{
-    min-width: 1280px;
-    width: 100vw;
+body::-webkit-scrollbar{
+    display: none;
 }
 
-header{
-    background-color: #34495e;
-    height:100px;
-    top:0;
-    position:sticky;
-}
 
-.header-list li{
-    display: flex;
-    color:white;
-    float:left;
-    list-style-type: none;
-    padding:25px 10px;
-    text-align: center;
-    font-size:30px;
-    font-weight: bold;
 
-    /* border-right:1px solid #fff; */
-}
 
-.header-logo{
-    color:white;
-    font-size:50px;
-    font-weight:bolder;
-    float:left;
-    padding:12px 30px;
-}
 
-.board_data{
-    text-decoration: none;
-    color:#fff;
-}
 
-.board_data:hover{
-    color:aqua;
-}
 
-.front_data{
-    text-decoration: none;
-    color:#fff;
-}
-
-.front_data:hover{
-    color:aqua;
-}
-
-.button-wrap {
-    position: relative;
-    padding-top: 25px;
-    padding-left: 1130px;
-}
-
-.button-list {
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    color: #34495e;
-    width: 130px;
-    transition: all 0.3s ease;
-    height: 50px;
-    align-items: center;
-    border-radius: 3px;
-    background: #ffff4c;
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-    position: absolute;
-    border: 1px solid #000000;
-    z-index:100;
-}
-
-.button-wrap:hover .button-list{
-    color: aqua;
-    background-color: #34495e;
-}
-
-.dropdown-lists {
-    /* visibility: hidden;
-    opacity: 0;
-    transition: all .3s; */
-    transform: scaleY(0);
-    transform-origin:top ;
-    transition:all .3s;
-    position: absolute; 
-    top: 90px;
-    left: 1130px;
-    width: 130px;
-    background-color: #34495e;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    border: 1px solid #000000;
-    z-index:1000;
-}
-
-.button-wrap:hover .dropdown-lists {
-    /* visibility: visible;
-    opacity: 1; */
-    transform: scaleY(1);
-}
-
-.dropdown-list {
-    background-color: #5c7996;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    position: relative;
-    cursor: pointer;
-}
-
-.dropdown-list:hover{
-    background-color: #1abc9c;
-}
-
-.dropdown-list:not(:first-child)::before {
-    content: "";
-    width: 100%;
-    height: 1px;
-    background-color: #000000;
-    position: absolute;
-    top: 0;
-}
-
-.dropdown-list a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #ffffff;
-    text-decoration: none;
-    width: 100%;
-    height: 100%;
-}
-
-.button-wrap::after {
-    content: "";
-    position: absolute;
-    top: 70px;
-    left: 1130px;
-    width: 130px;
-    height: 50px; 
-    z-index:100;
-}
