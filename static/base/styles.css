@@ -198,26 +198,20 @@
 .submenu li a {
     background-color: #4c637a;
 }
-
+/* 
 *{
     margin:0px;
     padding:0px;
 }
 
-body{
-    min-width: 1280px;
-    width: 100vw;
-}
-
 header{
     background-color: #34495e;
     height:100px;
-    top:0;
+    width:100%;
     position:sticky;
 }
 
 .header-list li{
-    display: flex;
     color:white;
     float:left;
     list-style-type: none;
@@ -225,10 +219,13 @@ header{
     text-align: center;
     font-size:30px;
     font-weight: bold;
+    height: 50px;
+}
+     */
 
     /* border-right:1px solid #fff; */
-}
 
+/* 
 .header-logo{
     color:white;
     font-size:50px;
@@ -257,8 +254,6 @@ header{
 
 .button-wrap {
     position: relative;
-    padding-top: 25px;
-    padding-left: 1130px;
 }
 
 .button-list {
@@ -276,6 +271,8 @@ header{
     justify-content: center;
     cursor: pointer;
     position: absolute;
+    margin-top: 25px;
+    margin-left: 1130px;
     border: 1px solid #000000;
     z-index:100;
 }
@@ -283,12 +280,9 @@ header{
 .button-wrap:hover .button-list{
     color: aqua;
     background-color: #34495e;
-}
-
+} */
+/* 
 .dropdown-lists {
-    /* visibility: hidden;
-    opacity: 0;
-    transition: all .3s; */
     transform: scaleY(0);
     transform-origin:top ;
     transition:all .3s;
@@ -305,8 +299,6 @@ header{
 }
 
 .button-wrap:hover .dropdown-lists {
-    /* visibility: visible;
-    opacity: 1; */
     transform: scaleY(1);
 }
 
@@ -352,4 +344,10 @@ header{
     width: 130px;
     height: 50px; 
     z-index:100;
+} */
+
+.nav-link{
+    font-size: 30px;
 }
+
+
