@@ -4,7 +4,7 @@ from google.oauth2.credentials import Credentials
 import functions.classroom as classroom
 import functions.database as database
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 # If modifying these scopes, delete the file token.json.
@@ -91,27 +91,126 @@ def update_submission_data(request):
     
     headers = {"Authorization": f"Bearer {creds.token}"}
     
-    courseworkss = database.get_courseworkss_from_db(user_id)
+    courseworks = database.get_assignments_from_db(user_id)
     
     course_and_coursework_ids = []
+    return_coursework_ids = []
     
-    now = datetime(2024, 7, 15, 12, 0, 0, tzinfo=ZoneInfo("Asia/Tokyo"))
+    now = datetime.now(ZoneInfo("Asia/Tokyo"))
 
-    for courseworks in courseworkss:
-        for coursework in courseworks:
-            coursework_due_time = coursework.due_time
-            if coursework_due_time is not None:
-                if coursework_due_time < now:
-                    continue
+    for coursework in courseworks:
+        coursework_due_time = coursework.due_time
+        if coursework_due_time is not None:
+            if coursework_due_time < now:
+                continue
+            return_coursework_ids.append(coursework.id)
             course_and_coursework_ids.append((coursework.course_id.course_id, coursework.coursework_id))
-            
+                
     submissions = classroom.async_request_submissions_info(headers, course_and_coursework_ids)
     
     for (course_id, coursework_id), submission in zip(course_and_coursework_ids, submissions):
+        if submission.get("error", None) is not None:
+            database.remove_coursework_from_user(user_id, coursework_id)
+            continue
         database.insert_submission_state(user_id, course_id, coursework_id, submission)
     
     response = database.get_submissions_from_db(user_id)
     
     response = list(response.values())
     
+    response = [submission for submission in response if submission["coursework_id_id"] in return_coursework_ids]
+    
     return response
+
+import time
+
+def update_polling():
+    start_time = time.time()
+    
+    courses = database.get_all_courses_from_db()
+    headerss = []
+    
+    for course in courses:
+        enrolled_users = database.get_users_from_course(course.course_id)
+        enrolled_first_user_id = list(enrolled_users.values())[0]["user_id"]
+        creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{enrolled_first_user_id}token.json", SCOPES)
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        headers = {"Authorization": f"Bearer {creds.token}"}
+        headerss.append(headers)
+    
+    course_ids = [course.course_id for course in courses]
+    course_workss = classroom.async_request_all_courseWork_info(headerss, course_ids)
+    
+    for course_id, course_works in zip(course_ids, course_workss):
+            for course_work in course_works:
+                database.insert_coursework_to_db(course_id, course_work)
+    
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"update_polling 実行時間: {execution_time}秒")
+    
+def get_tasks_data(request):
+    user_id = request.COOKIES['user_id']
+    tasks = database.get_tasks_from_db(user_id)
+    return tasks
+
+def calc_scores(tasks):
+    K = 0.01
+    scores = []
+    for task in tasks:
+        time_to_due = max(task['due_time'] - task['publish_time'], timedelta(seconds=1)) 
+        turn_in_time = task['due_time'] - task['submission_created_time'] if task["submission_state"] == "TURNED_IN" else timedelta(seconds=0)
+        score_rate = turn_in_time.total_seconds() / time_to_due.total_seconds()
+        score_max = round(time_to_due.total_seconds()*K)
+        score = {
+            "score_rate": score_rate, 
+            "score_max": score_max,
+            "score": round(score_rate * score_max),
+            "course_name": task['course_name'],
+            "coursework_title": task['coursework_title'],
+            "submission_state": task['submission_state']
+        }
+        scores.append(score)
+
+    return scores
+
+def update_assignments(request):
+    creds, user_id = set_or_create_creds(request)
+    
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    
+    course_ids = database.get_courses_from_db(user_id)
+    
+    course_ids = [course.course_id for course in course_ids]
+    
+    courseworkss = classroom.async_request_courseWork_info(headers, course_ids)
+    
+    for course_works in courseworkss:
+        for course_work in course_works:
+            database.add_coursework_to_user(user_id, course_work["id"])
+    
+    assignments = database.get_assignments_from_db(user_id)
+    
+    response = list(assignments.values())
+    
+    return response
+
+def get_ranking_data(coursework_id):
+    submissions = database.get_submissions_from_coursework(coursework_id).order_by("score")
+    submissions = list(submissions.values("user_id_id", "score"))
+    
+    user_names = []
+    for submission in submissions:
+        user = database.get_user_from_db(submission["user_id_id"])
+        user_names.append(user.user_email)
+        
+    ranking = []
+    for user_name, submission in zip(user_names, submissions):
+        ranking.append({
+            "user_name": user_name,
+            "score": submission["score"]
+        })
+    return ranking
+
+# print(get_ranking_data(718884185399))

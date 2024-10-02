@@ -19,6 +19,8 @@ HOST_IP = "127.0.0.1" #"10.27.75.190"
 
 BASE_URL = f"https://{HOST_IP}:8000"
 
+POLLING_INTERVAL = 60
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -28,7 +30,7 @@ SECRET_KEY = 'django-insecure-w^m-_yjc9eq&4(0=-2%s6(a-e+y!@cf7$i&mba7l7gtw&urv*p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [HOST_IP,"127.0.0.1"]
+ALLOWED_HOSTS = [HOST_IP,"127.0.0.1","localhost"]
 
 
 # Application definition
@@ -86,6 +88,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'ATOMIC_REQUESTS': False,
     }
 }
 

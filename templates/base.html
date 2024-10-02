@@ -33,6 +33,7 @@
             console.error("Error:", error);
         }
     </script>
+
     <div class="menu-button">
         {% include 'menu-button.html'%}
     </div>    
@@ -42,27 +43,30 @@
             <div class="col-12 base-header">
                 {% comment %} {% block base_header %}{% endblock %} {% endcomment %}
                 {% include 'header.html' %}
+
             </div>
         </div>
-        <div class="row text-center">
-            <div class="col-md-3 head-bar-side">
+        <div class="row">
+            <div class="col-md-3 head-bar-side" id="head-bar-side">
                 {% block head_bar_side %}{% endblock %}
             </div>
-            <div class="col-md head-bar-main">
+            <div class="col-md-9 head-bar-main overflow-x-scroll" id="head-bar-main">
                 {% block head_bar_main %}{% endblock %}
             </div>
         </div>
             
         <div class="row">
-            <div class="col-md-3 content-side">
+            <div class="col-md-3 content-side overflow-y-scroll" id="content-side">
                 {% block content_side %}{% endblock %}
             </div>
-            <div class="col-md content-main">
+            <div class="col-md-9 content-main overflow-x-scroll overflow-y-scroll" id="content-main">
                 {% block content_main %}{% endblock %}
             </div>
         </div>
+        <div class="other_content">
+            {% block other_content %}{% endblock %}
+        </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script src="{% static "base/script.js" %}"></script>
     <script src="{% static "base/script2.js" %}"></script>

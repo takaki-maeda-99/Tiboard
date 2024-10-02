@@ -1,36 +1,21 @@
+let COLOR_HEAD_MAIN = '#0b4e9bc0'
+let COLOR_HEAD_SIDE = '#0b4e9b80'
+let COLOR_CONTENT_MAIN = '#b5e2fa'
+let COLOR_CONTENT_SIDE = '#b5e2fa80'
+let COLOR_ACCENT = '#913e0b'
+
+function setDefaultColor() {
+    document.getElementById('head-bar-main').style.backgroundColor = COLOR_HEAD_MAIN;
+    document.getElementById('head-bar-side').style.backgroundColor = COLOR_HEAD_SIDE;
+    document.getElementById('content-main').style.backgroundColor = COLOR_CONTENT_MAIN;
+    document.getElementById('content-side').style.backgroundColor = COLOR_CONTENT_SIDE;
+
+    document.getElementById('head-bar-main').style.border = `solid 1px ${COLOR_ACCENT}`;
+    document.getElementById('head-bar-side').style.border = `solid 1px ${COLOR_ACCENT}`;
+    document.getElementById('content-main').style.border = `solid 1px ${COLOR_ACCENT}`;
+    document.getElementById('content-side').style.border = `solid 1px ${COLOR_ACCENT}`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // 全ての矢印のトグルを取得
-    var arrowContainers = document.querySelectorAll('.arrow-container');
-    
-    // 各矢印にクリックイベントを追加
-    arrowContainers.forEach(function(arrowContainer) {
-        arrowContainer.addEventListener('click', function(event) {
-            event.preventDefault(); // リンクのデフォルト動作を無効化
-            
-            var parentLi = arrowContainer.closest('li'); // クリックされたメニューの親li要素を取得
-            var arrow = arrowContainer.querySelector('.arrow'); // 矢印を取得
-            
-            // アコーディオンメニューなので他のメニューは閉じる
-            document.querySelectorAll('.has-submenu.open').forEach(function(openItem) {
-                if (openItem !== parentLi) {
-                    openItem.classList.remove('open');
-                    var openArrow = openItem.querySelector('.arrow');
-                    if (openArrow) openArrow.classList.remove('up');
-                    if (openArrow) openArrow.classList.add('down');
-                };
-            });
-
-            // クリックされたメニューをトグル（開閉）する
-            parentLi.classList.toggle('open');
-            
-            // 矢印の向きをトグルする
-            if (arrow) {
-                arrow.classList.toggle('down');
-                arrow.classList.toggle('up');
-            }
-        });
-    });
-
-    const sideBar = document.getElementById('side_bar');
-    const hoverArea = document.getElementById('hover_area');
+    setDefaultColor();
 });
