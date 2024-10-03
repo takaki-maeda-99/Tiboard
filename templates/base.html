@@ -34,15 +34,16 @@
         }
     </script>
 
-    <div class="menu-button">
+    <div class="menu-button" id="menu-button">
         {% include 'menu-button.html'%}
     </div>    
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 base-header">
-                {% comment %} {% block base_header %}{% endblock %} {% endcomment %}
+            <div class="col-12 base-header" id="base-header">
+                {% block base_header %}
                 {% include 'header.html' %}
+                {% endblock %}
 
             </div>
         </div>
