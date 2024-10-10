@@ -5,22 +5,29 @@
 {% block content_main %}
 {% load static %}
 <h1>Thread: {{ thread.name }}</h1>
-<p>{{ thread.description }}</p>
+
 <ul>
     {% for post in posts %}
-    <li>
-        <p>{{ post.author}} posted at {{ post.created_at }} Post ID: {{ post.id }} </p>
+    <li style="list-style: none;">
+        <p>{{ post.author}}さん posted at {{ post.created_at }} Post ID: {{ post.id }} </p>
         <p style="white-space: pre-wrap;">{{ post.content }}</p>
+        {% if post.attachment %}
+            <img src="/question_board{{ post.attachment.url }}" style="max-width: 500px; max-height: 500px;"><br>
+            <a href="/question_board{{ post.attachment.url }}">Download</a>
+        {% endif %}<br>
         <button class="reply-btn" data-postid="{{ post.id }}">Reply</button>
     </li>
     {% endfor %}
 </ul>
 
-<form method="POST" id="reply-form" action="{% url 'question_board:thread_detail' thread.id %}">
+<form method="POST" id="reply-form" action="{% url 'question_board:thread_detail' thread.id %}" enctype="multipart/form-data">
     {% csrf_token %}
-    <textarea id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
+    <textarea id="reply-content" name="content" placeholder="内容を入力"></textarea>
+    <label for="file-upload">Upload file:</label>
+    <input type="file" id="file-upload" name="attachment">
     <input type="hidden" id="post-id-input" name="post_id">
     <button type="submit">Send</button>
+    <p id="error-message" style="color: red; display: none;"></p>
 </form>
 
 <script src="{% static "question_board/thread_detail_script.js" %}"></script>

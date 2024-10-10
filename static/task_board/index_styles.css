@@ -83,10 +83,20 @@
     z-index: 0;
 }
 
-.due-date {
+.due-date,
+.label-task-name{
+    top: 4px;
     position: absolute;
     margin-left: 5px;
     z-index: 2;
+}
+
+.label-task-name {
+    display: none;
+}
+
+.label-task-name a {
+    text-decoration: none;
 }
 
 .toggle-btn {
@@ -110,7 +120,7 @@
     transform: translateX(-100%); /* 初期状態では画面外に配置 */
 }
 
-@media (max-width: 768px) { /* md以下のとき */
+@media (max-width: 767.5px) { /* md以下のとき */
     .sidebar {
         position: fixed;
         top: 0;
@@ -148,6 +158,14 @@
 
     .sidebar.show + .toggle-btn {
     left: 250px;
+    }
+
+    .label-task-name {
+        display: block;
+    }
+
+    .due-date {
+        display: none;
     }
 }
 

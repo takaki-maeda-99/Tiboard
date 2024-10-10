@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const replyButtons = document.querySelectorAll('.reply-btn');
     const replyContent = document.getElementById('reply-content');
+    const attatchFileInput = document.getElementById('file-upload');
     const postIdInput = document.getElementById('post-id-input');
     const replyForm = document.getElementById('reply-form');
     const errorMessage = document.createElement('p'); // エラーメッセージ用の要素を作成
@@ -20,16 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     replyForm.addEventListener('submit', function(event) {
-        if (replyContent.value.trim() === '') {
+        if (replyContent.value.trim() === '' && attatchFileInput.files.length === 0) {
             event.preventDefault(); // フォームの送信を防ぐ
-            if (!document.contains(errorMessage)) {
-                replyForm.appendChild(errorMessage);
-            }
-            errorMessage.textContent = 'Reply content cannot be empty.';
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = 'テキストを入力、またはファイルを添付してください。';
+            errorMessage.style.display = 'block';
         } else {
-            if (document.contains(errorMessage)) {
-                replyForm.removeChild(errorMessage);
-            }
+            document.getElementById('error-message').style.display = 'none';
         }
     });
 });

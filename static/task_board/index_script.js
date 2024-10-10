@@ -148,7 +148,7 @@ function addTaskBar(tasks) {
             taskBar.style.width = `${maxPx - taskStartPx}px`;
         };
 
-        taskBars.appendChild(taskBar);
+        
 
         const dueDateDiv = document.createElement('div');
         dueDateDiv.className = 'due-date';
@@ -169,16 +169,32 @@ function addTaskBar(tasks) {
             minute: '2-digit',
         }).replace(/\//g, '/');
 
-        dueDateDiv.style.left = `${taskStartPx}px`;
-        dueDateDiv.style.top = `${index * taskSpacing + TASK_BAR_HEIGHT - TASK_BAR_FONT_SIZE * 1.5}px`;
         dueDateDiv.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
+        
+        const taskNameOnLabel = document.createElement('div');
+        taskNameOnLabel.className = 'label-task-name';
+
+        const taskLink = document.createElement('a')
+        taskLink.href = task.link;
+        taskLink.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
+        taskLink.target = '_blank';
+        taskLink.rel = 'noopener noreferrer';
+
+        taskLink.textContent = task.name
+        taskLink.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
+        
         if (taskBarWidth < MAX_DUE_DATE_PX) {
             dueDateDiv.style.color = 'black';
+            taskLink.style.color = 'black';
         } else {
             dueDateDiv.style.color = 'white';
+            taskLink.style.color = 'white';
         };
 
-        taskBars.appendChild(dueDateDiv);
+        taskBar.appendChild(dueDateDiv);
+        taskNameOnLabel.appendChild(taskLink);
+        taskBar.appendChild(taskNameOnLabel);
+        taskBars.appendChild(taskBar);
 
         const separatorLine = document.createElement('div');
         separatorLine.className = 'task-separator';
