@@ -22,6 +22,9 @@ def thread_detail(request, thread_id):
     posts = thread.posts.all()
     user_id = request.COOKIES.get('user_id')
 
+    threads = Thread.objects.all()
+
+
     if request.method == 'POST':
         content = request.POST.get('content')
         file = request.FILES.get('attachment')
@@ -58,5 +61,5 @@ def thread_detail(request, thread_id):
     return render(request, 'question_board/thread_detail.html', {
         'thread': thread,
         'posts': posts,
-        'form': form
+
     })
