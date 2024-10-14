@@ -23,7 +23,6 @@
 {% block content_main %}
 
 {% load static %}
-
 <ul class="post-content-info">
     {% for post in posts %}
     <li class="post-news">
@@ -35,6 +34,11 @@
             <p class="date-info">{{ post.created_at }}</p>
         </div>
         <p class="post-content" style="white-space: pre-wrap;">{{ post.content }}</p>
+        <p>
+        {% if post.attachment %}
+          <img src="/question_board{{ post.attachment.url }}" style="max-width: 500px; max-height: 500px;"><br>
+          <a href="/question_board{{ post.attachment.url }}">Download</a>
+        {% endif %}<br></p>
         <button class="reply-btn" data-postid="{{ post.id }}" data-postcontent="{{ post.content }}">Reply</button>
     </li>
     {% endfor %}
@@ -48,13 +52,16 @@
     {% csrf_token %}
     <div id='reply-to-post'></div>
     <textarea class="input-space" id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
-    
+    <label for="file-upload">Upload file:</label>
+    <input type="file" id="file-upload" name="attachment">
       
       
       
     <input type="hidden" id="post-id-input" name="post_id">
     <input type="hidden" id="reply-to-input" name="reply_to">
     <button class="send-button" type="submit">▶</button>
+    <p id="error-message" style="color: red; display: none;"></p>
+
 </form>
 
 

@@ -17,7 +17,6 @@ body::-webkit-scrollbar {
 }
 
 #content-side {
-  overflow: auto;
   scrollbar-width: none; /* Firefox */
 }
 
@@ -256,6 +255,81 @@ body::-webkit-scrollbar {
   padding:0px;
 }
 
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #000;
+  display: none;
+  width: max-content;
+  vertical-align: center;
+}
+
+.sidebar {
+  position: absolute;
+  top: 0;
+  height: 0;
+  transform: translateX(-100%); /* 初期状態では画面外に配置 */
+}
+
+@media (max-width: 767.5px) { /* md以下のとき */
+  .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 80%;
+      height: 100%;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* サイドバーの影 */
+      z-index: 999;
+      transition: .3s ease-out;/* スライドイン・アウトのアニメーション */
+  }
+
+  .sidebar.show {
+      transform: translateX(0);
+      float: left;
+  }
+
+  .sidebar,
+  .toggle-btn { /* サイドバーとボタンの共通部分 */
+      background-color: #97bfe8;
+  }
+
+  .toggle-btn {
+      position: fixed;
+      display: block;
+      top: 20px;
+      left: 100%;
+      transition: .3s;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+  }
+
+  .content-side {
+      display: none;
+  }
+
+  .sidebar.show + .toggle-btn {
+  left: 250px;
+  }
+
+  .label-task-name {
+      display: block;
+  }
+
+  .due-date {
+      display: none;
+  }
+}
+
+#sidebar-toggle {
+  position: absolute;
+  margin-top: 100px;
+  left: 0;
+}
 
 /* ここからQuestionboard */
 .thread-list{
