@@ -84,8 +84,8 @@ def request_courseWork_info(headers, courseId=""):
     COURSEWORK_INFO_FIELDS = "courseWork(courseId,id,title,description,materials,updateTime,dueDate,dueTime,alternateLink)"
     
     response = requests.get(f"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork?fields={COURSEWORK_INFO_FIELDS}", headers=headers).json()
-    if response.get("error", None):
-        raise Exception(response.get("error", {}).get("message", "An error occurred"))
+    # if response.get("error", None):
+    #     raise Exception(response.get("error", {}).get("message", "An error occurred"))
     return response.get("courseWork", [])
 
     # courseWork
