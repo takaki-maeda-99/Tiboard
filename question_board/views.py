@@ -61,5 +61,6 @@ def thread_detail(request, thread_id):
     return render(request, 'question_board/thread_detail.html', {
         'thread': thread,
         'posts': posts,
+        'form': form
 
     })

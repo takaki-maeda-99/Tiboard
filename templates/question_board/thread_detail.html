@@ -48,17 +48,16 @@
 
 <div class="extra-space"></div>
 
-<form method="POST" id="reply-form" class="reply-form" action="{% url 'question_board:thread_detail' thread.id %}">
+<form method="POST" id="reply-form" class="reply-form" action="{% url 'question_board:thread_detail' thread.id %}" enctype="multipart/form-data">
     {% csrf_token %}
     <div id='reply-to-post'></div>
-    <textarea class="input-space" id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
+    <textarea class="input-space" id="reply-content" name="content" placeholder="内容を入力"></textarea>
     <label for="file-upload">Upload file:</label>
     <input type="file" id="file-upload" name="attachment">
       
       
       
     <input type="hidden" id="post-id-input" name="post_id">
-    <input type="hidden" id="reply-to-input" name="reply_to">
     <button class="send-button" type="submit">▶</button>
     <p id="error-message" style="color: red; display: none;"></p>
 
