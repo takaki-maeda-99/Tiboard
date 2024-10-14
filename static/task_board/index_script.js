@@ -484,44 +484,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // サイドバーの開閉
-    const sidebar = document.querySelector('.sidebar');
-    const toggleButton = document.querySelector('.toggle-btn');
+    // // サイドバーの開閉
+    // const sidebar = document.querySelector('.sidebar');
+    // const toggleButton = document.querySelector('.toggle-btn');
 
-    if (toggleButton && sidebar) {
-        toggleButton.addEventListener('click', function () {
-            sidebar.classList.toggle('show');
-            toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
-        });
-    }
+    // if (toggleButton && sidebar) {
+    //     toggleButton.addEventListener('click', function () {
+    //         sidebar.classList.toggle('show');
+    //         toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
+    //     });
+    // }
 
-    // サイドバー外側をクリックした場合にサイドバーを閉じる処理
-    document.addEventListener('click', function (event) {
-        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-            if (sidebar.classList.contains('show')) {
-                sidebar.classList.remove('show');
-                toggleButton.textContent = '>';
-            }
-        }
-    });
+    // // サイドバー外側をクリックした場合にサイドバーを閉じる処理
+    // document.addEventListener('click', function (event) {
+    //     if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+    //         if (sidebar.classList.contains('show')) {
+    //             sidebar.classList.remove('show');
+    //             toggleButton.textContent = '>';
+    //         }
+    //     }
+    // });
 
-    document.addEventListener('touchstart', function (event) {
-        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-            if (sidebar.classList.contains('show')) {
-                sidebar.classList.remove('show');
-                toggleButton.textContent = '>';
-            }
-        }
-    });
+    // document.addEventListener('touchstart', function (event) {
+    //     if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+    //         if (sidebar.classList.contains('show')) {
+    //             sidebar.classList.remove('show');
+    //             toggleButton.textContent = '>';
+    //         }
+    //     }
+    // });
 
-    // サイドバー内のクリックを伝播させないようにする
-    sidebar.addEventListener('click', function (event) {
-        event.stopPropagation();
-    });
+    // // サイドバー内のクリックを伝播させないようにする
+    // sidebar.addEventListener('click', function (event) {
+    //     event.stopPropagation();
+    // });
 
-    sidebar.addEventListener('touchstart', function (event) {
-        event.stopPropagation();
-    });
+    // sidebar.addEventListener('touchstart', function (event) {
+    //     event.stopPropagation();
+    // });
 });
 
 // ユーザーが選択した時間の表示間隔を時間軸に適用
