@@ -112,6 +112,11 @@
 
 .label-task-name a {
     text-decoration: none;
+    display: block;
+}
+
+.label-task-name a span {
+    display: block;
 }
 
 .toggle-btn {
