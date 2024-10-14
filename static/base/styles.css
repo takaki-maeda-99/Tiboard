@@ -8,7 +8,6 @@
 }
 
 #content-side {
-  overflow: auto;
   scrollbar-width: none; /* Firefox */
 }
 
