@@ -14,7 +14,7 @@ const INTERVAL = 30; // 現在時間の更新間隔
 const DEFAULT_DATE = new Date();
 
 
-const taskBarFontSize = TASK_BAR_AND_NAME_HEIGHT * 0.4
+const taskBarFontSize = TASK_BAR_AND_NAME_HEIGHT * 0.35
 let nowLineElement = null;  // グローバル変数で現在の線を管理
 
 // 無効な時間の場合にデフォルトの時間を渡す
@@ -182,8 +182,6 @@ function addTaskBar(tasks) {
             taskBar.style.width = `${maxPx - taskStartPx}px`;
         };
 
-        
-
         const dueDateDiv = document.createElement('div');
         dueDateDiv.className = 'due-date';
         const endDate = new Date(task.endTime);
@@ -210,23 +208,27 @@ function addTaskBar(tasks) {
         taskNameOnLabel.className = 'label-task-name';
 
         const taskLink = document.createElement('a')
-        taskLink.href = task.link;
-        taskLink.style.fontSize = `${taskBarFontSize}px`;
-        taskLink.target = '_blank';
-        taskLink.rel = 'noopener noreferrer';
+        const taskSpan = document.createElement('span')
 
-        taskLink.textContent = task.name
-        taskLink.style.fontSize = `${taskBarFontSize}px`;
+        taskLink.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
+        taskSpan.href = task.link;
+        taskSpan.style.fontSize = `${taskBarFontSize}px`;
+        taskSpan.target = '_blank';
+        taskSpan.rel = 'noopener noreferrer';
+        taskSpan.textContent = task.name
+        taskSpan.style.fontSize = `${taskBarFontSize}px`;
+        taskSpan.style.margin = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
         
         if (taskBarWidth < MAX_DUE_DATE_PX) {
             dueDateDiv.style.color = 'black';
-            taskLink.style.color = 'black';
+            taskSpan.style.color = 'black';
         } else {
             dueDateDiv.style.color = 'white';
-            taskLink.style.color = 'white';
+            taskSpan.style.color = 'white';
         };
 
         taskBar.appendChild(dueDateDiv);
+        taskLink.appendChild(taskSpan)
         taskNameOnLabel.appendChild(taskLink);
         taskBar.appendChild(taskNameOnLabel);
         taskBars.appendChild(taskBar);
