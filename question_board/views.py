@@ -21,6 +21,9 @@ def thread_detail(request, thread_id):
     user_id = request.COOKIES.get('user_id')
     print(user_id)
 
+    threads = Thread.objects.all()
+
+
     if request.method == 'POST':
         content = request.POST.get('reply_content')
         post_id = request.POST.get('post_id')
@@ -35,4 +38,5 @@ def thread_detail(request, thread_id):
     return render(request, 'question_board/thread_detail.html', {
         'thread': thread,
         'posts': posts,
+        'threads':threads,
     })

@@ -1,28 +1,78 @@
 {% extends 'base.html' %}
 
-{% block title %}Qestion Board{% endblock %}
+{% block title %}Question Board{% endblock %}
+
+{% block content_side %}
+
+
+<ul class="thread-list">
+    {% for thread in threads %}
+    <li class="thread-names">
+        <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+    
+
+{%endblock%}
+
+{% block head_bar_main %}
+<h1>{{ thread.name }}</h1>
+{%endblock%}
 
 {% block content_main %}
+
 {% load static %}
-<h1>Thread: {{ thread.name }}</h1>
-<p>{{ thread.description }}</p>
-<ul>
+
+<ul class="post-content-info">
     {% for post in posts %}
-    <li>
-        <p>{{ post.author}} posted at {{ post.created_at }} Post ID: {{ post.id }} </p>
-        <p style="white-space: pre-wrap;">{{ post.content }}</p>
-        <button class="reply-btn" data-postid="{{ post.id }}">Reply</button>
+    <li class="post-news">
+        <div class="post-info">
+            <div class="post-header">
+                <div class="icon"></div>
+                <p class="post-id">{{ post.author}} Post ID: {{ post.id }}</p>
+            </div>
+            <p class="date-info">{{ post.created_at }}</p>
+        </div>
+        <p class="post-content" style="white-space: pre-wrap;">{{ post.content }}</p>
+        <button class="reply-btn" data-postid="{{ post.id }}" data-postcontent="{{ post.content }}">Reply</button>
     </li>
     {% endfor %}
 </ul>
 
-<form method="POST" id="reply-form" action="{% url 'question_board:thread_detail' thread.id %}">
+
+
+<div class="extra-space"></div>
+
+<form method="POST" id="reply-form" class="reply-form" action="{% url 'question_board:thread_detail' thread.id %}">
     {% csrf_token %}
-    <textarea id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
+    <div id='reply-to-post'></div>
+    <textarea class="input-space" id="reply-content" name="reply_content" placeholder="内容を入力"></textarea>
+    
+      
+      
+      
     <input type="hidden" id="post-id-input" name="post_id">
-    <button type="submit">Send</button>
+    <input type="hidden" id="reply-to-input" name="reply_to">
+    <button class="send-button" type="submit">▶</button>
 </form>
 
-<script src="{% static "question_board/thread_detail_script.js" %}"></script>
 
-{% endblock %}
+
+<script src="{% static "question_board/thread_detail_script.js" %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const contentMain = document.getElementById('content-main');
+
+        window.onload = function() {
+            contentMain.scrollTop = contentMain.scrollHeight;
+        };
+    });
+</script>
+
+{% endblock %} 
+
+
+
+
+

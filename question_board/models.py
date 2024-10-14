@@ -21,3 +21,14 @@ class Post(models.Model):
 
     def __str__(self):
         return self.thread.course.course_name
+    
+from django.db import models
+
+class Message(models.Model):
+    content = models.TextField()
+    reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.CharField(max_length=100)  # 投稿者情報を追加
+
+    def __str__(self):
+        return f'{self.author}: {self.content[:50]}'  # メッセージの最初の50文字を表示

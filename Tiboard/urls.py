@@ -24,3 +24,5 @@ urlpatterns = [
     path("score_board/", include("score_board.urls")),
     path("task_board/", include("task_board.urls")),
 ]
+
+

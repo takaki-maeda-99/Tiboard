@@ -1,18 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Qestion Board{% endblock %}
+{% block title %}Question Board{% endblock %}
 
-{% block content_main %}
+{% block content_side %}
 
-<h1>情報共有・質問掲示板</h1>
-<h2>Threads</h2>
-    <ul>
-        {% for thread in threads %}
-        <li>
-            <a href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a> - {{ thread.description }}
-        </li>
-        {% endfor %}
-    </ul>
-    
+{% load static %}
+
+<script src="{% static "question_board/thread_detail_script.js" %}"></script>
+
+<ul class="thread-list">
+    {% for thread in threads %}
+    <li class="thread-names">
+        <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
+            {% comment %} - {{ thread.description }} {% endcomment %}
+    </li>
+    {% endfor %}
+</ul>
+
 
 {%endblock%}
+
