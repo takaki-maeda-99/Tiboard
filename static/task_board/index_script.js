@@ -97,8 +97,7 @@ function addTaskName(tasks) {
             span2.style.fontSize = `${taskBarFontSize - 4}px`
 
             const detailPopup = document.createElement('div');
-            detailPopup.classList.add('task-detail-popup');
-            detailPopup.style.margin = '-12px';
+            detailPopup.className = 'task-detail-popup';
             detailPopup.textContent = task.name;
             detailPopup.style.fontSize = `${taskBarFontSize}px`;
 
@@ -211,13 +210,14 @@ function addTaskBar(tasks) {
         const taskSpan = document.createElement('span')
 
         taskLink.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
-        taskSpan.href = task.link;
+        taskLink.href = task.link;
         taskSpan.style.fontSize = `${taskBarFontSize}px`;
         taskSpan.target = '_blank';
         taskSpan.rel = 'noopener noreferrer';
         taskSpan.textContent = task.name
         taskSpan.style.fontSize = `${taskBarFontSize}px`;
-        taskSpan.style.margin = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
+        taskSpan.style.marginTop = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
+        taskSpan.style.maxWidth = `${taskBarWidth}px`;
         
         if (taskBarWidth < MAX_DUE_DATE_PX) {
             dueDateDiv.style.color = 'black';
@@ -226,6 +226,28 @@ function addTaskBar(tasks) {
             dueDateDiv.style.color = 'white';
             taskSpan.style.color = 'white';
         };
+
+        const contentMain = document.getElementById('content-main');
+        const detailPopup = document.createElement('div');
+        detailPopup.className = 'task-detail-popup';
+        detailPopup.textContent = task.name;
+        taskLink.target = '_blank';
+        detailPopup.style.fontSize = `${taskBarFontSize}px`;
+        contentMain.appendChild(detailPopup);
+
+        // マウスオーバー時にポップアップを表示
+        taskNameOnLabel.addEventListener('mouseenter', () => {
+            detailPopup.style.display = 'block';
+            const rect = taskBar.getBoundingClientRect();
+            detailPopup.style.left = `${rect.left}px`;
+            detailPopup.style.width = `fit-content`;
+            detailPopup.style.top = `${rect.bottom + window.scrollY}px`; // スクロール対応
+        });
+
+        // マウスアウト時にポップアップを非表示
+        taskNameOnLabel.addEventListener('mouseleave', () => {
+            detailPopup.style.display = 'none';
+        });
 
         taskBar.appendChild(dueDateDiv);
         taskLink.appendChild(taskSpan)
@@ -405,11 +427,15 @@ async function clearChart() {
     const tasksContainers = document.querySelectorAll('.tasks');
     const chartFooter = document.getElementById('chart-footer');
     const chartHeader = document.getElementById('chart-header');
+    const popups = document.getElementsByClassName('task-detail-popup');
 
     // 現在のチャートをクリア
     while (taskBars.firstChild) taskBars.removeChild(taskBars.firstChild);
     while (chartFooter.firstChild) chartFooter.removeChild(chartFooter.firstChild);
     while (chartHeader.firstChild) chartHeader.removeChild(chartHeader.firstChild);
+    while (popups.length > 0) {
+        popups[0].parentNode.removeChild(popups[0]);
+    }
     tasksContainers.forEach(container => {
         while (container.firstChild) container.removeChild(container.firstChild);
     });
@@ -483,45 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
             contentSide.scrollTop = contentMain.scrollTop;
         });
     }
-
-    // // サイドバーの開閉
-    // const sidebar = document.querySelector('.sidebar');
-    // const toggleButton = document.querySelector('.toggle-btn');
-
-    // if (toggleButton && sidebar) {
-    //     toggleButton.addEventListener('click', function () {
-    //         sidebar.classList.toggle('show');
-    //         toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
-    //     });
-    // }
-
-    // // サイドバー外側をクリックした場合にサイドバーを閉じる処理
-    // document.addEventListener('click', function (event) {
-    //     if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-    //         if (sidebar.classList.contains('show')) {
-    //             sidebar.classList.remove('show');
-    //             toggleButton.textContent = '>';
-    //         }
-    //     }
-    // });
-
-    // document.addEventListener('touchstart', function (event) {
-    //     if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-    //         if (sidebar.classList.contains('show')) {
-    //             sidebar.classList.remove('show');
-    //             toggleButton.textContent = '>';
-    //         }
-    //     }
-    // });
-
-    // // サイドバー内のクリックを伝播させないようにする
-    // sidebar.addEventListener('click', function (event) {
-    //     event.stopPropagation();
-    // });
-
-    // sidebar.addEventListener('touchstart', function (event) {
-    //     event.stopPropagation();
-    // });
 });
 
 // ユーザーが選択した時間の表示間隔を時間軸に適用
