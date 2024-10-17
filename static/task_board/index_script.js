@@ -4,17 +4,17 @@ const HOUR_TO_PX = 10; // 1時間当たりのpx
 const SECONDS_PER_HOUR = 1000 * 60 * 60 // 1時間当たりの秒数
 const CHART_LEFT_MARGIN = 30; // チャートの左端の調整用
 const MARGIN = 10;
-const TASK_BAR_HEIGHT = 30; // タスクバーの縦の長さ
-const TASK_BAR_UNIT = 36;
-const TASK_BAR_FONT_SIZE = 15;
+const TASK_BAR_UNIT = 50; // タスクバーユニット全体の高さ
 const BACK_GROUND_COLOR = '#913e0b80';
 const SEPARATOR_THINNESS = 1;
-const NAME_HEIGHT = 16;
+const TASK_BAR_AND_NAME_HEIGHT = 45;
 const MAX_WIDTH = 200;
 const MAX_DUE_DATE_PX = 127; // タスクバーのラベルの幅は126.34px
 const INTERVAL = 30; // 現在時間の更新間隔
 const DEFAULT_DATE = new Date();
 
+
+const taskBarFontSize = TASK_BAR_AND_NAME_HEIGHT * 0.35
 let nowLineElement = null;  // グローバル変数で現在の線を管理
 
 // 無効な時間の場合にデフォルトの時間を渡す
@@ -63,31 +63,63 @@ function drawVerticalLine() {
 // タスク名の追加
 function addTaskName(tasks) {
     const taskContainers = document.querySelectorAll('.tasks');
+    const body = document.querySelector('body');
     taskContainers.forEach(tasksContainer => {
         tasks.forEach(task => {
             const taskNameDiv = document.createElement('div');
             taskNameDiv.className = 'task-name dropdown';
             taskNameDiv.style.margin = `${MARGIN}px 0`;
-            taskNameDiv.style.height = `${NAME_HEIGHT}px`;
-            taskNameDiv.style.lineHeight = `${NAME_HEIGHT}px`;
+            taskNameDiv.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`;
             taskNameDiv.style.max_width = `${MAX_WIDTH}px`;
 
             const taskLink = document.createElement('a')
             taskLink.href = task.link;
-            taskLink.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
             taskLink.target = '_blank';
-            taskLink.rel = 'noopener noreferrer';
+
+            const span1 = document.createElement('span');
+            const span2 = document.createElement('span');
+            span1.className = 'course-title';
+            span2.className = 'coursework-title';
+            span1.style.color = '#000000';
+            span2.style.color = '#000000';
 
             if (task.submissionState == 'TURNED_IN') {
-                taskLink.textContent = `✓${task.name}`;
-                taskLink.style.color = '#00000050'; // black(#000000)のopacity: 50
+                span1.textContent = `✓${task.courseworkTitle}`;
+                span2.textContent = `${task.courseTitle}`;
+                span1.style.color = '#00000080';
+                span2.style.color = '#00000080';
             } else {
-                taskLink.textContent = task.name;
-                taskLink.style.color = 'black';
+                span1.textContent = task.courseworkTitle;
+                span2.textContent = task.courseTitle;
             };
 
-            taskNameDiv.appendChild(taskLink)
+            span1.style.fontSize = `${taskBarFontSize}px`
+            span2.style.fontSize = `${taskBarFontSize - 4}px`
+
+            const detailPopup = document.createElement('div');
+            detailPopup.className = 'task-detail-popup';
+            detailPopup.textContent = task.name;
+            detailPopup.style.fontSize = `${taskBarFontSize}px`;
+
+            // マウスオーバー時にポップアップを表示
+            taskNameDiv.addEventListener('mouseenter', () => {
+                detailPopup.style.display = 'block';
+                const rect = taskNameDiv.getBoundingClientRect();
+                detailPopup.style.left = `${rect.left}px`;
+                detailPopup.style.top = `${rect.bottom + window.scrollY}px`; // スクロール対応
+            });
+
+            // マウスアウト時にポップアップを非表示
+            taskNameDiv.addEventListener('mouseleave', () => {
+                detailPopup.style.display = 'none';
+            });
+
+            taskLink.appendChild(span1);
+            taskLink.appendChild(document.createElement('br'));
+            taskLink.appendChild(span2);
+            taskNameDiv.appendChild(taskLink);
             tasksContainer.appendChild(taskNameDiv);
+            body.appendChild(detailPopup);
         });
     });
 };
@@ -122,7 +154,7 @@ function setTaskBarColor(task) {
 
 // タスクバーを追加
 function addTaskBar(tasks) {
-    const taskSpacing = MARGIN * 2 + NAME_HEIGHT;
+    const taskSpacing = MARGIN * 2 + TASK_BAR_AND_NAME_HEIGHT;
     const taskBars = document.getElementById('task-bars');
 
     drawVerticalLine()
@@ -135,10 +167,11 @@ function addTaskBar(tasks) {
         const taskEndPx = timeToPixels(task.endTime, 20) + CHART_LEFT_MARGIN;
         const taskBarWidth = taskEndPx - taskStartPx;
 
-        taskBar.style.height = `${TASK_BAR_HEIGHT}px`
+        taskBar.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
         taskBar.style.left = `${taskStartPx}px`;
         taskBar.style.width = `${taskBarWidth}px`;
-        taskBar.style.margin = `${(TASK_BAR_UNIT - TASK_BAR_HEIGHT) / 2}px`
+        const taskBarMargin = (TASK_BAR_UNIT - TASK_BAR_AND_NAME_HEIGHT) / 2
+        taskBar.style.margin = `${taskBarMargin}px`
         taskBar.style.top = `${index * taskSpacing}px`;
         taskBar.style.backgroundColor = setTaskBarColor(task);
 
@@ -147,8 +180,6 @@ function addTaskBar(tasks) {
         if (taskEndPx > maxPx) {
             taskBar.style.width = `${maxPx - taskStartPx}px`;
         };
-
-        taskBars.appendChild(taskBar);
 
         const dueDateDiv = document.createElement('div');
         dueDateDiv.className = 'due-date';
@@ -169,16 +200,60 @@ function addTaskBar(tasks) {
             minute: '2-digit',
         }).replace(/\//g, '/');
 
-        dueDateDiv.style.left = `${taskStartPx}px`;
-        dueDateDiv.style.top = `${index * taskSpacing + TASK_BAR_HEIGHT - TASK_BAR_FONT_SIZE * 1.5}px`;
-        dueDateDiv.style.fontSize = `${TASK_BAR_FONT_SIZE}px`;
+        dueDateDiv.style.fontSize = `${taskBarFontSize}px`;
+        dueDateDiv.style.margin = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
+        
+        const taskNameOnLabel = document.createElement('div');
+        taskNameOnLabel.className = 'label-task-name';
+
+        const taskLink = document.createElement('a')
+        const taskSpan = document.createElement('span')
+
+        taskLink.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
+        taskLink.href = task.link;
+        taskSpan.style.fontSize = `${taskBarFontSize}px`;
+        taskSpan.target = '_blank';
+        taskSpan.rel = 'noopener noreferrer';
+        taskSpan.textContent = task.name
+        taskSpan.style.fontSize = `${taskBarFontSize}px`;
+        taskSpan.style.marginTop = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
+        taskSpan.style.maxWidth = `${taskBarWidth}px`;
+        
         if (taskBarWidth < MAX_DUE_DATE_PX) {
             dueDateDiv.style.color = 'black';
+            taskSpan.style.color = 'black';
         } else {
             dueDateDiv.style.color = 'white';
+            taskSpan.style.color = 'white';
         };
 
-        taskBars.appendChild(dueDateDiv);
+        const contentMain = document.getElementById('content-main');
+        const detailPopup = document.createElement('div');
+        detailPopup.className = 'task-detail-popup';
+        detailPopup.textContent = task.name;
+        taskLink.target = '_blank';
+        detailPopup.style.fontSize = `${taskBarFontSize}px`;
+        contentMain.appendChild(detailPopup);
+
+        // マウスオーバー時にポップアップを表示
+        taskNameOnLabel.addEventListener('mouseenter', () => {
+            detailPopup.style.display = 'block';
+            const rect = taskBar.getBoundingClientRect();
+            detailPopup.style.left = `${rect.left}px`;
+            detailPopup.style.width = `fit-content`;
+            detailPopup.style.top = `${rect.bottom + window.scrollY}px`; // スクロール対応
+        });
+
+        // マウスアウト時にポップアップを非表示
+        taskNameOnLabel.addEventListener('mouseleave', () => {
+            detailPopup.style.display = 'none';
+        });
+
+        taskBar.appendChild(dueDateDiv);
+        taskLink.appendChild(taskSpan)
+        taskNameOnLabel.appendChild(taskLink);
+        taskBar.appendChild(taskNameOnLabel);
+        taskBars.appendChild(taskBar);
 
         const separatorLine = document.createElement('div');
         separatorLine.className = 'task-separator';
@@ -352,11 +427,15 @@ async function clearChart() {
     const tasksContainers = document.querySelectorAll('.tasks');
     const chartFooter = document.getElementById('chart-footer');
     const chartHeader = document.getElementById('chart-header');
+    const popups = document.getElementsByClassName('task-detail-popup');
 
     // 現在のチャートをクリア
     while (taskBars.firstChild) taskBars.removeChild(taskBars.firstChild);
     while (chartFooter.firstChild) chartFooter.removeChild(chartFooter.firstChild);
     while (chartHeader.firstChild) chartHeader.removeChild(chartHeader.firstChild);
+    while (popups.length > 0) {
+        popups[0].parentNode.removeChild(popups[0]);
+    }
     tasksContainers.forEach(container => {
         while (container.firstChild) container.removeChild(container.firstChild);
     });
@@ -382,7 +461,7 @@ function drawChart(tasks) {
         return;
     }
 
-    const taskSpacing = MARGIN * 2 + NAME_HEIGHT;  // タスク間のスペースを調整
+    const taskSpacing = MARGIN * 2 + TASK_BAR_AND_NAME_HEIGHT;  // タスク間のスペースを調整
 
     addTaskName(tasks); // タスク名を動的に追加
     addTaskBar(tasks); // タスクバーを追加
@@ -430,45 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
             contentSide.scrollTop = contentMain.scrollTop;
         });
     }
-
-    // サイドバーの開閉
-    const sidebar = document.querySelector('.sidebar');
-    const toggleButton = document.querySelector('.toggle-btn');
-
-    if (toggleButton && sidebar) {
-        toggleButton.addEventListener('click', function () {
-            sidebar.classList.toggle('show');
-            toggleButton.textContent = sidebar.classList.contains('show') ? '<' : '>';
-        });
-    }
-
-    // サイドバー外側をクリックした場合にサイドバーを閉じる処理
-    document.addEventListener('click', function (event) {
-        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-            if (sidebar.classList.contains('show')) {
-                sidebar.classList.remove('show');
-                toggleButton.textContent = '>';
-            }
-        }
-    });
-
-    document.addEventListener('touchstart', function (event) {
-        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-            if (sidebar.classList.contains('show')) {
-                sidebar.classList.remove('show');
-                toggleButton.textContent = '>';
-            }
-        }
-    });
-
-    // サイドバー内のクリックを伝播させないようにする
-    sidebar.addEventListener('click', function (event) {
-        event.stopPropagation();
-    });
-
-    sidebar.addEventListener('touchstart', function (event) {
-        event.stopPropagation();
-    });
 });
 
 // ユーザーが選択した時間の表示間隔を時間軸に適用
@@ -495,6 +535,28 @@ document.getElementById('days-range').addEventListener('change', function() {
 window.addEventListener('load', function() {
     daysRange = parseInt(localStorage.getItem('daysRange'), 10) || 3;
     document.getElementById('days-range').value = daysRange;
+});
+
+document.querySelectorAll('.task-name').forEach(task => {
+    task.addEventListener('mouseenter', function() {
+        const popup = this.querySelector('.task-detail-popup');
+        const rect = this.getBoundingClientRect();
+        
+        // 画面の下部に近い場合はポップアップを上方向に表示
+        if (rect.bottom + popup.offsetHeight > window.innerHeight) {
+            popup.style.top = `${rect.top - popup.offsetHeight}px`;
+        } else {
+            popup.style.top = `${rect.bottom}px`;
+        }
+
+        popup.style.left = `${rect.left}px`;
+        popup.style.display = 'block';
+    });
+
+    task.addEventListener('mouseleave', function() {
+        const popup = this.querySelector('.task-detail-popup');
+        popup.style.display = 'none';
+    });
 });
 
 //---------------------------- 処理の実行-----------------------------------

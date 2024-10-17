@@ -93,6 +93,8 @@ function makeTasks(courses, coursework, submissionData) {
 
         return {
             name: `${courseTitle} ${coursework_title}`,
+            courseTitle: courseTitle,
+            courseworkTitle: coursework_title,
             startTime: startTime,
             endTime: due_time,
             submissionState: submissionState,
