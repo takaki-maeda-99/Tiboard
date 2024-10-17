@@ -23,6 +23,10 @@ def convert_utc_to_jst(utc_date=None, date_dict=None, time_dict=None):
         jst_time = datetime.fromisoformat(utc_time).astimezone(ZoneInfo("Asia/Tokyo"))
     return jst_time
 
+# class Database:
+#     def __init__(self, 
+    
+
 def insert_user_to_db(user_id, user_email):
     user, _ = User.objects.get_or_create(
         user_id=user_id, 

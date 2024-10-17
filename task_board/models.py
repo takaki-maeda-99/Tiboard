@@ -1,5 +1,10 @@
 from django.db import models
 
+from allauth.socialaccount.models import SocialAccount
+
+class CustomSocialAccount(models.Model):
+    social_account = models.OneToOneField(SocialAccount, on_delete=models.CASCADE, default=None, related_name='custom_account')
+    new_field = models.CharField(max_length=255, blank=True, null=True)
 
 # Create your models here.
 class User(models.Model):
