@@ -48,14 +48,22 @@ def get_task_board_data(request):
     submission = list(submission.values())
     return [courses, courseworkss, submission]
 
-def update_courses_data(request):
-    creds, user_id = set_or_create_creds(request)
+def update_courses_data(request = None, user_id = None):
+    if user_id is None:
+        creds, user_id = set_or_create_creds(request)
+    else:
+        creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{user_id}token.json", SCOPES)
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
     
     headers = {"Authorization": f"Bearer {creds.token}"}
 
     courses = classroom.request_courses_info(headers)
     
+    database.clear_courses_from_user(user_id)
+    
     for course in courses:
+        database.add_course_to_user(user_id, course["id"])
         database.insert_course_to_db(course)
     
     response = database.get_courses_from_db(user_id)
@@ -126,12 +134,15 @@ import time
 
 def update_polling():
     start_time = time.time()
+    print("update_polling 開始")
     
     courses = database.get_all_courses_from_db()
     headerss = []
     
     for course in courses:
         enrolled_users = database.get_users_from_course(course.course_id)
+        if enrolled_users.count() == 0:
+            continue
         enrolled_first_user_id = list(enrolled_users.values())[0]["user_id"]
         creds = Credentials.from_authorized_user_file(f"{TOKENS_FILE_PATH}/{enrolled_first_user_id}token.json", SCOPES)
         if creds and creds.expired and creds.refresh_token:
@@ -199,12 +210,12 @@ def update_assignments(request):
 def get_ranking_data(coursework_id):
     submissions = database.get_submissions_from_coursework(coursework_id).order_by("score")
     submissions = list(submissions.values("user_id_id", "score"))
-    
+
     user_names = []
     for submission in submissions:
         user = database.get_user_from_db(submission["user_id_id"])
         user_names.append(user.user_email)
-        
+
     ranking = []
     for user_name, submission in zip(user_names, submissions):
         ranking.append({
@@ -212,5 +223,3 @@ def get_ranking_data(coursework_id):
             "score": submission["score"]
         })
     return ranking
-
-# print(get_ranking_data(718884185399))

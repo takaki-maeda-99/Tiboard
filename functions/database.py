@@ -182,3 +182,8 @@ def get_submissions_from_coursework(coursework_id):
 def get_user_from_db(user_id):
     user = User.objects.get(id=user_id)
     return user
+
+def clear_courses_from_user(user_id):
+    user = User.objects.get(user_id=user_id)
+    user.enrolled_courses.clear()
+    user.save()

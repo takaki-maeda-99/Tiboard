@@ -16,7 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-HOST_IP = "127.0.0.1" #"10.27.75.190"
+HOST_IP = "127.0.0.1"
 
 BASE_URL = f"https://{HOST_IP}:8000"
 
