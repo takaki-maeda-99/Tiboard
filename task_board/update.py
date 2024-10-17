@@ -9,10 +9,11 @@ from django.conf import settings
 
 def start():
     
-    users = database.get_users_from_db()
-    for user in users:
-        update_courses_data(user_id=user.user_id)
+    # users = database.get_users_from_db()
+    # for user in users:
+    #     update_courses_data(user_id=user.user_id)
 
+    
     scheduler = BackgroundScheduler()
     scheduler.add_job(update_polling, 'interval', seconds= settings.POLLING_INTERVAL)
     scheduler.start()

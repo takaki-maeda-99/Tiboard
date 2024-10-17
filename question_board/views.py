@@ -65,23 +65,23 @@ def thread_detail(request, thread_id):
 
     })
     
-# from django.shortcuts import json_response
+from django.http import JsonResponse
     
-# def get_thread(request, thread_id):
-#     thread = get_object_or_404(Thread, id=thread_id)
-#     posts = thread.posts.all()
-#     return json_response({
-#         'thread': {
-#             'id': thread.id,
-#             'title': thread.title,
-#             'content': thread.content,
-#         },
-#         'posts': [
-#             {
-#                 'id': post.id,
-#                 'content': post.content,
-#                 'author': post.author.user_id,
-#             }
-#             for post in posts
-#         ]
-#     })
+def get_thread(request, thread_id):
+    thread = get_object_or_404(Thread, id=thread_id)
+    posts = thread.posts.all()
+    return JsonResponse({
+        'thread': {
+            'id': thread.id,
+            'title': thread.title,
+            'content': thread.content,
+        },
+        'posts': [
+            {
+                'id': post.id,
+                'content': post.content,
+                'author': post.author.user_id,
+            }
+            for post in posts
+        ]
+    })
