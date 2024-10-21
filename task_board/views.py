@@ -1,9 +1,14 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
+from django.views.generic import TemplateView
 
 from django.contrib.auth.decorators import login_required
 from functions.function import Function as func
+
+@login_required
+def index(request):
+    return render(request, "task_board/index.html")
 
 @login_required
 def get_tasks(request):
