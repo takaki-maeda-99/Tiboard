@@ -1,6 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}{% load static %}
 
 {% block title %}Question Board{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'question_board/styles.css' %}">
+{% endblock %}
+
+{% block head_bar_side %}
+<div class="threads">Thread List</div>
+{% endblock %}
 
 {% block content_side %}
 
@@ -22,7 +30,6 @@
 
 {% block content_main %}
 
-{% load static %}
 <ul class="post-content-info">
     {% for post in posts %}
     <li class="post-news">
@@ -78,7 +85,18 @@
 
 {% endblock %} 
 
-
+{% block other_content %}
+<div class="sidebar-list">
+    <h2>Thread List</h2>
+    <ul class="thread-list">
+        {% for thread in threads %}
+        <li class="thread-names">
+            <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
 
 
 

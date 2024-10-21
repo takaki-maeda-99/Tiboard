@@ -19,6 +19,7 @@ def thread_list(request):
 
 def thread_detail(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
+    threads = Thread.objects.all()
     posts = thread.posts.all()
     user_id = request.COOKIES.get('user_id')
 
@@ -61,8 +62,8 @@ def thread_detail(request, thread_id):
     return render(request, 'question_board/thread_detail.html', {
         'thread': thread,
         'posts': posts,
-        'form': form
-
+        'form': form,
+        'threads': threads
     })
     
 from django.http import JsonResponse

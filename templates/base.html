@@ -54,9 +54,21 @@
             </div>
         </div>
         <div class="other_content">
+            <img src="{% static 'icons/hamburgar.png' %}" class="toggle-btn">
             <div class="sidebar" id="sidebar">
-                <button class="toggle-btn">&gt;</button>
-                <div class="tasks" style="padding: 12px"></div>
+                <div class="sidebar-content">
+                    <div class="sidebar-header">
+                        <ul class="menu">
+                            <div class="menues">
+                                <li><a class="menu-name "href="//127.0.0.1:8000/">Home</a></li>
+                                <li><a class="menu-name "href="//127.0.0.1:8000/task_board">Taskboard</a></li>
+                                <li><a class="menu-name "href="//127.0.0.1:8000/question_board">Questionboard</a></li>
+                                <li><a class="menu-name "href="//127.0.0.1:8000/score_board">Scoreboard</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+                {% block other_content %}{% endblock %}
             </div>
         </div>
     </div>

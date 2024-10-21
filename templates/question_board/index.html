@@ -1,10 +1,12 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load static %}
 
 {% block title %}Question Board{% endblock %}
 
-{% block content_side %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'question_board/styles.css' %}">
+{% endblock %}
 
-{% load static %}
+{% block content_side %}
 
 <script src="{% static "question_board/thread_detail_script.js" %}"></script>
 
@@ -19,4 +21,18 @@
 
 
 {%endblock%}
+
+{% block other_content %}
+<div class='sidebar-content'>
+    <h2>Thread List</h2>
+    <ul class="thread-list">
+        {% for thread in threads %}
+        <li class="thread-names">
+            <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
 

@@ -62,65 +62,54 @@ function drawVerticalLine() {
 
 // タスク名の追加
 function addTaskName(tasks) {
-    const taskContainers = document.querySelectorAll('.tasks');
+    const taskContainer = document.getElementById('tasks');
     const body = document.querySelector('body');
-    taskContainers.forEach(tasksContainer => {
-        tasks.forEach(task => {
-            const taskNameDiv = document.createElement('div');
-            taskNameDiv.className = 'task-name dropdown';
-            taskNameDiv.style.margin = `${MARGIN}px 0`;
-            taskNameDiv.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`;
-            taskNameDiv.style.max_width = `${MAX_WIDTH}px`;
+    const taskNameList = document.createElement('ul');
+    tasks.forEach(task => {
+        const taskName = document.createElement('li');
+        taskName.className = 'task-name dropdown';
+        taskName.style.margin = `${MARGIN}px ${MARGIN}px ${MARGIN*2}px ${MARGIN}px`;
+        taskName.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`;
+        taskName.style.max_width = `${MAX_WIDTH}px`;
 
-            const taskLink = document.createElement('a')
-            taskLink.href = task.link;
-            taskLink.target = '_blank';
+        const taskLink = document.createElement('a')
+        taskLink.href = task.link;
+        taskLink.target = '_blank';
 
-            const span1 = document.createElement('span');
-            const span2 = document.createElement('span');
-            span1.className = 'course-title';
-            span2.className = 'coursework-title';
-            span1.style.color = '#000000';
-            span2.style.color = '#000000';
+        const span1 = document.createElement('span');
+        const span2 = document.createElement('span');
+        span1.className = 'course-title';
+        span2.className = 'coursework-title';
+        span1.style.color = '#ffffff';
+        span2.style.color = '#ffffff';
 
-            if (task.submissionState == 'TURNED_IN') {
-                span1.textContent = `✓${task.courseworkTitle}`;
-                span2.textContent = `${task.courseTitle}`;
-                span1.style.color = '#00000080';
-                span2.style.color = '#00000080';
-            } else {
-                span1.textContent = task.courseworkTitle;
-                span2.textContent = task.courseTitle;
-            };
+        if (task.submissionState == 'TURNED_IN') {
+            span1.textContent = `✓${task.courseworkTitle}`;
+            span2.textContent = `${task.courseTitle}`;
+            span1.style.color = '#ffffff80';
+            span2.style.color = '#ffffff80';
+        } else {
+            span1.textContent = task.courseworkTitle;
+            span2.textContent = task.courseTitle;
+        };
 
-            span1.style.fontSize = `${taskBarFontSize}px`
-            span2.style.fontSize = `${taskBarFontSize - 4}px`
+        span1.style.fontSize = `${taskBarFontSize}px`
+        span2.style.fontSize = `${taskBarFontSize - 4}px`
 
-            const detailPopup = document.createElement('div');
-            detailPopup.className = 'task-detail-popup';
-            detailPopup.textContent = task.name;
-            detailPopup.style.fontSize = `${taskBarFontSize}px`;
+        const detailPopup = document.createElement('div');
+        detailPopup.className = 'task-detail-popup';
+        detailPopup.textContent = task.name;
+        detailPopup.style.fontSize = `${taskBarFontSize * 0.8}px`;
 
-            // マウスオーバー時にポップアップを表示
-            taskNameDiv.addEventListener('mouseenter', () => {
-                detailPopup.style.display = 'block';
-                const rect = taskNameDiv.getBoundingClientRect();
-                detailPopup.style.left = `${rect.left}px`;
-                detailPopup.style.top = `${rect.bottom + window.scrollY}px`; // スクロール対応
-            });
+        setPopup(taskName, taskName, detailPopup);
 
-            // マウスアウト時にポップアップを非表示
-            taskNameDiv.addEventListener('mouseleave', () => {
-                detailPopup.style.display = 'none';
-            });
-
-            taskLink.appendChild(span1);
-            taskLink.appendChild(document.createElement('br'));
-            taskLink.appendChild(span2);
-            taskNameDiv.appendChild(taskLink);
-            tasksContainer.appendChild(taskNameDiv);
-            body.appendChild(detailPopup);
-        });
+        taskLink.appendChild(span1);
+        taskLink.appendChild(document.createElement('br'));
+        taskLink.appendChild(span2);
+        taskName.appendChild(taskLink);
+        taskNameList.appendChild(taskName);
+        taskContainer.appendChild(taskNameList);
+        body.appendChild(detailPopup); 
     });
 };
 
@@ -145,9 +134,9 @@ function setTaskBarColor(task) {
         }
     } else {
         if (task.submissionState == 'TURNED_IN'){
-            return '#00800050';
+            return '#10802050';
         } else {
-            return '#008000';
+            return '#108020';
         }
     }
 };
@@ -235,19 +224,7 @@ function addTaskBar(tasks) {
         detailPopup.style.fontSize = `${taskBarFontSize}px`;
         contentMain.appendChild(detailPopup);
 
-        // マウスオーバー時にポップアップを表示
-        taskNameOnLabel.addEventListener('mouseenter', () => {
-            detailPopup.style.display = 'block';
-            const rect = taskBar.getBoundingClientRect();
-            detailPopup.style.left = `${rect.left}px`;
-            detailPopup.style.width = `fit-content`;
-            detailPopup.style.top = `${rect.bottom + window.scrollY}px`; // スクロール対応
-        });
-
-        // マウスアウト時にポップアップを非表示
-        taskNameOnLabel.addEventListener('mouseleave', () => {
-            detailPopup.style.display = 'none';
-        });
+        setPopup(taskBar, taskNameOnLabel, detailPopup, true);
 
         taskBar.appendChild(dueDateDiv);
         taskLink.appendChild(taskSpan)
@@ -261,6 +238,22 @@ function addTaskBar(tasks) {
         separatorLine.style.height = `${SEPARATOR_THINNESS}px`;
         separatorLine.style.backgroundColor = BACK_GROUND_COLOR;
         taskBars.appendChild(separatorLine);
+    });
+};
+
+// ポップアップの表示・非表示の設定
+function setPopup(parentClass, childClass, detailPopup, fitContent=false){
+    
+    childClass.addEventListener('mouseenter', () => {
+        detailPopup.style.display = 'block';
+        const rect = parentClass.getBoundingClientRect();
+        detailPopup.style.left = `${rect.left - MARGIN}px`;
+        detailPopup.style.top = `${rect.bottom + window.scrollY}px`;
+        if (fitContent) detailPopup.style.width = `fit-content`;
+    });
+
+    childClass.addEventListener('mouseleave', () => {
+        detailPopup.style.display = 'none';
     });
 };
 
