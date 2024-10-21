@@ -15,10 +15,8 @@ from allauth.socialaccount.models import SocialAccount
 from .models import CustomSocialAccount
 
 @receiver(post_save, sender=SocialAccount)
-def create_custom_social_account(sender, instance, created, **kwargs):
-    if created:
-        CustomSocialAccount.objects.create(social_account=instance, new_field='default_value')
-
-@receiver(post_save, sender=SocialAccount)
 def save_custom_social_account(sender, instance, **kwargs):
-    instance.custom_account.save()
+    try:
+        instance.custom_account.save()
+    except CustomSocialAccount.DoesNotExist:
+        CustomSocialAccount.objects.create(social_account=instance)

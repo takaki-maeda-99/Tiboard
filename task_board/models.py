@@ -4,18 +4,11 @@ from allauth.socialaccount.models import SocialAccount
 
 class CustomSocialAccount(models.Model):
     social_account = models.OneToOneField(SocialAccount, on_delete=models.CASCADE, default=None, related_name='custom_account')
-    new_field = models.CharField(max_length=255, blank=True, null=True)
-
-# Create your models here.
-class User(models.Model):
-    user_id = models.CharField(max_length=100 ,default="", unique=True)
-    
-    user_email = models.EmailField(max_length=100 ,default="")
     enrolled_courses = models.ManyToManyField('Course', blank=True)
     assignment_courseworks = models.ManyToManyField('CourseWork', blank=True)
-
+    
     def __str__(self):
-        return f"{self.user_id}"
+        return f"{self.social_account}"
 
 class Course(models.Model):
     course_id = models.CharField(max_length=100, default="", unique=True)
@@ -24,11 +17,10 @@ class Course(models.Model):
     link = models.URLField(max_length=100, default="")
     
     def __str__(self):
-        # return f"{self.course_id} ({self.course_name})"
         return f"{self.course_name}"
 
 class CourseWork(models.Model):
-    course_id = models.ForeignKey(Course, on_delete=models.CASCADE, default="")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, default="")
     coursework_id= models.CharField(max_length=100, default="")
     
     coursework_title = models.CharField(max_length=100)
@@ -42,12 +34,12 @@ class CourseWork(models.Model):
         return f"{self.coursework_title} ({self.coursework_id})"
     
     class Meta:
-        unique_together = ('course_id', 'coursework_id')
+        unique_together = ('course', 'coursework_id')
         
 class Submission(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default="")
-    course_id = models.ForeignKey(Course, on_delete=models.CASCADE, default="")
-    coursework_id = models.ForeignKey(CourseWork, on_delete=models.CASCADE, default="")
+    user = models.ForeignKey(CustomSocialAccount, on_delete=models.CASCADE, default="")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, default="")
+    coursework = models.ForeignKey(CourseWork, on_delete=models.CASCADE, default="")
     
     submission_state = models.CharField(max_length=50, blank=True, default="")
     submission_created_time = models.DateTimeField(null=True, blank=True)
@@ -58,7 +50,20 @@ class Submission(models.Model):
     score = models.IntegerField(default=0)
     
     def __str__(self):
-        return f"{self.coursework_id} ({self.submission_state})"
+        return f"{self.coursework} ({self.submission_state})"
     
     class Meta:
-        unique_together = ('user_id', 'course_id', 'coursework_id')
+        unique_together = ('user', 'course', 'coursework')
+        
+        
+        
+        
+class User(models.Model):
+    user_id = models.CharField(max_length=100 ,default="", unique=True)
+    
+    user_email = models.EmailField(max_length=100 ,default="")
+    enrolled_courses = models.ManyToManyField('Course', blank=True)
+    assignment_courseworks = models.ManyToManyField('CourseWork', blank=True)
+
+    def __str__(self):
+        return f"{self.user_id}"

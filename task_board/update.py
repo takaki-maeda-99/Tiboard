@@ -1,8 +1,8 @@
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from functions.function import update_polling
-from functions.function import update_courses_data
+# from functions.function import update_polling
+# from functions.function import update_courses_data
 from functions import database
 
 from django.conf import settings
