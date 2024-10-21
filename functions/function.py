@@ -47,17 +47,26 @@ class Function:
             if judge_expired(coursework, request):
                 continue
             tasks.append({
-                "course_name": course.course_name,
-                "coursework_title": coursework.coursework_title,
-                "submission_state": submission.submission_state,
-                "start_time": submission.submission_created_time,
-                "end_time": coursework.due_time,
+                "name": f"{course.course_name} {coursework.coursework_title}",
+                "courseTitle": course.course_name,
+                "courseworkTitle": coursework.coursework_title,
+                "startTime": submission.submission_created_time,
+                "endTime": coursework.due_time,
+                "submissionState": submission.submission_state,
+                "link": coursework.link,
+                
                 "submit_time": submission.submission_updated_time,
                 "score": submission.score,
                 "score_max": submission.score_max,
                 "score_rate": submission.score_rate,
-                "link": coursework.link,
             })
+            # name: `${courseTitle} ${coursework_title}`,
+            # courseTitle: courseTitle,
+            # courseworkTitle: coursework_title,
+            # startTime: startTime,
+            # endTime: due_time,
+            # submissionState: submissionState,
+            # link: link,
         return tasks
     
     def update_courses(self, request):
