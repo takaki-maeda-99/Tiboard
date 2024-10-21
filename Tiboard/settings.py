@@ -43,18 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     'dash_board',
     'question_board',
     'score_board',
     'task_board',
-    
-    "django_extensions",
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    "django_extensions"
 ]
 
 MIDDLEWARE = [
@@ -65,8 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'Tiboard.urls'
@@ -98,9 +89,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        'OPTIONS': {
-            'timeout': 1,  # タイムアウトを1秒に設定
-        }
+        'ATOMIC_REQUESTS': False,
     }
 }
 
@@ -155,37 +144,3 @@ MEDIA_URL = '/media/'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  
-
-
-# Authentication
-
-SITE_ID = 1
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-LOGIN_REDIRECT_URL = 'home'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-            "https://www.googleapis.com/auth/classroom.courses.readonly",
-            "https://www.googleapis.com/auth/classroom.course-work.readonly",
-            "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
-            "https://www.googleapis.com/auth/classroom.coursework.me"
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'offline',
-        },
-        'VERIFIED_EMAIL': True,
-        'OAUTH_PKCE_ENABLED': True,
-    }
-}
-
-SOCIALACCOUNT_STORE_TOKENS = True
