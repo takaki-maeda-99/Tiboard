@@ -413,6 +413,7 @@ body::-webkit-scrollbar {
 .input-space{
   resize:none;
   border-radius: 20px;
+  border-width: 1px;
   width:70%;
   height: 40px;
   position: fixed;
@@ -421,12 +422,15 @@ body::-webkit-scrollbar {
 
 textarea{
   left:26%;
-  padding-left:20px;
+  padding-left:32px;
   padding-top: 7px;
   padding-bottom:7px;
   padding-right: 5%;
   vertical-align: center;
-  border-right: none;
+}
+
+.active-reply{
+  border-radius: 0 0 20px 20px;
 }
 
 textarea:focus{
@@ -450,14 +454,26 @@ textarea::-webkit-scrollbar{
   bottom: 42px;
   height: 36px;
   width: 36px;
-  right:4.1%;
-  border-radius: 18px;
+  right:4%;
+  background:transparent;
   border-left: none;
   border-width: 0;
+  cursor: pointer;
 }
 
-.send-button:hover{
-  background-color: #696969;
+label{
+  position: fixed;
+  bottom: 38px;
+  height: 36px;
+  width: 36px;
+  left:27%;
+  border-left: none;
+  border-width: 0;
+  cursor: pointer;
+}
+
+label input{
+  display:none;
 }
 
 @media (max-width:767px){
@@ -468,6 +484,19 @@ textarea::-webkit-scrollbar{
   .input-space{
     width: 92vw;
   }
+
+  label{
+    left:6vw;
+  }
+
+}
+
+.post-top{
+  height: 14px;
+  background-color: #2883df;
+  border-radius: 5px 13px 0 0;
+  margin:0;
+  margin-left:50px;
 }
 
 .post-content{
@@ -477,14 +506,32 @@ textarea::-webkit-scrollbar{
   width:max-content;
   max-width:65vw;
   background-color: #2883df;
-  border-radius: 5px 13px 13px 13px;
+}
+
+.post-file{
+  display: flex;
+  align-items: center;
+  padding:7px;
+  margin:0;
+  width:20%;
+  margin-left:50px;
+  background-color: #2883df;
+}
+
+.post-bottom{
+  height: 14px;
+  background-color: #2883df;
+  border-radius: 0 0 5px 13px;
+  margin:0;
+  margin-left:50px;
 }
 
 .reply-btn{
   margin-top:10px;
-  margin-bottom: 20px;
-  padding:3px;
-  margin-left: 50px;
+  margin-bottom: 10px;
+  padding-left:10px;
+  padding-right:10px;
+  margin-left: 20px;
   border-width: 1px;
   border-radius: 7px;
 }
@@ -512,10 +559,11 @@ textarea::-webkit-scrollbar{
 }
 
 .icon{
-  background-color: #ffffff;
+  border-radius: 20px;
+  border-width: 1px;
   width: 40px;
   height: 40px;
-  border-radius: 20px;
+  background-color: #8f3939;
 }
 
 .post-header {
@@ -527,6 +575,120 @@ textarea::-webkit-scrollbar{
   margin:0;
   padding-left:10px;
 }
+
+#textarea-container{
+  left:26%;
+  position: fixed;
+  bottom:50px;
+
+}
+
+.myTextarea{
+  resize:none;
+  width:70vw;
+  height: 40px;
+  border-width: 0 1px 0 1px;
+  padding-left:65px;
+  font-size: 14px;
+  color:#696969;
+}
+
+@media (max-width:767px){
+  #textarea-container{
+    left:4%;
+  }
+
+  .myTextarea{
+    width: 92vw;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top:0;
+  right: 5px;
+  background: transparent;
+  color: rgb(0, 0, 0);
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.close-btn:hover {
+  color: darkred;
+}
+
+.reply-account-info{
+  background-color: #fff;
+  border: 1px solid #000;
+  border-bottom: none;
+  padding-left:15px;
+  padding-top: 7px;
+  border-radius: 20px 20px 0 0;
+}
+
+/* ここから画像プレビュー */
+#file-preview-container{
+  display: none;
+  border-left-style: solid;
+  border-right-style: solid;
+  border-top-style: solid;
+  border-bottom: none;
+  border-width: 1px;
+  position: fixed;
+  flex-wrap: wrap;
+  align-items: first baseline;
+  justify-content: flex-end;
+  height: 100px;
+  padding:0;
+  gap:10px;
+  bottom:80px;
+  width: 70vw;
+  left:26vw;
+  background-color: #ffffff;
+  overflow-y: scroll;
+}
+
+
+.file-preview{
+  background-color: #ffffff;
+  border-radius: 15px;
+  border-style: solid;
+  border-width: 1px;
+  margin-top:10px;
+  margin-right:10px;
+  width:20vw;
+  height:30px;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  overflow: hidden;
+}
+
+.file-preview p {
+  white-space: nowrap; /* 改行を禁止 */
+  overflow: hidden; /* 溢れたテキストを隠す */
+  text-overflow: ellipsis; /* 溢れたテキストを「...」で表示 */
+  max-width: 200px; /* 必要に応じて適切な幅を設定 */
+  margin: 0;
+}
+
+.file-preview svg{
+  margin-bottom: 6px;
+  margin-left: 5px;
+}
+
+.active-preview{
+  border-radius: 20px 20px 0 0;
+}
+
+#file-preview-container::-webkit-scrollbar{
+  display:none;
+}
+
+
+
+
 
 
 
