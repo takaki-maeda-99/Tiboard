@@ -1,6 +1,7 @@
 body{
   overflow-x: hidden;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  color: #ffffff;
 }
 
 body::-webkit-scrollbar {
@@ -64,10 +65,11 @@ body::-webkit-scrollbar {
 
 .navbar{
     position: fixed;
-    background-color: #34495e;
+    background-color: #26282c;
     height: 12vh;
     display: flex;
     align-items: center;
+    border-bottom: #3b3838 2px solid;
 }
 
 .navbar-brand{
@@ -112,7 +114,7 @@ body::-webkit-scrollbar {
 .navbar-nav{
     height: 6vh;
     display: flex;
-    background-color: #34495e;
+    background-color: #26282c;
     align-items: center;
 }
 
@@ -150,8 +152,6 @@ body::-webkit-scrollbar {
     .slide-menu{
         display: none;
     }
-
-
 }
 
 @media (max-width: 991px){
@@ -250,6 +250,28 @@ body::-webkit-scrollbar {
     }
 }
 
+@media (min-width: 768px) and (max-width: 991px) {
+  #head-bar-side {
+  height: 12vh;
+  }
+
+  #head-bar-main {
+      height: 12vh;
+  }
+
+  #content-side {
+      min-height: 88vh;
+  }
+
+  #content-main {
+      min-height: 88vh;
+  }
+
+  .sidebar-content {
+  display: block;
+  }
+}
+
 *{
   margin:0px;
   padding:0px;
@@ -257,13 +279,12 @@ body::-webkit-scrollbar {
 
 .toggle-btn {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 10px;
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #000;
   display: none;
   width: max-content;
   vertical-align: center;
@@ -274,11 +295,14 @@ body::-webkit-scrollbar {
   top: 0;
   height: 0;
   transform: translateX(-100%); /* 初期状態では画面外に配置 */
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 
 @media (max-width: 767.5px) { /* md以下のとき */
   .sidebar {
       position: fixed;
+      background-color: #26282cf0;
       top: 0;
       left: 0;
       width: 80%;
@@ -293,19 +317,20 @@ body::-webkit-scrollbar {
       float: left;
   }
 
-  .sidebar,
-  .toggle-btn { /* サイドバーとボタンの共通部分 */
-      background-color: #97bfe8;
-  }
+  /* .sidebar,
+  .toggle-btn { /* サイドバーとボタンの共通部分 
+      
+  } */
 
   .toggle-btn {
-      position: fixed;
+      position: absolute;
       display: block;
-      top: 20px;
-      left: 100%;
+      top: 5px;
+      left: 5px;
+      width: 48px;
+      height: 48px;
       transition: .3s;
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
+      z-index: 1000;
   }
 
   .content-side {
@@ -315,14 +340,6 @@ body::-webkit-scrollbar {
   .sidebar.show + .toggle-btn {
   left: 250px;
   }
-
-  .label-task-name {
-      display: block;
-  }
-
-  .due-date {
-      display: none;
-  }
 }
 
 #sidebar-toggle {
@@ -330,6 +347,7 @@ body::-webkit-scrollbar {
   margin-top: 100px;
   left: 0;
 }
+
 
 /* ここからQuestionboard */
 .thread-list{
@@ -534,29 +552,42 @@ label input{
   margin-left: 20px;
   border-width: 1px;
   border-radius: 7px;
+
+.sidebar-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #26282cf0;
+  padding-top: 45px;
 }
 
-.reply-btn:hover{
-  background-color: #696969;
+.sidebar-list {
+  color: #fff;
+
 }
 
-.post-content-info{
-  padding:0;
+.menues {
+  margin-bottom: 5px;
+  border-bottom: #3b3838 2px solid;
 }
 
-.post-news{
+.menu {
+  padding: 0;
+}
+
+.menu li {
   list-style: none;
-  margin:0;
+  height: 30px;
+  margin: 10px 0 10px 10px;
 }
 
-.post-info p{
-  line-height: 6px;
+.menu a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 20px;
 }
 
-.date-info{
-  font-size: smaller;
-  padding-left:50px;
-}
 
 .icon{
   border-radius: 20px;
@@ -692,4 +723,9 @@ label input{
 
 
 
+
+
+.menu-name:hover {
+  color: aqua;
+}
 

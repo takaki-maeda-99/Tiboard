@@ -1,0 +1,211 @@
+.sidebar.show {
+    scrollbar-width: none;
+}
+
+.thread-list{
+    margin-bottom: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.thread-names{
+    list-style: none;
+}
+
+.sidebar-content{
+    display: none;
+}
+
+/* ボタン風のリンク */
+.thread-name {
+    display: flex; 
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-left:10px;
+    padding-top:5px;
+    padding-bottom: 5px;
+    text-decoration: none;  
+    color: #ffffff;
+    font-size: 16px; 
+    white-space: nowrap; 
+    transition: background-color 0.3s;  
+    width: 25vw;
+}
+
+.thread-name:hover {
+    background-color:#34495e;  
+    color: aqua;
+    max-width: none;
+}
+
+/* .thread-list {
+    display: grid;
+    width:fit-content;
+    column-gap:10px;
+    grid-template-columns: repeat(1,auto);
+} */
+
+/* .thread-names {
+    margin-bottom: 10px; 
+} */
+
+/* @media (max-width: 600px) {
+    .thread-list {
+    grid-template-columns: repeat(1,auto);
+    }
+} */
+
+@media (min-width: 768px) and (max-width: 991px) {
+    #head-bar-side {
+    height: 12vh;
+    }
+
+    #head-bar-main {
+        height: 12vh;
+    }
+
+    #content-side {
+        min-height: 88vh;
+    }
+
+    #content-main {
+        min-height: 88vh;
+    }
+
+    .sidebar-content {
+        display: block;
+    }
+}
+  
+@media (max-width:767px){
+    #content-side{
+        display: none;
+    }
+
+    #content-main{
+        height: 80vh;
+    }
+
+    .sidebar-content {
+        display: block;
+    }
+}
+
+.input-space{
+    resize:none;
+    border-radius: 20px;
+    width:70%;
+    height: 40px;
+    position: fixed;
+    bottom:40px;
+}
+
+textarea{
+    left:26%;
+    padding-left:20px;
+    padding-top: 7px;
+    padding-bottom:7px;
+    padding-right: 5%;
+    vertical-align: center;
+    border-right: none;
+}
+
+textarea:focus{
+    border-width: 1px;
+    outline: none;
+}
+
+textarea::-webkit-scrollbar{
+    display: none;
+}
+
+.extra-space{
+    width:100%;
+    padding:0;
+    height: 100px;
+}
+
+.send-button{
+    position: fixed;
+    bottom: 42px;
+    height: 36px;
+    width: 36px;
+    right:4.1%;
+    border-radius: 18px;
+    border-left: none;
+    border-width: 0;
+}
+
+.send-button:hover{
+    background-color: #696969;
+}
+
+@media (max-width:767px){
+    textarea{
+    left:4vw;
+    }
+
+    .input-space{
+    width: 92vw;
+    }
+}
+
+.post-content{
+    margin:0;
+    padding:8px;
+    margin-left:50px;
+    width:max-content;
+    max-width:65vw;
+    background-color: #2883df;
+    border-radius: 5px 13px 13px 13px;
+}
+
+.reply-btn{
+    margin-top:10px;
+    margin-bottom: 20px;
+    padding:3px;
+    margin-left: 50px;
+    border-width: 1px;
+    border-radius: 7px;
+}
+
+.reply-btn:hover{
+    background-color: #696969;
+}
+
+.post-content-info{
+    padding:0;
+}
+
+.post-news{
+    list-style: none;
+    margin:0;
+}
+
+.post-info p{
+    line-height: 6px;
+}
+
+.date-info{
+    font-size: smaller;
+    padding-left:50px;
+}
+
+.icon{
+    background-color: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center; /* アイコンとテキストを縦に中央揃え */
+}
+  
+.post-id{
+    margin:0;
+    padding-left:10px;
+}
+
+

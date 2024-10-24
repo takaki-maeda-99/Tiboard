@@ -12,16 +12,26 @@
     flex-shrink: 0;
 }
 
+.tasks ul {
+    padding: 0;
+    margin: 0;
+}
+
 .task-name {
     text-align: left;
     vertical-align: top;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    position: relative;
 }
 
 .task-name a {
     text-decoration: none;
+}
+
+.task-name li {
+    list-style: none;
 }
 
 .task-name:hover {
@@ -42,10 +52,6 @@
     left: 0;
     width: 25%;
     border-radius: 20px;
-}
-
-.tasks:hover .task-detail-popup {
-    display: block;
 }
 
 .task-bars {
@@ -117,69 +123,12 @@
 
 .label-task-name a span {
     display: block;
-}
-
-.toggle-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #000;
-    display: none;
-    width: max-content;
-    vertical-align: center;
-}
-
-.sidebar {
-    position: absolute;
-    top: 0;
-    height: 0;
-    transform: translateX(-100%); /* 初期状態では画面外に配置 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 @media (max-width: 767.5px) { /* md以下のとき */
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 80%;
-        height: 100%;
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* サイドバーの影 */
-        z-index: 999;
-        transition: .3s ease-out;/* スライドイン・アウトのアニメーション */
-    }
-
-    .sidebar.show {
-        transform: translateX(0);
-        float: left;
-    }
-
-    .sidebar,
-    .toggle-btn { /* サイドバーとボタンの共通部分 */
-        background-color: #97bfe8;
-    }
-
-    .toggle-btn {
-        position: fixed;
-        display: block;
-        top: 20px;
-        left: 100%;
-        transition: .3s;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-    }
-
-    .content-side {
-        display: none;
-    }
-
-    .sidebar.show + .toggle-btn {
-    left: 250px;
-    }
-
     .label-task-name {
         display: block;
     }
@@ -189,8 +138,6 @@
     }
 }
 
-#sidebar-toggle {
-    position: absolute;
-    margin-top: 100px;
-    left: 0;
+.task-detail-popup {
+    background-color: #26282c;
 }
