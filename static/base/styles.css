@@ -552,6 +552,7 @@ label input{
   margin-left: 20px;
   border-width: 1px;
   border-radius: 7px;
+}
 
 .sidebar-header {
   position: sticky;
@@ -625,13 +626,13 @@ label input{
 }
 
 @media (max-width:767px){
-  #textarea-container{
-    left:4%;
-  }
+    #textarea-container{
+      left:4%;
+    }
 
-  .myTextarea{
-    width: 92vw;
-  }
+    .myTextarea{
+      width: 92vw;
+    }
 }
 
 .close-btn {
@@ -716,15 +717,6 @@ label input{
 #file-preview-container::-webkit-scrollbar{
   display:none;
 }
-
-
-
-
-
-
-
-
-
 .menu-name:hover {
   color: aqua;
 }
