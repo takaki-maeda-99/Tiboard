@@ -29,45 +29,57 @@ async function main() {
     daysRange = parseInt(localStorage.getItem('daysRange'), 10) || 3;
     makeHorizontalLabel();
 
-    get_task_board().then((taskBoardData) => {
-        const courses = taskBoardData[0];
-        const coursework = flatData(taskBoardData[1]);
-        const submission = flatData(taskBoardData[2]);
+    // get_task_board().then((taskBoardData) => {
+    //     const courses = taskBoardData[0];
+    //     const coursework = flatData(taskBoardData[1]);
+    //     const submission = flatData(taskBoardData[2]);
 
-        console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
+    //     console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
 
-        const tasks = makeTasks(courses, coursework, submission);
-        drawChart(tasks);
-    });
+    //     const tasks = makeTasks(courses, coursework, submission);
+    //     drawChart(tasks);
+    // });
 
-    update_task_board().then((taskBoardData) => {
-        console.time('Execution Time');
+    // update_task_board().then((taskBoardData) => {
+    //     console.time('Execution Time');
 
-        const courses = taskBoardData[0];
-        const coursework = flatData(taskBoardData[1]);
-        const submission = flatData(taskBoardData[2]);
+    //     const courses = taskBoardData[0];
+    //     const coursework = flatData(taskBoardData[1]);
+    //     const submission = flatData(taskBoardData[2]);
 
-        if ("error" in submission) {
-            submission = [{ "default": 0 }]
-        }
+    //     if ("error" in submission) {
+    //         submission = [{ "default": 0 }]
+    //     }
 
-        console.log("updatedSubmission:", submission);
+    //     console.log("updatedSubmission:", submission);
 
-        let updatedTasks = makeTasks(courses, coursework, submission);
-        clearChart();
-        makeHorizontalLabel();
-        drawChart(updatedTasks);
+    //     let updatedTasks = makeTasks(courses, coursework, submission);
+    //     clearChart();
+    //     makeHorizontalLabel();
+    //     drawChart(updatedTasks);
 
-        console.timeEnd('Execution Time');
-    });
+    //     console.timeEnd('Execution Time');
+    // });
 
     fetchDatum("get_tasks/").then((tasks) => {
-        console.log("renew_tasks:", tasks);
+        clearChart();
+        makeHorizontalLabel();
+        const sortedTasks = tasks.sort((a, b) => new Date(a.endTime) - new Date(b.endTime));
+        drawChart(sortedTasks);
     });
 
-    fetchDatum("update_assignments/").then((assignments) => {
-        console.log("update_assignments:", assignments);
+    fetchDatum("update_courses/").then((courses) => {
+        console.log("courses:", courses);
     });
+
+    fetchDatum("update_coursework/").then((coursework) => {
+        console.log("coursework:", coursework);
+    });
+
+    fetchDatum("update_submission/").then((submission) => {
+        console.log("submission:", submission);
+    });
+
 }
 
 function makeTasks(courses, coursework, submissionData) {

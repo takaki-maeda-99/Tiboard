@@ -1,1 +1,22 @@
-{"token": "ya29.a0AcM612xP4imkfxGvCyY8Msi9puxZ85dxsv028L4QxT8k7U6XFgkbAmD3t1O3_Mw8Hiv7av_ArZzJ7edum_WR7ktx8WaBEWYDsRH5g00sVhgJQMi7D0r63FtQ2NdI737mgGJpq3hnIDaVz0ZHn04HC9zcjE5DLtJhdSQ4Rk5vaCgYKAUwSARISFQHGX2Mi7JKsK7KMOaweZuBcxmdptw0175", "refresh_token": "1//0eSh4VKe7bIACCgYIARAAGA4SNwF-L9IrmkbmWe9c8vvrWGZND5A-MpCmIQ2ND5c092fP_FYuM5ZOXgNenJJ5Wsgu2gRska-v-Bs", "token_uri": "https://oauth2.googleapis.com/token", "client_id": "101467736630-1sv676manckfp0sdt4trlicohd49apq2.apps.googleusercontent.com", "client_secret": "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", "scopes": ["https://www.googleapis.com/auth/classroom.courses.readonly", "https://www.googleapis.com/auth/classroom.coursework.students", "https://www.googleapis.com/auth/classroom.course-work.readonly", "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly", "https://www.googleapis.com/auth/classroom.coursework.me", "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly", "https://www.googleapis.com/auth/classroom.rosters.readonly", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "openid"], "universe_domain": "googleapis.com", "account": "", "expiry": "2024-09-25T22:46:14.915022Z"}
+{
+    "token": "ya29.a0AcM612wTJMz8JXaPlXtUKdlCdXMq3vVgbyYUj4E3bda1t7D8fHxFNgEKcjlEAJlIf7QoP4be83CPy_H5jSIJcl8-MBGVFkT_mMr2pDkvx3lz2iJi9gU9QEWJHIDsPZ1jhvK12NQAbjPfbL-VUoxALy8D_Sp22tO98QWcaoM_aCgYKAa8SARISFQHGX2Mi_Dz7gRJNCmlxI4euX2rS8w0175",
+    "refresh_token": "1//0eLbMEIFv2agGCgYIARAAGA4SNwF-L9IrznzgLZm_mk1HIOJJTkc-aw4iY1WWkjFtBSpJjkYqUe1U50NuAYM5C6elsB2RVGlIumA",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "client_id": "101467736630-1sv676manckfp0sdt4trlicohd49apq2.apps.googleusercontent.com",
+    "client_secret": "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",
+    "scopes": [
+        "https://www.googleapis.com/auth/classroom.courses.readonly",
+        "https://www.googleapis.com/auth/classroom.coursework.students",
+        "https://www.googleapis.com/auth/classroom.course-work.readonly",
+        "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
+        "https://www.googleapis.com/auth/classroom.coursework.me",
+        "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly",
+        "https://www.googleapis.com/auth/classroom.rosters.readonly",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "openid"
+    ],
+    "universe_domain": "googleapis.com",
+    "account": "",
+    "expiry": "2024-10-17T11:09:36.913406Z"
+}

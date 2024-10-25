@@ -27,14 +27,10 @@
 
 .sidebar ul li {
     padding: 8px 10px;
-    /* Discord風にコンパクトにする */
     margin-bottom: 4px;
-    /* チャンネル間のスペース */
     border-radius: 5px;
-    /* 角を丸くする */
     cursor: pointer;
     color: #b9bbbe;
-    /* デフォルトのチャンネル文字色 */
     font-size: 0.9rem;
 }
 
@@ -45,7 +41,6 @@
 
 .main-content {
     height: 90vh;
-    /* ナビゲーションバーの高さ分の余白 */
     padding: 20px;
     background-color: #36393f;
     color: white;

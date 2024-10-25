@@ -34,19 +34,31 @@
     {% for post in posts %}
     <li class="post-news">
         <div class="post-info">
-            <div class="post-header">
-                <div class="icon"></div>
-                <p class="post-id">{{ post.author}} Post ID: {{ post.id }}</p>
+            <div style="display:flex;">
+                <div class="post-header">
+                    <div class="icon"></div>
+                    <p class="post-id">{{ post.author}} Post ID: {{ post.id }}</p>
+                </div>
+                <button id="reply-btn" class="reply-btn" data-postid="{{ post.id }}" data-postcontent="{{ post.content }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4z"/>
+                    </svg></button>
             </div>
             <p class="date-info">{{ post.created_at }}</p>
         </div>
-        <p class="post-content" style="white-space: pre-wrap;">{{ post.content }}</p>
-        <p>
-        {% if post.attachment %}
-          <img src="/question_board{{ post.attachment.url }}" style="max-width: 500px; max-height: 500px;"><br>
-          <a href="/question_board{{ post.attachment.url }}">Download</a>
-        {% endif %}<br></p>
-        <button class="reply-btn" data-postid="{{ post.id }}" data-postcontent="{{ post.content }}">Reply</button>
+        <div class="post-wrap">
+            <div class="post-top"></div>
+            {% if post.content %}
+                <p class="post-content" style="white-space: pre-wrap;">{{ post.content }}</p>
+            {% endif %}
+            {% if post.attachment %}
+                <div class="post-file">
+                    <img src="/question_board{{ post.attachment.url }}" style="max-width: 150px; max-height: 150px;"><br>
+                    <a href="/question_board{{ post.attachment.url }}">Download</a>
+                </div>
+            {% endif %}
+            <div class="post-bottom"></div>
+        </div>
+        <br></p>
     </li>
     {% endfor %}
 </ul>
@@ -56,18 +68,33 @@
 <div class="extra-space"></div>
 
 <form method="POST" id="reply-form" class="reply-form" action="{% url 'question_board:thread_detail' thread.id %}" enctype="multipart/form-data">
+    <div class="reply-container">
     {% csrf_token %}
-    <div id='reply-to-post'></div>
-    <textarea class="input-space" id="reply-content" name="content" placeholder="内容を入力"></textarea>
-    <label for="file-upload">Upload file:</label>
-    <input type="file" id="file-upload" name="attachment">
-      
-      
-      
-    <input type="hidden" id="post-id-input" name="post_id">
-    <button class="send-button" type="submit">▶</button>
-    <p id="error-message" style="color: red; display: none;"></p>
-
+        <div id="textarea-container" style="display: none;">
+            <div id='reply-account-info' class="reply-account-info"></div>
+            <div id='reply-to-post'></div>
+            <button type="button" id="clear-btn" class="close-btn">×</button>
+            <textarea id="myTextarea" class="myTextarea" readonly></textarea>
+        </div>
+        <div id="file-info">
+            <div id="file-preview-container" ></div>
+        </div>
+        <textarea class="input-space" id="reply-content" name="content" placeholder="内容を入力"></textarea>   
+        <label>
+            <input type="file" id="file-upload" name="attachment" multiple>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+            </svg>
+        </label>
+        
+        
+        <input type="hidden" id="post-id-input" name="post_id">
+        <button class="send-button" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+        </svg></button>
+        <p id="error-message" style="color: red; display: none;"></p>
+    </div>
 </form>
 
 
@@ -81,6 +108,54 @@
             contentMain.scrollTop = contentMain.scrollHeight;
         };
     });
+    
+</script>
+<script>
+    function realtime() {
+        const postWraps = document.querySelectorAll('.post-wrap');
+
+        postWraps.forEach((postWrap) => {
+            const postFile = postWrap.querySelector('.post-file');
+            const postTop = postWrap.querySelector('.post-top');
+            const postBottom = postWrap.querySelector('.post-bottom');
+            const postContent = postWrap.querySelector('.post-content');
+
+            let contentWidth = 0;
+            let fileWidth = 0;
+
+            // post-content が存在する場合、その幅を取得
+            if (postContent) {
+                contentWidth = postContent.getBoundingClientRect().width;
+            }
+
+            // post-file が存在する場合、その幅を取得
+            if (postFile) {
+                fileWidth = postFile.getBoundingClientRect().width;
+            }
+
+            // 両方存在する場合は、大きい方に他の要素の幅を合わせる
+            if (postContent && postFile) {
+                const maxWidth = Math.max(contentWidth, fileWidth);
+                postContent.style.width = maxWidth + 'px';
+                postFile.style.width = maxWidth + 'px';
+                postTop.style.width = maxWidth + 'px';
+                postBottom.style.width = maxWidth + 'px';
+            }
+            // post-content だけが存在する場合は、その幅に合わせる
+            else if (postContent) {
+                postTop.style.width = contentWidth + 'px';
+                postBottom.style.width = contentWidth + 'px';
+            }
+            // post-file だけが存在する場合は、その幅に合わせる
+            else if (postFile) {
+                postTop.style.width = fileWidth + 'px';
+                postBottom.style.width = fileWidth + 'px';
+            }
+        });
+    }
+
+    window.addEventListener('load', realtime);
+    window.addEventListener('resize', realtime);  // ウィンドウリサイズ時にも再計算
 </script>
 
 {% endblock %} 
