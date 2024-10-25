@@ -79,12 +79,13 @@
     margin: 10px 0;
 }
 
-.chart-footer {
+#chart-footer {
     position: relative;
     z-index: 5;
+    height: 18px;
 }
 
-.chart-footer .date-label {
+#chart-footer .date-label {
     position: absolute;
     text-align: center;
     font-size: 12px;
@@ -92,7 +93,7 @@
     bottom: 0;
 }
 
-.chart-footer .date-line {
+#chart-footer .date-line {
     position: absolute;
     height: 100%;
     width: 1px;

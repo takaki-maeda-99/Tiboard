@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'question_board',
     'score_board',
     'task_board',
-    "django_extensions"
+    "django_extensions",
+    "widgets_test",
 ]
 
 MIDDLEWARE = [

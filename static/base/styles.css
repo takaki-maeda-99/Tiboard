@@ -51,12 +51,12 @@ body::-webkit-scrollbar {
 #content-side {
     padding: 0;
     height: 78vh;
-    z-index:100;
+    z-index:99;
 }
 
 #content-main {
     height: 78vh;
-    z-index:300;
+    z-index:99;
 }
 
 #menu-button{
@@ -252,23 +252,23 @@ body::-webkit-scrollbar {
 
 @media (min-width: 768px) and (max-width: 991px) {
   #head-bar-side {
-  height: 12vh;
+    height: 12vh;
   }
 
   #head-bar-main {
-      height: 12vh;
+    height: 12vh;
   }
 
   #content-side {
-      min-height: 88vh;
+    min-height: 88vh;
   }
 
   #content-main {
-      min-height: 88vh;
+    min-height: 88vh;
   }
 
   .sidebar-content {
-  display: block;
+    display: block;
   }
 }
 
@@ -339,6 +339,10 @@ body::-webkit-scrollbar {
 
   .sidebar.show + .toggle-btn {
   left: 250px;
+  }
+
+  #content-main {
+    height: 80vh;
   }
 }
 

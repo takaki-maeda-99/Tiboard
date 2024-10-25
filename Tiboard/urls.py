@@ -23,6 +23,7 @@ urlpatterns = [
     path("question_board/", include("question_board.urls")),
     path("score_board/", include("score_board.urls")),
     path("task_board/", include("task_board.urls")),
+    path("test/", include("widgets_test.urls")),
 ]
 
 
