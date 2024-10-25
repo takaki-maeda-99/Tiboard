@@ -193,14 +193,15 @@ document.getElementById('file-upload').addEventListener('change', function() {
     const previewContainer = document.getElementById('file-preview-container');
     const dataTransfer = new DataTransfer(); // DataTransferオブジェクトの作成
     const textareaContainer = document.getElementById('textarea-container');
+    const replyContent = document.getElementById('reply-content');
 
     function adjustmyTextareaStyle() {
         const myTextarea = document.getElementById('myTextarea');
         const myTextareaHeight = myTextarea.offsetHeight;
         if (myTextareaHeight > 0) {
-            replyContent.classList.add('active-reply');
+            replyContents.classList.add('active-reply');
         } else {
-            replyContent.classList.remove('active-reply');
+            replyContents.classList.remove('active-reply');
         }
     }
 
@@ -224,7 +225,8 @@ document.getElementById('file-upload').addEventListener('change', function() {
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = '×';
-        deleteButton.style.backgroundColor = 'white';
+        deleteButton.style.color = 'white';
+        deleteButton.style.background = 'none';
         deleteButton.style.fontSize = '30px';
         deleteButton.style.border = 'none';
         deleteButton.style.cursor = 'pointer';
@@ -286,6 +288,9 @@ document.getElementById('file-upload').addEventListener('change', function() {
     function adjustTextareaStyle() {
         const previewContainerHeight = previewContainer.offsetHeight;
 
+    // 高さを確認する
+        console.log('Preview container height:', previewContainerHeight);
+
         // プレビューがある場合、textareaの位置を調整
         if (previewContainerHeight > 0) {
             replyContent.classList.add('active-reply');
@@ -301,7 +306,7 @@ document.getElementById('file-upload').addEventListener('change', function() {
         document.getElementById('file-upload').files = updatedDataTransfer.files; // inputのファイルリストを更新
     }
     
-    const replyContent = document.getElementById('reply-content');
+    
     replyContent.classList.add('active-reply');
     if (files.length > 0) {
         previewContainer.style.display = 'flex'; // コンテナを表示

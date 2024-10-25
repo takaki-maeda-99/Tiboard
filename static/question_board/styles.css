@@ -1,95 +1,3 @@
-.sidebar.show {
-    scrollbar-width: none;
-}
-
-.thread-list{
-    margin-bottom: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-.thread-names{
-    list-style: none;
-}
-
-.sidebar-content{
-    display: none;
-}
-
-/* ボタン風のリンク */
-.thread-name {
-    display: flex; 
-    flex-direction: column;
-    flex-shrink: 0;
-    padding-left:10px;
-    padding-top:5px;
-    padding-bottom: 5px;
-    text-decoration: none;  
-    color: #ffffff;
-    font-size: 16px; 
-    white-space: nowrap; 
-    transition: background-color 0.3s;  
-    width: 25vw;
-}
-
-.thread-name:hover {
-    background-color:#34495e;  
-    color: aqua;
-    max-width: none;
-}
-
-/* .thread-list {
-    display: grid;
-    width:fit-content;
-    column-gap:10px;
-    grid-template-columns: repeat(1,auto);
-} */
-
-/* .thread-names {
-    margin-bottom: 10px; 
-} */
-
-/* @media (max-width: 600px) {
-    .thread-list {
-    grid-template-columns: repeat(1,auto);
-    }
-} */
-
-@media (min-width: 768px) and (max-width: 991px) {
-    #head-bar-side {
-    height: 12vh;
-    }
-
-    #head-bar-main {
-        height: 12vh;
-    }
-
-    #content-side {
-        min-height: 88vh;
-    }
-
-    #content-main {
-        min-height: 88vh;
-    }
-
-    .sidebar-content {
-        display: block;
-    }
-}
-  
-@media (max-width:767px){
-    #content-side{
-        display: none;
-    }
-
-    #content-main{
-        height: 80vh;
-    }
-
-    .sidebar-content {
-        display: block;
-    }
-}
 
 .input-space{
     resize:none;
@@ -136,10 +44,6 @@ textarea::-webkit-scrollbar{
     border-width: 0;
 }
 
-.send-button:hover{
-    background-color: #696969;
-}
-
 @media (max-width:767px){
     textarea{
     left:4vw;
@@ -150,15 +54,7 @@ textarea::-webkit-scrollbar{
     }
 }
 
-.post-content{
-    margin:0;
-    padding:8px;
-    margin-left:50px;
-    width:max-content;
-    max-width:65vw;
-    background-color: #2883df;
-    border-radius: 5px 13px 13px 13px;
-}
+
 
 .reply-btn{
     margin-top:10px;
@@ -192,11 +88,13 @@ textarea::-webkit-scrollbar{
 }
 
 .icon{
-    background-color: #ffffff;
+    border:solid;
+    border-radius: 20px;
+    border-width: 1px;
     width: 40px;
     height: 40px;
-    border-radius: 20px;
-}
+    background-color: #8f3939;
+  }
 
 .post-header {
     display: flex;
@@ -208,4 +106,320 @@ textarea::-webkit-scrollbar{
     padding-left:10px;
 }
 
+.thread-list{
+    margin-bottom: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+.thread-names{
+    list-style: none;
+   }
+
+.thread-name {
+    display: flex; 
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-left:10px;
+    padding-top:5px;
+    padding-bottom: 5px;
+    text-decoration: none;  
+    color:white;
+    font-size: 16px; 
+    white-space: nowrap; 
+    transition: background-color 0.3s;  
+    width: 25vw;
+  }
+  
+  .thread-name:hover {
+    background-color:#34495e;  
+    color: aqua;
+    max-width: none;
+  }
+  
+  /* .thread-list {
+    display: grid;
+    width:fit-content;
+    column-gap:10px;
+    grid-template-columns: repeat(1,auto);
+  } */
+  
+  /* .thread-names {
+    margin-bottom: 10px; 
+  } */
+  
+  /* @media (max-width: 600px) {
+    .thread-list {
+      grid-template-columns: repeat(1,auto);
+    }
+  } */
+  
+ 
+  
+  @media (max-width:767px){
+    #content-side{
+      display: none;
+    }
+  
+    #content-main{
+      height: 80vh;
+    }
+  }
+  
+  .input-space{
+    resize:none;
+    border-radius: 20px;
+    border-width: 1.5px ;
+    border-right:solid 1px;
+    border-color: #ffffff;
+    background: none;
+    width:70%;
+    color:white;
+    height: 40px;
+    position: fixed;
+    bottom:40px;
+  }
+  
+  textarea{
+    left:26%;
+    padding-left:32px;
+    padding-top: 7px;
+    padding-bottom:7px;
+    padding-right: 5%;
+    vertical-align: center;
+  }
+  
+  .active-reply{
+    border-radius: 0 0 20px 20px;
+  }
+  
+  textarea:focus{
+    border-width: 1px;
+    outline: none;
+  }
+  
+  textarea::-webkit-scrollbar{
+    display: none;
+  }
+  
+  .extra-space{
+    position: absolute;
+    width:100%;
+    padding:0;
+    height: 100px;
+    background-color: #26282c;
+    bottom:0;
+  }
+  
+  .send-button{
+    position: fixed;
+    bottom: 42px;
+    height: 36px;
+    width: 36px;
+    right:4%;
+    background:transparent;
+    border-left: none;
+    border-width: 0;
+    cursor: pointer;
+  }
+  
+  label{
+    position: fixed;
+    bottom: 38px;
+    height: 36px;
+    width: 36px;
+    left:27%;
+    border-left: none;
+    border-width: 0;
+    cursor: pointer;
+  }
+  
+  label input{
+    display:none;
+  } 
+  
+  .post-top{
+    height: 14px;
+    border:solid white;
+    border-width: 1.5px 1.5px 1.5px 1.5px;
+    border-radius: 5px 13px 0 0;
+    margin:0;
+    margin-left:50px;
+  }
+  
+  .post-content{
+    margin:0;
+    padding:8px;
+    margin-left:50px;
+    width:max-content;
+    border:solid white;
+    border-width: 1.5px 1.5px 1.5px 1.5px;
+    max-width:65vw;
+  }
+  
+  .post-file{
+    display: flex;
+    border:solid white;
+    border-width: 1.5px 1.5px 1.5px 1.5px;
+    align-items: center;
+    padding:7px;
+    margin:0;
+    width:20%;
+    margin-left:50px;
+  }
+  
+  .post-bottom{
+    height: 14px;
+    border:solid white;
+    border-width: 1.5px 1.5px 1.5px 1.5px;
+    border-radius: 0 0 5px 13px;
+    margin:0;
+    margin-left:50px;
+  }
+  
+  .reply-btn{
+    margin-top:10px;
+    margin-bottom: 10px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-left: 20px;
+    border-width: 1px;
+    border-radius: 7px;
+  }
+  
+  
+  #textarea-container{
+    left:26%;
+    position: fixed;
+    bottom:50px;
+  
+  }
+  
+  .myTextarea{
+    resize:none;
+    width:70vw;
+    height: 40px;
+    border-color:white;
+    border-width: 0 1.5px 0 1.5px;
+    padding-left:65px;
+    font-size: 14px;
+    background: none;
+    color:#9a9a9a;
+  }
+  
+  @media (max-width:767.5px){
+      #textarea-container{
+        left:4%;
+      }
+  
+      .myTextarea{
+        width: 92vw;
+      }
+  }
+  
+  .close-btn {
+    position: absolute;
+    top:0;
+    right: 5px;
+    background: transparent;
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+    font-size: 30px;
+  }
+  
+  .close-btn:hover {
+    color: darkred;
+  }
+  
+  .reply-account-info{
+    background-color: none;
+    border: 1.5px solid #ffffff;
+    border-bottom: none;
+    padding-left:15px;
+    padding-top: 7px;
+    border-radius: 20px 20px 0 0;
+  }
+  
+  /* ここから画像プレビュー */
+  #file-preview-container{
+    display: none;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-style: solid;
+    border-bottom: none;
+    border-color:rgb(255, 255, 255);
+    border-width: 1.5px;
+    position: fixed;
+    flex-wrap: wrap;
+    align-items: first baseline;
+    justify-content: flex-end;
+    height: 100px;
+    padding:0;
+    gap:10px;
+    bottom:80px;
+    width: 70vw;
+    left:26vw;
+    background-color: none;
+    overflow-y: scroll;
+  }
+
+  @media (max-width:767px){
+    textarea{
+      left:4vw;
+    }
+  
+    .input-space{
+      width: 92vw;
+    }
+
+    #file-preview-container{
+        width:92vw;
+        left:4vw;
+    }
+  
+    label{
+      left:6vw;
+    }
+  
+  }
+  
+  
+  .file-preview{
+    background-color: none;
+    border-radius: 15px;
+    border-style: solid;
+    border-color:#ffffff;
+    border-width: 1px;
+    margin-top:10px;
+    margin-right:10px;
+    width:20vw;
+    height:30px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .file-preview p {
+    white-space: nowrap; /* 改行を禁止 */
+    overflow: hidden; /* 溢れたテキストを隠す */
+    color:white;
+    text-overflow: ellipsis; /* 溢れたテキストを「...」で表示 */
+    max-width: 200px; /* 必要に応じて適切な幅を設定 */
+    margin: 0;
+  }
+  
+  .file-preview svg{
+    margin-bottom: 6px;
+    margin-left: 5px;
+  }
+  
+  .active-preview{
+    border-radius: 20px 20px 0 0;
+  }
+  
+  #file-preview-container::-webkit-scrollbar{
+    display:none;
+  }
 
