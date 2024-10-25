@@ -1,6 +1,6 @@
 // 定数の定義
 const HOURS_PER_DAY = 24; // 1日あたりの時間
-const HOUR_TO_PX = 10; // 1時間当たりのpx
+const HOUR_TO_PX = 15; // 1時間当たりのpx
 const SECONDS_PER_HOUR = 1000 * 60 * 60 // 1時間当たりの秒数
 const CHART_LEFT_MARGIN = 30; // チャートの左端の調整用
 const MARGIN = 10;
@@ -152,8 +152,8 @@ function addTaskBar(tasks) {
         const taskBar = document.createElement('div');
         taskBar.className = 'task-bar';
 
-        const taskStartPx = timeToPixels(task.startTime, 20) + CHART_LEFT_MARGIN;
-        const taskEndPx = timeToPixels(task.endTime, 20) + CHART_LEFT_MARGIN;
+        const taskStartPx = timeToPixels(task.startTime) + CHART_LEFT_MARGIN;
+        const taskEndPx = timeToPixels(task.endTime) + CHART_LEFT_MARGIN;
         const taskBarWidth = taskEndPx - taskStartPx;
 
         taskBar.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
@@ -231,13 +231,6 @@ function addTaskBar(tasks) {
         taskNameOnLabel.appendChild(taskLink);
         taskBar.appendChild(taskNameOnLabel);
         taskBars.appendChild(taskBar);
-
-        const separatorLine = document.createElement('div');
-        separatorLine.className = 'task-separator';
-        separatorLine.style.top = `${(index + 1) * taskSpacing}px`;
-        separatorLine.style.height = `${SEPARATOR_THINNESS}px`;
-        separatorLine.style.backgroundColor = BACK_GROUND_COLOR;
-        taskBars.appendChild(separatorLine);
     });
 };
 
@@ -262,8 +255,16 @@ function createDateLabel(date, centerPx) {
     const label = document.createElement('div');
     label.className = 'date-label';
     label.style.left = `${centerPx}px`;
-    label.style.width = '60px';
-    label.textContent = date.toLocaleDateString('ja', { month: 'short', day: 'numeric' });
+    label.style.width = '100px';
+    label.style.height = 'fit-content';
+
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    const dateText = date.toLocaleDateString('ja', { month: 'short', day: 'numeric' });
+    const weekdayText = `(${weekdays[date.getDay()]})`;
+    const labelText = dateText + weekdayText;
+
+    label.textContent = labelText;
+
     return label;
 };
 
@@ -360,6 +361,7 @@ function drawFooterLine() {
         const dateLine = document.createElement('div');
         dateLine.className = 'date-line';
         dateLine.style.left = `${leftPx + CHART_LEFT_MARGIN}px`;
+        dateLine.style.color = '#ffffff'
         chartFooter.appendChild(dateLine);
     };
 };
@@ -466,8 +468,6 @@ function drawChart(tasks) {
         line.style.height = `${taskBarsHeight}px`;
     });
 
-    drawNowLine(taskBarsHeight);
-
     drawFooterLine()
 
     const classList = ['task-bars', 'head-bar-main']
@@ -477,8 +477,8 @@ function drawChart(tasks) {
     });
 };
 
+// スクロールの同期
 document.addEventListener('DOMContentLoaded', function() {
-    // スクロールの同期
     const headBarMain = document.querySelector('.head-bar-main');
     const contentMain = document.querySelector('.content-main');
     const contentSide = document.querySelector('.content-side');
