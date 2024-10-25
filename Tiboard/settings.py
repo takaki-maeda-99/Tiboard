@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'question_board',
     'score_board',
     'task_board',
-    
+    "widgets_test",
     "django_extensions",
     'django.contrib.sites',
     'allauth',
