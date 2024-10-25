@@ -50,7 +50,8 @@ def thread_detail(request, thread_id):
                     
                 post.save()
             else:
-                post = Post(thread=thread, author=User.objects.get(user_id=user_id))
+                # post = Post(thread=thread, author=User.objects.get(user_id=user_id))
+                post = Post(thread=thread, author=request.user)
                 print(11)
 
                 if file:
