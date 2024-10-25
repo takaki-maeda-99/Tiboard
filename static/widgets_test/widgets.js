@@ -2,20 +2,37 @@
 const MARGIN = 10;
 const TASK_BAR_AND_NAME_HEIGHT = 45;
 const MAX_WIDTH = 200;
+const HEADER_HEIGHT = 61;
 
 // dic = {"mainText": mainText, "subText": subText, "link": link, "submissionState": submissionState}
 // dics = [dic1, dic2, ...]
+// headerText: 今ままでのhead-barに表示していたテキストとか
 
 // サイドバーを作る関数
-function createSidebar(parentId, dics) {
+function createSidebar(parentId, dics, headerText) {
     const textContainer = document.getElementById(parentId);
     const BODY = document.querySelector('body');
     const elements = document.createElement('ul');
+    const sidebarHeader = document.createElement('li');
+    const sidebarHeaderText = document.createElement('span');
 
     elements.style.className = "elements";
     elements.style.display = "flex";
     elements.style.flexDirection = "column";
     elements.style.gap = `${MARGIN*2}px`;
+
+    const newHeaderHeight = HEADER_HEIGHT - MARGIN * 2;
+    sidebarHeader.className = 'sidebar-header-div';
+    sidebarHeader.style.height = `${newHeaderHeight}px`;
+    // sidebarHeader.style.paddingTop = `${(newHeaderHeight - taskBarFontSize) / 2}px`;
+
+    sidebarHeaderText.className = 'sidebar-header-text';
+    sidebarHeaderText.style.fontSize = `${taskBarFontSize}px`;
+    
+    sidebarHeaderText.textContent = headerText;
+
+    sidebarHeader.appendChild(sidebarHeaderText);
+    elements.appendChild(sidebarHeader);
 
     textContainer.style.display = 'flex';
     textContainer.style.flexDirection = 'column';
@@ -498,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dic5 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
     const dic6 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
     const dics = [dic1, dic2, dic3, dic4, dic5, dic6];
-    createSidebar(parentId, dics);
+    createSidebar(parentId, dics, "Tasks");
     createSidebar('down-right', dics);
 
     const task1 = {"startTime": "2024-10-23T18:00:00Z", "endTime": "2024-10-24T21:00:00Z", "name": "test1", "link": "#"};
