@@ -3,7 +3,7 @@
 #up-right,
 #down-left,
 #down-right {
-    height: 44vh;
+    height: 40vh;
     padding: 0;
 }
 
@@ -13,7 +13,7 @@ ul {
     margin: 0;
 }
 
-.text-elm {
+.text-elm, .sidebar-header-div {
     text-align: left;
     vertical-align: top;
     overflow: hidden;
