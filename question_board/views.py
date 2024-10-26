@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import Thread, Post
-from task_board.models import User
+# from task_board.models import User
+from django.contrib.auth.models import User
 from .forms import PostForm
 import urllib.parse
 
@@ -21,7 +22,7 @@ def thread_detail(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
     threads = Thread.objects.all()
     posts = thread.posts.all()
-    user_id = request.COOKIES.get('user_id')
+    # user_id = request.COOKIES.get('user_id')
 
     threads = Thread.objects.all()
 
@@ -37,7 +38,8 @@ def thread_detail(request, thread_id):
             if form.is_valid():
                 post = form.save(commit=False)
                 post.thread = thread
-                post.author = User.objects.get(user_id=user_id)
+                # post.author = User.objects.get(user_id=user_id)
+                post.author = request.user
                 print(3)
 
                 if post.attachment:
@@ -48,7 +50,8 @@ def thread_detail(request, thread_id):
                     
                 post.save()
             else:
-                post = Post(thread=thread, author=User.objects.get(user_id=user_id))
+                # post = Post(thread=thread, author=User.objects.get(user_id=user_id))
+                post = Post(thread=thread, author=request.user)
                 print(11)
 
                 if file:

@@ -1,5 +1,6 @@
 from django.db import models
-from task_board.models import User, Course
+from task_board.models import Course
+from django.contrib.auth.models import User
 
 class Thread(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)

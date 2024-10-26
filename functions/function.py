@@ -83,7 +83,8 @@ class Function:
         for coursework in courseworks:
             for work in coursework:
                 self.db.add_coursework(work)
-        return {"result": "success"}
+        tasks = self.get_tasks(request)
+        return tasks
     
     def update_submissions(self, request):
         courseworks = self.db.courseworks()
@@ -95,7 +96,8 @@ class Function:
         submissions = self.cls.request_submissions(course_and_coursework_ids)
         for submission in submissions:
             self.db.update_submission(submission)
-        return {"result": "success"}
+        tasks = self.get_tasks(request)
+        return tasks
 
 
 # def get_ranking_data(coursework_id):
