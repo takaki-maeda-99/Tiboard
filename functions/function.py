@@ -77,19 +77,24 @@ class Function:
         return {"result": "success"}
     
     def update_courseworks(self, request):
-        course_ids = [course.course_id for course in self.db.courses()]
+        created = False
+        self.courses = self.db.courses()
+        course_ids = [course.course_id for course in self.courses]
         courseworks = self.cls.request_courseworks(course_ids)
         self.db.clear_courseworks()
         for coursework in courseworks:
             for work in coursework:
-                self.db.add_coursework(work)
-        tasks = self.get_tasks(request)
+                created = self.db.add_coursework(work) or created
+        if created:
+            tasks = self.update_submissions(request)
+        else:
+            tasks = self.get_tasks(request)
         return tasks
     
     def update_submissions(self, request):
-        courseworks = self.db.courseworks()
+        self.courseworks = self.db.courseworks()
         course_and_coursework_ids = []
-        for coursework in courseworks:
+        for coursework in self.courseworks:
             if judge_expired(coursework, request):
                 continue
             course_and_coursework_ids.append((coursework.course.course_id, coursework.coursework_id))
