@@ -7,7 +7,7 @@ const HEADER_HEIGHT = 61;
 // headerText: 今ままでのhead-barに表示していたテキストとか
 
 // サイドバーを作る関数
-function createSidebar(parentId, dics, headerText) {
+function createSidebar(parentId, dics, headerText, link_for_fetch = false) {
     const textContainer = document.getElementById(parentId);
     const BODY = document.querySelector('body');
     const elements = document.createElement('ul');
@@ -48,13 +48,16 @@ function createSidebar(parentId, dics, headerText) {
 
         const textLink = document.createElement('a')
 
-        // textLink.href = dic.link;
-        classNameElm.addEventListener('click', () => {
-            fetch(`${dic.link}`).then(response => response.json()).then(data => {
-                console.log(data);
-                createThread("thread", data.thread);
+        if (!link_for_fetch) {
+            textLink.href = dic.link;
+        } else {
+            classNameElm.addEventListener('click', () => {
+                fetch(`${dic.link}`).then(response => response.json()).then(data => {
+                    console.log(data);
+                    createThread("thread", data.thread);
+                });
             });
-        });
+        }
 
         if (dic.submissionState) textLink.target = '_blank';
 
