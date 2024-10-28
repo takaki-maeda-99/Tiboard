@@ -114,6 +114,7 @@ const SEPARATOR_THINNESS = 1;
 const BACK_GROUND_COLOR = '#913e0b80';
 const TASK_BAR_FONT_SIZE = 12;
 const INTERVAL = 30;
+const ADJUST_MARGIN = 5;
 // const MARGIN = 10;
 
 const taskBarFontSize = TASK_BAR_AND_NAME_HEIGHT * 0.35
@@ -333,13 +334,11 @@ function addTaskBars(tasks) {
         taskBar.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
         taskBar.style.left = `${taskStartPx}px`;
         taskBar.style.width = `${taskBarWidth}px`;
-        if (index === 0) {
-            taskBar.style.top = `${TASK_BAR_AND_NAME_HEIGHT * index + 5}px`;
-
+        if (index ===0) {
+            taskBar.style.top = `${TASK_BAR_AND_NAME_HEIGHT * index + ADJUST_MARGIN}px`;
         } else {
-            taskBar.style.top = `${(TASK_BAR_AND_NAME_HEIGHT + 20) * index + 5}px`;
-        }
-        
+            taskBar.style.top = `${(TASK_BAR_AND_NAME_HEIGHT + MARGIN * 2) * index + ADJUST_MARGIN}px`;
+        };
 
         const taskBarMargin = (TASK_BAR_UNIT - TASK_BAR_AND_NAME_HEIGHT) / 2
         taskBar.style.margin = `${taskBarMargin}px`;
