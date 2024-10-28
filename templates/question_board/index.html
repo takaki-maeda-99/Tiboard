@@ -10,7 +10,6 @@
 
 {% block content_side %}
 
-
 <!-- 
 <script src="{% static "question_board/thread_detail_script.js" %}"></script>
 
@@ -24,28 +23,18 @@
 </ul> -->
 <!-- ---------------------------------------------------------------------------------------------------- -->
 <div id="sideber"></div>
-<script src="{% static 'widgets_test/common_script.js' %}"></script>
-<script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
-<script>
-    fetch("thread_list/").then(response => response.json()).then(data => {
-        threads = data.threads;
-        const dics = threads.map(thread => {
-            return {
-                "mainText": thread.name,
-                "subText": thread.description,
-                "link": "{% url 'question_board:thread_detail' 0 %}".replace("0", thread.id)
-            };
-        });
-        createSidebar("sideber", dics, "Threads");
-    });
-    // createSidebar("sideber", dics, "Threads");
-</script>
-
 <!-- ---------------------------------------------------------------------------------------------------- -->
 
 {%endblock%}
 
+
+{% block content_main %}
+<div id="thread"></div>
+{% endblock %}
+
+
 {% block other_content %}
+
 <!-- <div class='sidebar-content'>
     <h2>Thread List</h2>
     <ul class="thread-list">
@@ -56,5 +45,22 @@
         {% endfor %}
     </ul>
 </div> -->
+
+<script src="{% static 'widgets_test/common_script.js' %}"></script>
+<script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
+<script src="{% static 'widgets_test/thread_func.js' %}"></script>
+<script>
+    fetch("thread_list/").then(response => response.json()).then(data => {
+        threads = data.threads;
+        const dics = threads.map(thread => {
+            return {
+                "mainText": thread.name,
+                "subText": thread.description,
+                "link": "{% url 'question_board:get_thread' 0 %}".replace("0", thread.id)
+            };
+        });
+        createSidebar("sideber", dics, "Threads");
+    });
+</script>
 
 {% endblock %}

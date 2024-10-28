@@ -1,5 +1,5 @@
 const TASK_BAR_AND_NAME_HEIGHT = 45;
-const MAX_WIDTH = 200;
+const MAX_WIDTH = 2000;
 const HEADER_HEIGHT = 61;
 
 // dic = {"mainText": mainText, "subText": subText, "link": link, "submissionState": submissionState}
@@ -12,7 +12,7 @@ function createSidebar(parentId, dics, headerText) {
     const BODY = document.querySelector('body');
     const elements = document.createElement('ul');
     const sidebarHeader = document.createElement('li');
-    const sidebarHeaderText = document.createElement('span');
+    const sidebarHeaderText = document.createElement('h2');
     // ???
     const taskBarFontSize = 16;
 
@@ -27,7 +27,7 @@ function createSidebar(parentId, dics, headerText) {
     // sidebarHeader.style.paddingTop = `${(newHeaderHeight - taskBarFontSize) / 2}px`;
 
     sidebarHeaderText.className = 'sidebar-header-text';
-    sidebarHeaderText.style.fontSize = `${taskBarFontSize}px`;
+    // sidebarHeaderText.style.fontSize = `${taskBarFontSize}px`;
 
     sidebarHeaderText.textContent = headerText;
 
@@ -47,7 +47,15 @@ function createSidebar(parentId, dics, headerText) {
         classNameElm.style.maxWidth = `${MAX_WIDTH}px`;
 
         const textLink = document.createElement('a')
-        textLink.href = dic.link;
+
+        // textLink.href = dic.link;
+        classNameElm.addEventListener('click', () => {
+            fetch(`${dic.link}`).then(response => response.json()).then(data => {
+                console.log(data);
+                createThread("thread", data.thread);
+            });
+        });
+
         if (dic.submissionState) textLink.target = '_blank';
 
         const mainSpan = document.createElement('span');

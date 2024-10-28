@@ -1,9 +1,10 @@
 ul {
-    padding:0 10px 0 10px;
+    padding: 0 10px 0 10px;
     margin: 0;
 }
 
-.text-elm, .sidebar-header-div {
+.text-elm,
+.sidebar-header-div {
     text-align: left;
     vertical-align: top;
     overflow: hidden;
