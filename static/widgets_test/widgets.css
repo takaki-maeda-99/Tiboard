@@ -119,7 +119,7 @@ ul {
 }
 
 .task-bar {
-    position: relative;
+    position: absolute;
     border-radius: 10px;
     z-index: 100;
 }

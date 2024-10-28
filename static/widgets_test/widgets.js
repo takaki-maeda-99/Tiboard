@@ -322,19 +322,24 @@ function addTaskBars(tasks) {
 
     drawVerticalLine(tasks.length)
 
-    tasks.forEach(task => {
+    tasks.forEach((task, index) => {
         const taskBar = document.createElement('div');
         taskBar.className = 'task-bar';
 
         const taskStartPx = timeToPixels(task.startTime) + CHART_LEFT_MARGIN;
         const taskEndPx = timeToPixels(task.endTime) + CHART_LEFT_MARGIN;
         const taskBarWidth = taskEndPx - taskStartPx;
-        console.log(taskStartPx, taskEndPx);
-        console.log(taskBarWidth);
 
         taskBar.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
         taskBar.style.left = `${taskStartPx}px`;
         taskBar.style.width = `${taskBarWidth}px`;
+        if (index === 0) {
+            taskBar.style.top = `${TASK_BAR_AND_NAME_HEIGHT * index + 5}px`;
+
+        } else {
+            taskBar.style.top = `${(TASK_BAR_AND_NAME_HEIGHT + 20) * index + 5}px`;
+        }
+        
 
         const taskBarMargin = (TASK_BAR_UNIT - TASK_BAR_AND_NAME_HEIGHT) / 2
         taskBar.style.margin = `${taskBarMargin}px`;
