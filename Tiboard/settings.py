@@ -182,6 +182,7 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'offline',
+            'prompt': 'consent'
         },
         'VERIFIED_EMAIL': True,
         'OAUTH_PKCE_ENABLED': True,
@@ -189,3 +190,4 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SOCIALACCOUNT_STORE_TOKENS = True
+SOCIALA_AUTH_ACCESS_TOKEN_METHOD = 'POST'
