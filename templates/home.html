@@ -1,17 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>home</title>
-    <a href="/accounts/logout/">logout</a>
-    <a href="/admin/">admin</a>
-</head>
+{% block title %}Home{% endblock %}
 
-<body>
-    <h1>home</h1>
-    <h1>user: {{ user }}</h1>
-</body>
+{% block extra_css %}
+{% endblock %}
 
-</html>
+{% block head_bar_side %}
+{% endblock %}
+
+{% block head_bar_main %}
+{% endblock %}
+
+{% block content_side %}
+{% endblock %}
+
+{% block content_main %}
+<h1>Home</h1>
+<h1>user: {{ user }}</h1>
+<a href="/accounts/logout/">logout</a>
+<a href="/admin/">admin</a>
+{% endblock %}
