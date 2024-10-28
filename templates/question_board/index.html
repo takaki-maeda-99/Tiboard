@@ -3,11 +3,15 @@
 {% block title %}Question Board{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'question_board/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/common_style.css' %}">
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'question_board/styles.css' %}"> -->
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/sidebar_func.css' %}">
 {% endblock %}
 
 {% block content_side %}
 
+
+<!-- 
 <script src="{% static "question_board/thread_detail_script.js" %}"></script>
 
 <ul class="thread-list">
@@ -17,13 +21,32 @@
             {% comment %} - {{ thread.description }} {% endcomment %}
     </li>
     {% endfor %}
-</ul>
+</ul> -->
+<!-- ---------------------------------------------------------------------------------------------------- -->
+<div id="sideber"></div>
+<script src="{% static 'widgets_test/common_script.js' %}"></script>
+<script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
+<script>
+    fetch("thread_list/").then(response => response.json()).then(data => {
+        threads = data.threads;
+        const dics = threads.map(thread => {
+            return {
+                "mainText": thread.name,
+                "subText": thread.description,
+                "link": "{% url 'question_board:thread_detail' 0 %}".replace("0", thread.id)
+            };
+        });
+        createSidebar("sideber", dics, "Threads");
+    });
+    // createSidebar("sideber", dics, "Threads");
+</script>
 
+<!-- ---------------------------------------------------------------------------------------------------- -->
 
 {%endblock%}
 
 {% block other_content %}
-<div class='sidebar-content'>
+<!-- <div class='sidebar-content'>
     <h2>Thread List</h2>
     <ul class="thread-list">
         {% for thread in threads %}
@@ -32,7 +55,6 @@
         </li>
         {% endfor %}
     </ul>
-</div>
+</div> -->
 
 {% endblock %}
-

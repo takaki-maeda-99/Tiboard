@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.views import View
 from .models import Thread, Post
 # from task_board.models import User
@@ -18,7 +19,15 @@ index = IndexView.as_view()
 
 def thread_list(request):
     threads = Thread.objects.all()
-    return render(request, 'question_board/thread_list.html', {'threads': threads})
+    return JsonResponse({
+        'threads': [
+            {
+                'id': thread.id,
+                'name': thread.course.course_name,
+            }
+            for thread in threads
+        ]
+    })
 
 @login_required
 def thread_detail(request, thread_id):
@@ -72,7 +81,6 @@ def thread_detail(request, thread_id):
         'threads': threads
     })
     
-from django.http import JsonResponse
     
 def get_thread(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)

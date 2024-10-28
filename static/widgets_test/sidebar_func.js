@@ -13,11 +13,13 @@ function createSidebar(parentId, dics, headerText) {
     const elements = document.createElement('ul');
     const sidebarHeader = document.createElement('li');
     const sidebarHeaderText = document.createElement('span');
+    // ???
+    const taskBarFontSize = 16;
 
     elements.style.className = "elements";
     elements.style.display = "flex";
     elements.style.flexDirection = "column";
-    elements.style.gap = `${MARGIN*2}px`;
+    elements.style.gap = `${MARGIN * 2}px`;
 
     const newHeaderHeight = HEADER_HEIGHT - MARGIN * 2;
     sidebarHeader.className = 'sidebar-header-div';
@@ -26,7 +28,7 @@ function createSidebar(parentId, dics, headerText) {
 
     sidebarHeaderText.className = 'sidebar-header-text';
     sidebarHeaderText.style.fontSize = `${taskBarFontSize}px`;
-    
+
     sidebarHeaderText.textContent = headerText;
 
     sidebarHeader.appendChild(sidebarHeaderText);
@@ -81,19 +83,6 @@ function createSidebar(parentId, dics, headerText) {
         classNameElm.appendChild(textLink);
         elements.appendChild(classNameElm);
         textContainer.appendChild(elements);
-        BODY.appendChild(detailPopup); 
+        BODY.appendChild(detailPopup);
     });
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-    const parentId = 'up-left';
-    const dic1 = {"mainText": "mainText1", "subText": "subText1", "link": "#", "submissionState": "CREATED"};
-    const dic2 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
-    const dic3 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
-    const dic4 = {"mainText": "mainText1", "subText": "subText1", "link": "#", "submissionState": "CREATED"};
-    const dic5 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
-    const dic6 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
-    const dics = [dic1, dic2, dic3, dic4, dic5, dic6];
-    createSidebar(parentId, dics, "Tasks");
-    createSidebar('down-right', dics);
-});
