@@ -4,7 +4,10 @@
 {% block title %}Test Page{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/widgets.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/common_style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/sidebar_func.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/taskbar_func.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/test.css' %}">
 {% endblock %}
 
 {% block content_main %}
@@ -25,5 +28,7 @@
 
     </div>
 </div>
-<script src="{% static "widgets_test/widgets.js" %}"></script>
+<script src="{% static "widgets_test/common_script.js" %}"></script>
+<script src="{% static "widgets_test/sidebar_func.js" %}"></script>
+<script src="{% static "widgets_test/taskbar_func.js" %}"></script>
 {% endblock %}
