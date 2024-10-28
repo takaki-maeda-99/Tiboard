@@ -26,7 +26,7 @@ class Classroom:
         response = self.request(f"{COMMON}courses/{courseId}/courseWork?fields={COURSEWORK_INFO_FIELDS}")
         return response.get("courseWork", [])
     
-    def reqeust_submissions(self, course_and_courseWork_ids):
+    def request_submission(self, course_and_courseWork_ids):
         courseId = course_and_courseWork_ids[0]
         courseWorkId = course_and_courseWork_ids[1]
         response = self.request(f"{COMMON}courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions?fields={SUBMISSION_INFO_FIELDS}")
@@ -42,7 +42,7 @@ class Classroom:
         return self.async_requests(self.request_courseWork, course_ids)
     
     def request_submissions(self, course_and_courseWork_ids):
-        return self.async_requests(self.reqeust_submissions, course_and_courseWork_ids)
+        return self.async_requests(self.request_submission, course_and_courseWork_ids)
 
 async def async_function(function, *args):
     return await asyncio.get_running_loop().run_in_executor(None, function, *args)

@@ -1,4 +1,5 @@
 from task_board.models import Course, CourseWork, Submission, CustomSocialAccount
+from task_board.utils import retry_on_failure
 
 from datetime import datetime, timedelta
 
@@ -39,23 +40,29 @@ class Database:
     def __init__(self, user):
         self.user = CustomSocialAccount.objects.get(social_account=user)
     
+    @retry_on_failure()
     def courses(self):
         return self.user.enrolled_courses.all()
     
+    @retry_on_failure()
     def courseworks(self):
         return self.user.assignment_courseworks.all()
     
+    @retry_on_failure()
     def submissions(self):
         return self.user.submission_set.all()
     
+    @retry_on_failure()
     def clear_courses(self):
         self.user.enrolled_courses.clear()
         self.user.save()
     
+    @retry_on_failure()
     def clear_courseworks(self):
         self.user.assignment_courseworks.clear()
         self.user.save()
-        
+    
+    @retry_on_failure()
     def add_course(self, course):
         course, _ = Course.objects.get_or_create(
             course_id=course.get('id', 'No id'),
@@ -66,9 +73,10 @@ class Database:
         self.user.enrolled_courses.add(course)
         self.user.save()
     
+    @retry_on_failure()
     def add_coursework(self, coursework):
         course = Course.objects.get(course_id=coursework.get('courseId', 'No course_id'))
-        coursework, _ = CourseWork.objects.update_or_create(
+        coursework, created = CourseWork.objects.update_or_create(
             course=course,
             coursework_id = coursework.get('id', 'No id'),
             defaults={
@@ -81,7 +89,9 @@ class Database:
             )
         self.user.assignment_courseworks.add(coursework)
         self.user.save()
+        return created
     
+    @retry_on_failure()
     def update_submission(self, submission):
         coursework = CourseWork.objects.get(coursework_id=submission.get('courseWorkId', 'No coursework_id'))
         finished = submission["state"] in ('TURNED_IN','RETURNED') and coursework.due_time is not None
