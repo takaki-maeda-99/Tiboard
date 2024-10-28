@@ -37,6 +37,7 @@ body::-webkit-scrollbar {
 #base-header {
     background-color: #4057ec30;
     height: 12vh;
+    padding:0;
 }
 
 #head-bar-side {
@@ -71,88 +72,106 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-.navbar{
-    position: fixed;
-    background-color: #26282c;
-    height: 12vh;
-    display: flex;
-    align-items: center;
-    border-bottom: #3b3838 2px solid;
+/* ここからヘッダー */
+.header-wrap{
+  width: 100vw;
+  height: 100%;
+  left:0;
+  background-color: #26282c;
 }
 
-.navbar-brand{
-    position:fixed;
-    align-items: center;
-    font-weight: 500;
-    font-size:4vh;
-    color: #fff;
-    transition:0.3s color;
-    display: flex;
-    margin-left:30px;
-    top:20px;
-    left:100px;
-    padding:0;
+.header-brandname{
+  position: relative;
+  width: 20%;
+  height: 12vh;
+  display:flex;
+  align-items: center;
+  z-index:500;
 }
 
-.navbar-brand:hover{
-    color:aqua;
+.header-icon{
+  margin-left:10px;
+  margin-right:10px;
 }
 
-.d-inline-block{
-    margin:0;
-    padding:0;
+.header-brand{
+  text-decoration: none;
+  color:#fff;
+  font-size: 25px;
+  font-weight: bold;
 }
 
-.offcanvas-body{
-    background-color: #34495e;
+.header-brand:hover{
+  color: aqua;
 }
 
-.offcanvas-header{
-    background-color: #34495e;
+.header-body{
+  position: absolute;
+  z-index:100;
+  top:0;
+  left: 0;
+  margin:0;
+  padding:0;
+  width:100%;
+  height: 12vh;
 }
 
-
-.navbar-nav{
-    height: 6vh;
-    display: flex;
-    background-color: #26282c;
-    align-items: center;
+.header-body ul{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 12vh;
+  gap:30px;
+  margin:0;
+  padding:0;
 }
 
-.nav-link{
-    position:relative;
-    display: flex;
-    margin: 0;
-    padding-top: 0;
-    color:#fff;
-    font-size:3vh;
+.header-menus{
+  position:relative;
+  list-style: none;
+  display:flex;
+  color:white;
+  align-items: center;
 }
 
-.nav-link:hover, .nav-link.active{
-    color:aqua;
+.header-menu{
+  position:relative;
+  text-decoration: none;
+  font-size: 20px;
+  color:inherit;
 }
 
-@media (min-width: 767.5px){
-    .nav-link::before{
-        content:"";
-        position: absolute;
-        top:7vh;
-        left:50%;
-        transform: translateX(-50%);
-        width:0;
-        height: 0.4vh;
-        background-color: aqua;
-        visibility: hidden;
-        transition: 0.3s ease-in-out;
-    }
-    .nav-link:hover::before, .nav-link.active::before{
-        width: 100%;
-        visibility: visible;
-    }
+.header-menu:hover, .header-menu:active{
+  color:inherit;
+}
 
-    .slide-menu{
-        display: none;
-    }
+.header-menus:hover, .header-menus:active{
+  color:aqua;
+}
+
+.header-menus::before{
+  content:"";
+  position: absolute;
+  top:4.5vh;
+  left:50%;
+  transform: translateX(-50%);
+  width:0;
+  height: 0.3vh;
+  background-color: aqua;
+  visibility: hidden;
+  transition: 0.3s ease-in-out;
+}
+.header-menus:hover::before, .header-menus.active::before{
+  width: 110%;
+  visibility: visible;
+}
+
+@media (max-width:920px) and (min-width:767.5px){
+  .header-body ul{
+    padding-right:40px;
+    justify-content: end;
+  }
+
 }
 
 @media (max-width: 767.5px){
@@ -160,120 +179,9 @@ body::-webkit-scrollbar {
     display: none;
   }
 
-  .menu-button{
-      overflow-x: hidden;
-      z-index:500;
-    }
-    .header-area{
-      position:fixed;
-      z-index:500;
-    }
-    .hamburger{
-      position: fixed;
-      width: 40vw;
-      height: 12vh;
-      margin-left:60vw;
-      margin-top:0;
-      transition: .5s;/* 追記 */
-    }
-    .hamburger span{
-      position: absolute;
-      right:10%;
-      width: 15%;
-      height: 2px;
-      background-color: rgb(255, 255, 255);
-      transition: .5s;/* 追記 */
-    }
-    .hamburger span:first-of-type{/* ハンバーガーメニューの1番目の線 */
-      top: 30%;
-    }
-    .hamburger span:nth-of-type(2){/* ハンバーガーメニューの2番目の線 */
-      top: 50%;
-    }
-    .hamburger span:last-of-type{/* ハンバーガーメニューの3番目の線 */
-      top: 70%;
-    }
-
-
-    .slide-menu{
-      pointer-events: none;
-      position: fixed;
-      margin-right:0;
-      background-color: #34495e; 
-      top: 0;
-      padding-top: 12vh;
-      width: 40%;
-      height: 100vh;
-      right: 0;
-      opacity: 0;
-      transition: .5s;/* 追記 */
-      z-index:400;
-    }
-  
-    .slide-menu li{
-      color: #fff;
-      line-height: 400%;
-      list-style: none;
-      top:12vh;
-    }
-    .hamburger.active{/* 追記 */
-      background-color: #34495e00;/
-    }
-    .hamburger.active span:first-of-type{/* ハンバーガーメニューの1番目の線 */
-      top: 50%;
-      width: 7vh;
-      transform: rotate(45deg);
-    }
-    .hamburger.active span:nth-of-type(2){/* ハンバーガーメニューの2番目の線 */
-      opacity: 0;/* 透明にする */
-    }
-    .hamburger.active span:last-of-type{/* ハンバーガーメニューの3番目の線 */
-      top: 50%;
-      width: 7vh;
-      transform: rotate(-45deg);
-    }
-    .slide-menu.active{
-      opacity: 1;
-      pointer-events: all;
-    }
-  
-    .hamburger:hover{
-      color: aqua;
-    }
-  
-    .menu-lists{
-      text-decoration: none;
-      color: #fff;
-    }
-  
-    .menu-lists:hover{
-      color: aqua;
-    }
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
-
-  #head-bar-side {
-    height: 12vh;
-  }
-
-  #head-bar-main {
-    height: 12vh;
-  }
-
-  #content-side {
-    min-height: 88vh;
-  }
-
-  #content-main {
-    min-height: 88vh;
-  }
- 
-
-  .sidebar-content {
-    display: block;
-  }
-}
+/* ここまで */
 
 *{
   margin:0px;

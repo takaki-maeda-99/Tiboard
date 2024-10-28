@@ -1,26 +1,3 @@
-// function realtime() {
-//     const postFiles = document.querySelectorAll('.post-file');
-//     const postRadiusTops = document.querySelectorAll('.post-top');
-//     const postRadiusBottoms = document.querySelectorAll('.post-bottom');
-//     const postContents = document.querySelectorAll('.post-content');
-
-//     postContents.forEach((postContent, index) => {
-//         var style = window.getComputedStyle(postContent);
-//         var width = style.width;
-
-//         if (postFiles[index]) {
-//             postFiles[index].style.width = width;
-//         }
-//         if (postRadiusTops[index]) {
-//             postRadiusTops[index].style.width = width;
-//         }
-//         if (postRadiusBottoms[index]) {
-//             postRadiusBottoms[index].style.width = width;
-//         }
-//     });
-// }
-// realtime();
-
 document.addEventListener('DOMContentLoaded', function() {
     const replyButtons = document.querySelectorAll('.reply-btn');
     const replyContent = document.getElementById('reply-content');
@@ -194,16 +171,7 @@ document.getElementById('file-upload').addEventListener('change', function() {
     const dataTransfer = new DataTransfer(); // DataTransferオブジェクトの作成
     const textareaContainer = document.getElementById('textarea-container');
     const replyContent = document.getElementById('reply-content');
-
-    function adjustmyTextareaStyle() {
-        const myTextarea = document.getElementById('myTextarea');
-        const myTextareaHeight = myTextarea.offsetHeight;
-        if (myTextareaHeight > 0) {
-            replyContents.classList.add('active-reply');
-        } else {
-            replyContents.classList.remove('active-reply');
-        }
-    }
+    const fileInput = document.getElementById('file-upload');
 
     
 
@@ -233,19 +201,6 @@ document.getElementById('file-upload').addEventListener('change', function() {
         deleteButton.style.marginLeft = 'auto';
         deleteButton.style.marginBottom = '5px';
         deleteButton.style.marginRight = '5px';
-
-        deleteButton.addEventListener('click', function() {
-            filePreview.remove(); 
-            const newFiles = Array.from(dataTransfer.files);
-            newFiles.splice(index, 1); 
-            updateFileInput(newFiles); 
-            if (previewContainer.children.length === 0) {
-                previewContainer.style.display = 'none'; 
-            }
-            adjustTextareaStyle()
-            adjustmyTextareaStyle()
-            adjustTextareaPosition()
-        });
 
         const fileName = document.createElement('p');
         fileName.textContent = file.name;
@@ -283,28 +238,58 @@ document.getElementById('file-upload').addEventListener('change', function() {
         };
 
         reader.readAsDataURL(file); // ファイルをDataURLとして読み込む
+        
+        deleteButton.addEventListener('click', function() {
+            filePreview.remove(); 
+            const newFiles = Array.from(document.getElementById('file-upload').files); // ここで現在のファイルリストを取得
+            newFiles.splice(index, 1); 
+            updateFileInput(newFiles); 
+            const newDataTransfer = new DataTransfer();
+            newFiles.forEach(file => newDataTransfer.items.add(file));
+
+            // 5. input要素に新しいファイルリストを設定
+            fileInput.files = newDataTransfer.files;
+
+            // 削除後のファイルリストを表示
+            console.log('Files after deletion:', newFiles);
+            
+            if (previewContainer.children.length === 0) {
+                previewContainer.style.display = 'none'; 
+            }
+            updateFileInput(newFiles); 
+            adjustTextareaStyle()
+            adjustTextareaPosition()
+        });
+
+        function updateFileInput(newFiles) {
+            const updatedDataTransfer = new DataTransfer();
+            newFiles.forEach(file => updatedDataTransfer.items.add(file)); // 削除されていないファイルを追加
+            document.getElementById('file-upload').files = updatedDataTransfer.files; // inputのファイルリストを更新
+        }
+
     });
 
     function adjustTextareaStyle() {
+        const previewContainer = document.getElementById('file-preview-container');
         const previewContainerHeight = previewContainer.offsetHeight;
+        const replyContent = document.getElementById('reply-content');
+        const myTextarea = document.getElementById('myTextarea');
+        const myTextareaHeight = myTextarea.offsetHeight;
 
     // 高さを確認する
         console.log('Preview container height:', previewContainerHeight);
 
         // プレビューがある場合、textareaの位置を調整
-        if (previewContainerHeight > 0) {
+        if (previewContainerHeight > 0 || myTextareaHeight > 0) {
             replyContent.classList.add('active-reply');
+            console.log('active-reply added');
         } else {
             replyContent.classList.remove('active-reply');
+            console.log('active-reply removed');
         }
     }
 
-    // input要素のファイルリストを更新
-    function updateFileInput(newFiles) {
-        const updatedDataTransfer = new DataTransfer();
-        newFiles.forEach(file => updatedDataTransfer.items.add(file));
-        document.getElementById('file-upload').files = updatedDataTransfer.files; // inputのファイルリストを更新
-    }
+    
     
     
     replyContent.classList.add('active-reply');
@@ -343,6 +328,16 @@ document.getElementById('file-upload').addEventListener('change', function() {
         
     }
 });
+
+function downloadFile(url, filename) {
+    console.log('Download URL:', url);  // URLを確認するために追加
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 
 

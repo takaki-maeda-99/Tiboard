@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from .forms import PostForm
 import urllib.parse
 
+from django.contrib.auth.decorators import login_required
+
 class IndexView(View):
     def get(self, request):
         threads = Thread.objects.all()
@@ -18,6 +20,7 @@ def thread_list(request):
     threads = Thread.objects.all()
     return render(request, 'question_board/thread_list.html', {'threads': threads})
 
+@login_required
 def thread_detail(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
     threads = Thread.objects.all()
@@ -89,3 +92,13 @@ def get_thread(request, thread_id):
             for post in posts
         ]
     })
+
+from django import template
+import os
+
+register = template.Library()
+
+@register.filter
+def filename(value):
+    # パスを取り除き、識別子を削除してファイル名のみを返す
+    return os.path.basename(value).split('_')[0]
