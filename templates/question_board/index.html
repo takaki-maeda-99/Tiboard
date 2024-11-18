@@ -67,4 +67,35 @@
     });
 </script>
 
+<script>
+    // 通知許可のリクエスト
+    function requestNotificationPermission() {
+        if (Notification.permission === "granted") {
+            return true;
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    return true;
+                }
+            });
+        }
+        return false;
+    }
+
+    // 通知を表示する関数
+    function showNotification(title, options) {
+        if (requestNotificationPermission()) {
+            new Notification(title, options);
+        }
+    }
+
+    {{ show_notification | safe }}
+    // 例として、ページロード時に通知を表示
+    // document.addEventListener('DOMContentLoaded', (event) => {
+        showNotification("ようこそ", {
+            body: "ページにアクセスいただきありがとうございます！",
+        });
+    // });
+</script>
+
 {% endblock %}
