@@ -16,11 +16,13 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-HOST_IP = "127.0.0.1"
+HOST_IP = "52.193.230.218"
 
 BASE_URL = f"https://{HOST_IP}:8000"
 
 POLLING_INTERVAL = 60
+
+PROJECT_NAME = os.path.basename(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -31,7 +33,7 @@ SECRET_KEY = 'django-insecure-w^m-_yjc9eq&4(0=-2%s6(a-e+y!@cf7$i&mba7l7gtw&urv*p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [HOST_IP,"127.0.0.1","localhost"]
+ALLOWED_HOSTS = [HOST_IP,"127.0.0.1","localhost","www.guilds.it.com"]
 
 
 # Application definition
@@ -190,3 +192,5 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SOCIALACCOUNT_STORE_TOKENS = True
+
+STATIC_ROOT = "/var/www/tiboard"
