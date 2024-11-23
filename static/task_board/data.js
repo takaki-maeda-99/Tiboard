@@ -6,60 +6,10 @@ async function fetchDatum(url) {
     return data;
 };
 
-async function get_task_board() {
-    const taskBoardData = await fetchDatum("get_task_board/");
-
-    return taskBoardData;
-};
-
-async function update_task_board() {
-    const [taskBoardData, submission] = await Promise.all([
-        fetchDatum("get_task_board/"),
-        fetchDatum("update_submission/")
-    ]);
-
-    const courses = taskBoardData[0];
-    const coursework = taskBoardData[1];
-
-    return [courses, coursework, submission];
-};
-
 async function main() {
     intervalHours = parseInt(localStorage.getItem('timeInterval'), 10) || 3;
     daysRange = parseInt(localStorage.getItem('daysRange'), 10) || 3;
-    // makeHorizontalLabel();
 
-    // get_task_board().then((taskBoardData) => {
-    //     const courses = taskBoardData[0];
-    //     const coursework = flatData(taskBoardData[1]);
-    //     const submission = flatData(taskBoardData[2]);
-
-    //     console.log("taskBoardData:", taskBoardData); // taskBoardData =[courses, coursework, submissionData]
-
-    //     const tasks = makeTasks(courses, coursework, submission);
-    //     drawChart(tasks);
-    // });
-
-    // update_task_board().then((taskBoardData) => {
-    //     console.time('Execution Time');
-
-    //     const courses = taskBoardData[0];
-    //     const coursework = flatData(taskBoardData[1]);
-    //     const submission = flatData(taskBoardData[2]);
-
-    //     if ("error" in submission) {
-    //         submission = [{ "default": 0 }]
-    //     }
-
-    //     console.log("updatedSubmission:", submission);
-
-    //     let updatedTasks = makeTasks(courses, coursework, submission);
-    //     clearChart();
-    //     makeHorizontalLabel();
-    //     drawChart(updatedTasks);
-
-    //     console.timeEnd('Execution Time');
-    // });
 
     fetchDatum("get_tasks/").then((tasks) => {
         clearChart();
@@ -88,39 +38,3 @@ async function main() {
         console.log("courses:", courses);
     });
 }
-
-function makeTasks(courses, coursework, submissionData) {
-    // 期限が過ぎているものは除外
-    coursework = coursework.filter(work => work.due_time > new Date().toISOString());
-
-    const tasks = coursework.map(work => {
-        const { course_id_id, coursework_title, due_time, update_time, id, link } = work;
-
-        const startTime = new Date(update_time).toISOString();
-
-        const targetDic = courses.find(item => item.id == course_id_id);
-        const courseTitle = targetDic ? targetDic.course_name : "Unknown Course";
-
-        const submission = submissionData.find(sub => sub.coursework_id_id == id) || [{ "default": 0 }];
-
-        // submission 情報があれば追加
-        const submissionState = Object.keys(submission).length ? submission.submission_state : null;
-
-        if (submissionState == "RETURNED") {
-            return;
-        }
-
-        return {
-            name: `${courseTitle} ${coursework_title}`,
-            courseTitle: courseTitle,
-            courseworkTitle: coursework_title,
-            startTime: startTime,
-            endTime: due_time,
-            submissionState: submissionState,
-            link: link,
-        };
-    });
-    const sortedTasks = tasks.sort((a, b) => new Date(a.endTime) - new Date(b.endTime));
-    console.log("tasks:", sortedTasks);
-    return sortedTasks;
-};

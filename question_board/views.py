@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.views import View
 from .models import Thread, Post
 # from task_board.models import User
@@ -18,7 +19,36 @@ index = IndexView.as_view()
 
 def thread_list(request):
     threads = Thread.objects.all()
-    return render(request, 'question_board/thread_list.html', {'threads': threads})
+    return JsonResponse({
+        'threads': [
+            {
+                'id': thread.id,
+                'name': thread.course.course_name,
+            }
+            for thread in threads
+        ]
+    })
+
+def get_thread(request, thread_id):
+    thread = get_object_or_404(Thread, id=thread_id)
+    posts = thread.posts.all()
+    return JsonResponse({
+        'thread': {
+            'id': thread.id,
+            'name': thread.course.course_name,
+            'description': thread.description,
+            'posts': [
+                {
+                    'id': post.id,
+                    'content': post.content,
+                    'created_at': post.created_at,
+                    'author': post.author.username,
+                    'attachment': post.attachment.url if post.attachment else None,
+                }
+                for post in posts
+            ]
+        }
+    })
 
 @login_required
 def thread_detail(request, thread_id):
@@ -70,27 +100,6 @@ def thread_detail(request, thread_id):
         'posts': posts,
         'form': form,
         'threads': threads
-    })
-    
-from django.http import JsonResponse
-    
-def get_thread(request, thread_id):
-    thread = get_object_or_404(Thread, id=thread_id)
-    posts = thread.posts.all()
-    return JsonResponse({
-        'thread': {
-            'id': thread.id,
-            'title': thread.title,
-            'content': thread.content,
-        },
-        'posts': [
-            {
-                'id': post.id,
-                'content': post.content,
-                'author': post.author.user_id,
-            }
-            for post in posts
-        ]
     })
 
 from django import template
