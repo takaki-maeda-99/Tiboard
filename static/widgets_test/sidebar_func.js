@@ -14,7 +14,7 @@ function createSidebar(parentId, dics, headerText) {
     const sidebarHeader = document.createElement('li');
     const sidebarHeaderText = document.createElement('span');
 
-    elements.style.className = "elements";
+    elements.className = "elements";
     elements.style.display = "flex";
     elements.style.flexDirection = "column";
     elements.style.gap = `${MARGIN*2}px`;
@@ -94,6 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const dic5 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
     const dic6 = {"mainText": "mainText2", "subText": "subText2", "link": "#"};
     const dics = [dic1, dic2, dic3, dic4, dic5, dic6];
-    createSidebar(parentId, dics, "Tasks");
-    createSidebar('down-right', dics);
+    // createSidebar(parentId, dics, "Tasks");
+    // createSidebar('down-right', dics);
 });

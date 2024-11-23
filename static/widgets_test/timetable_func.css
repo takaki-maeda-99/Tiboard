@@ -1,0 +1,169 @@
+#toggle-edit-mode {
+    width: 80%;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#toggle-edit-mode:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+#toggle-edit-mode:active {
+    background-color: #004085;
+    box-shadow: 0 1px #ccc;
+    transform: translateY(1px);
+}
+
+#class-num {
+    position: sticky;
+    left: -7px;
+    background-color: #26282cf0;
+    z-index: 10;
+}
+
+.blank,
+.day {
+    position: sticky;
+    top: 0px;
+    background-color: #26282cf0;
+    z-index: 9;
+}
+
+.blank {
+    width: 40px;
+}
+
+.highlight {
+    background-color: #ffeb3b60;
+    font-weight: bold;
+}
+
+.time-slot select {
+    width: 100%;
+    text-align: center;
+    font-size: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.subject-select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-color: #76787c;
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+    height: 100%;
+}
+
+/* セレクトボックスのスクロールバーの非表示 */
+.subject-select::-webkit-scrollbar{
+    display: none;
+  }
+
+.hidden {
+    display: none;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    height: 100%;
+    border: 1px solid #ddd;
+    width: calc(100% / 6);
+}
+
+.table > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    text-align: center;
+    width: 100%;
+    height: calc(100% / 6);
+}
+
+.subject{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ポップアップ全体のスタイル */
+.popup {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    z-index: 105;
+    font-size: 14px;
+    pointer-events: none;
+    transform: translateY(10px);
+    opacity: 0;
+    min-width: 150px;
+    max-width: 200px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* ポップアップが表示される状態 */
+.popup.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.popup-subject {
+    border-radius: 5px;
+}
+
+.popup-subject a {
+    text-decoration: none;
+    color: #000000;
+    display: block;
+}
+
+/* 各ポップアップ項目 */
+.popup-item {
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+/* カウンターのスタイル */
+.counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+}
+
+.counter .count {
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.counter button {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 5px;
+    cursor: pointer;
+}
+
+.counter button:hover {
+    background: #0056b3;
+}
