@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/common_style.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/sidebar_func.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/taskbar_func.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/timetable_func.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/test.css' %}">
 {% endblock %}
 
@@ -18,37 +19,21 @@
 
 {% block content_main %}
 <div class="row">
-    <div class="col-md-3" id="up-left">
-
+    <div class="col-md-9" id="up-left">
     </div>
-    <div class="col-md-9" id="up-right">
-        <div class="gantt" id="gantt">
-        </div>
+    <div class="col-md-3" id="up-right">
+        <div id="gantt"></div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6" id="down-left">
-
     </div>
     <div class="col-md-6" id="down-right">
-
     </div>
 </div>
-<script src="{% static 'widgets_test/common_script.js' %}"></script>
-<script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
-<script src="{% static 'widgets_test/taskbar_func.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const parentId = 'sidebar';
-        const dic1 = { "mainText": "mainText1", "subText": "subText1", "link": "#", "submissionState": "CREATED" };
-        const dic2 = { "mainText": "mainText2", "subText": "subText2", "link": "#" };
-        const dic3 = { "mainText": "mainText2", "subText": "subText2", "link": "#" };
-        const dic4 = { "mainText": "mainText1", "subText": "subText1", "link": "#", "submissionState": "CREATED" };
-        const dic5 = { "mainText": "mainText2", "subText": "subText2", "link": "#" };
-        const dic6 = { "mainText": "mainText2", "subText": "subText2", "link": "#" };
-        const dics = [dic1, dic2, dic3, dic4, dic5, dic6];
-        createSidebar(parentId, dics, "Tasks");
-        createSidebar('down-right', dics);
-    });
-</script>
+
+<script src="{% static "widgets_test/common_script.js" %}"></script>
+<script src="{% static "widgets_test/sidebar_func.js" %}"></script>
+<script src="{% static "widgets_test/taskbar_func.js" %}"></script>
+<script src="{% static "widgets_test/timetable_func.js" %}"></script>
 {% endblock %}

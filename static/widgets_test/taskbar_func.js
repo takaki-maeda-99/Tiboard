@@ -3,7 +3,6 @@ const HOUR_TO_PX = 15;
 const SECONDS_PER_HOUR = 1000 * 60 * 60
 const CHART_LEFT_MARGIN = 24;
 const TASK_BAR_UNIT = 50;
-const MAX_DUE_DATE_PX = 127;
 const SEPARATOR_THINNESS = 1;
 const BACK_GROUND_COLOR = '#913e0b80';
 const TASK_BAR_FONT_SIZE = 12;
@@ -273,14 +272,8 @@ function addTaskBars(tasks) {
         taskSpan.style.fontSize = `${taskBarFontSize}px`;
         taskSpan.style.marginTop = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
         taskSpan.style.maxWidth = `${taskBarWidth}px`;
-        
-        if (taskBarWidth < MAX_DUE_DATE_PX) {
-            dueDateDiv.style.color = 'black';
-            taskSpan.style.color = 'black';
-        } else {
-            dueDateDiv.style.color = 'white';
-            taskSpan.style.color = 'white';
-        };
+        dueDateDiv.style.color = 'white';
+        taskSpan.style.color = 'white';
 
         const contentMain = document.getElementById('content-main');
         const detailPopup = document.createElement('div');
@@ -404,7 +397,7 @@ function startNowLineUpdates(taskBarsHeight, classId) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const task1 = {"startTime": "2024-10-23T18:00:00Z", "endTime": "2024-10-29T21:00:00Z", "name": "test1", "link": "#"};
+    const task1 = {"startTime": "2024-11-13T18:00:00Z", "endTime": "2024-11-29T21:00:00Z", "name": "test1", "link": "#"};
     const task2 = {"startTime": "2024-10-23T21:00:00Z", "endTime": "2024-10-29T12:00:00Z", "name": "test", "link": "#"};
     const task3 = {"startTime": "2024-10-24T00:00:00Z", "endTime": "2024-10-28T12:00:00Z", "name": "test", "link": "#"};
     const task4 = {"startTime": "2024-10-23T18:00:00Z", "endTime": "2024-10-29T18:00:00Z", "name": "test1", "link": "#"};
