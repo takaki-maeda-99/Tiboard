@@ -15,7 +15,6 @@ textarea{
     padding-bottom:7px;
     padding-right: 5%;
     vertical-align: center;
-    border-right: none;
 }
 
 textarea:focus{
@@ -27,11 +26,7 @@ textarea::-webkit-scrollbar{
     display: none;
 }
 
-.extra-space{
-    width:100%;
-    padding:0;
-    height: 100px;
-}
+
 
 .send-button{
     position: fixed;
@@ -85,15 +80,16 @@ textarea::-webkit-scrollbar{
 .date-info{
     font-size: smaller;
     padding-left:50px;
+    color: #696969;
 }
 
 .icon{
     border:solid;
     border-radius: 20px;
-    border-width: 1px;
+    border-width: 1.5px;
     width: 40px;
     height: 40px;
-    background-color: #8f3939;
+    background-color:#34495e;
   }
 
 .post-header {
@@ -170,9 +166,9 @@ textarea::-webkit-scrollbar{
     resize:none;
     border-radius: 20px;
     border-width: 1.5px ;
-    border-right:solid 1px;
+    border-right:solid 1.5px;
     border-color: #ffffff;
-    background: none;
+    background-color: #26282c;
     width:70%;
     color:white;
     height: 40px;
@@ -194,7 +190,7 @@ textarea::-webkit-scrollbar{
   }
   
   textarea:focus{
-    border-width: 1px;
+    border-width: 1.5px;
     outline: none;
   }
   
@@ -203,12 +199,10 @@ textarea::-webkit-scrollbar{
   }
   
   .extra-space{
-    position: absolute;
     width:100%;
     padding:0;
     height: 100px;
     background-color: #26282c;
-    bottom:0;
   }
   
   .send-button{
@@ -239,40 +233,81 @@ textarea::-webkit-scrollbar{
   } 
   
   .post-top{
-    height: 14px;
+    height: 15px;
     border:solid white;
-    border-width: 1.5px 1.5px 1.5px 1.5px;
-    border-radius: 5px 13px 0 0;
+    border-width: 1.5px 1.5px 0 1.5px;
+    border-radius: 4px 15px 0 0;
     margin:0;
     margin-left:50px;
   }
   
   .post-content{
     margin:0;
-    padding:8px;
+    padding:7px;
+    padding-left: 15px;
+    padding-top:0;
+    padding-bottom: 0;
     margin-left:50px;
     width:max-content;
+    overflow-wrap: break-word;
     border:solid white;
-    border-width: 1.5px 1.5px 1.5px 1.5px;
+    border-width: 0 1.5px 0 1.5px;
     max-width:65vw;
   }
   
   .post-file{
-    display: flex;
     border:solid white;
-    border-width: 1.5px 1.5px 1.5px 1.5px;
+    border-width: 0 1.5px 0 1.5px;
     align-items: center;
     padding:7px;
+    padding-bottom:0;
     margin:0;
-    width:20%;
+    width:max-content;
     margin-left:50px;
+  }
+
+  .post-file-wrap{
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    padding-left: 5px;
+    border-radius: 15px;
+    width: max-content;
+    height: 30px;
+    background-color: #26282c;
+    border: solid;
+    border-width: 1px;
+    border-color: #ffffff;
+  }
+
+  .post-file a{
+    padding-left: 5px;
+    white-space: nowrap; /* 改行を禁止 */
+    overflow: hidden; /* 溢れたテキストを隠す */
+    color:white;
+    max-width: 200px;
+    text-overflow: ellipsis; /* 溢れたテキストを「...」で表示 */
+    text-decoration: none;
+  }
+
+  .file-dl-btn{
+    background: transparent;
+    color:#ffffff;
+    border: none;
+    padding-left:5px ;
+  }
+
+  .file-info-wrap{
+    display: flex;
+    align-items: center;
+    width: max-content;
   }
   
   .post-bottom{
-    height: 14px;
+    height: 15px;
     border:solid white;
-    border-width: 1.5px 1.5px 1.5px 1.5px;
-    border-radius: 0 0 5px 13px;
+    border-width: 0 1.5px 1.5px 1.5px;
+    border-radius: 0 0 15px 15px;
     margin:0;
     margin-left:50px;
   }
@@ -295,17 +330,19 @@ textarea::-webkit-scrollbar{
   
   }
   
-  .myTextarea{
+.myTextarea{
     resize:none;
     width:70vw;
     height: 40px;
-    border-color:white;
+    border:solid;
+    border-color: white;
     border-width: 0 1.5px 0 1.5px;
     padding-left:65px;
     font-size: 14px;
-    background: none;
+    background-color:#26282c ;
     color:#9a9a9a;
   }
+
   
   @media (max-width:767.5px){
       #textarea-container{
@@ -322,18 +359,18 @@ textarea::-webkit-scrollbar{
     top:0;
     right: 5px;
     background: transparent;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     border: none;
     cursor: pointer;
     font-size: 30px;
   }
   
   .close-btn:hover {
-    color: darkred;
+    color: aqua;
   }
   
   .reply-account-info{
-    background-color: none;
+    background-color:#26282c ;
     border: 1.5px solid #ffffff;
     border-bottom: none;
     padding-left:15px;
@@ -352,46 +389,25 @@ textarea::-webkit-scrollbar{
     border-width: 1.5px;
     position: fixed;
     flex-wrap: wrap;
-    align-items: first baseline;
     justify-content: flex-end;
     height: 100px;
     padding:0;
+    padding-top:10px;
+    padding-bottom:10px;
     gap:10px;
     bottom:80px;
     width: 70vw;
     left:26vw;
-    background-color: none;
+    background-color:#26282c ;
     overflow-y: scroll;
   }
-
-  @media (max-width:767px){
-    textarea{
-      left:4vw;
-    }
-  
-    .input-space{
-      width: 92vw;
-    }
-
-    #file-preview-container{
-        width:92vw;
-        left:4vw;
-    }
-  
-    label{
-      left:6vw;
-    }
-  
-  }
-  
   
   .file-preview{
-    background-color: none;
+    background-color:#26282c ;
     border-radius: 15px;
     border-style: solid;
     border-color:#ffffff;
     border-width: 1px;
-    margin-top:10px;
     margin-right:10px;
     width:20vw;
     height:30px;
@@ -414,6 +430,30 @@ textarea::-webkit-scrollbar{
     margin-bottom: 6px;
     margin-left: 5px;
   }
+
+  @media (max-width:767px){
+    textarea{
+      left:4vw;
+    }
+  
+    .input-space{
+      width: 92vw;
+    }
+
+    #file-preview-container{
+        width:92vw;
+        left:4vw;
+    }
+  
+    label{
+      left:6vw;
+    }
+
+    .file-preview{
+      width: 50vw;
+    }
+  
+  }
   
   .active-preview{
     border-radius: 20px 20px 0 0;
@@ -423,3 +463,13 @@ textarea::-webkit-scrollbar{
     display:none;
   }
 
+  .delete-button{
+    color:white;
+    background: none;
+    font-size: 30px;
+    border:none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-bottom: 5px;
+    margin-right: 5px;
+  }
