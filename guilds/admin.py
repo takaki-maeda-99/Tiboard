@@ -1,15 +1,15 @@
 from django.contrib import admin
-from guilds.models import Course, CourseWork, Submission
+from .models.task_board_models import Course, CourseWork, Submission
 
 admin.site.register(Course)
 admin.site.register(CourseWork)
 admin.site.register(Submission)
 
-from guilds.models import CustomSocialAccount
+from .models.task_board_models import CustomSocialAccount
 
 admin.site.register(CustomSocialAccount)
 
-from guilds.models import Post, Thread
+from .models.question_board_models import Post, Thread
 
 admin.site.register(Thread)
 admin.site.register(Post)

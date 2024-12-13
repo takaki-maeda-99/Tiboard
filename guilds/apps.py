@@ -5,4 +5,4 @@ class GuildsConfig(AppConfig):
     name = 'guilds'
     
     def ready(self):
-            import guilds.signals
+        import guilds.signals

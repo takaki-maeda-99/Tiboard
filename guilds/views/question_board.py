@@ -5,34 +5,10 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from functions.function import Function as func
 
-@login_required
-def get_tasks(request):
-    isinstance = func(request)
-    return JsonResponse(isinstance.get_tasks(request), safe=False)
-
-@login_required
-def update_courses(request):
-    isinstance = func(request)
-    return JsonResponse(isinstance.update_courses(request), safe=False)
-
-@login_required
-def update_courseworks(request):
-    isinstance = func(request)
-    return JsonResponse(isinstance.update_courseworks(request), safe=False)
-
-@login_required
-def update_submissions(request):
-    isinstance = func(request)
-    return JsonResponse(isinstance.update_submissions(request), safe=False)
-
-
-
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views import View
-from guilds.models import Thread, Post
-# from task_board.models import User
+from guilds.models.question_board_models import Thread, Post
 from django.contrib.auth.models import User
 from guilds.forms import PostForm
 import urllib.parse

@@ -1,5 +1,5 @@
 from django import forms
-from guilds.models import Post
+from .models.question_board_models import Post
 
 class PostForm(forms.ModelForm):
     class Meta:

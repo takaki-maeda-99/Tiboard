@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
-from guilds.models import Thread
-from guilds.models import Course
+
+from guilds.models.question_board_models import Thread
+from guilds.models.task_board_models import Course
 
 class Command(BaseCommand):
     help = 'Create threads for all existing courses if not already created.'
