@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Guild S {% endblock %}</title>
+
+    <link rel="icon" type="image/png" sizes="256x256" href="{% static 'icons/256x256.png' %}">
+    <link rel="icon" href="{% static 'icons/GuildS_icon.png' %}" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="48x48" href="{% static 'icons/48x48.png' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'icons/96x96.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/192x192.png' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 base-header" id="base-header">
+                {% block base_header %}
+                {% include 'header.html' %}
+                {% endblock %}
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 head-bar-side" id="head-bar-side">
+                {% block head_bar_side %}{% endblock %}
+            </div>
+            <div class="col-md-9 head-bar-main overflow-x-scroll" id="head-bar-main">
+                {% block head_bar_main %}{% endblock %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 content-side overflow-y-scroll" id="content-side">
+                {% block content_side %}{% endblock %}
+            </div>
+            <div class="col-md-9 content-main overflow-x-scroll overflow-y-scroll" id="content-main">
+                {% block content_main %}{% endblock %}
+            </div>
+        </div>
+        <div class="other_content">
+            <img src="{% static 'icons/hamburgar.png' %}" class="toggle-btn">
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-header">
+                        <ul class="menu">
+                            <div class="menues">
+                                <li><a class="menu-name "href="//127.0.0.1:8000/">Home</a></li>
+                                <li><a class="menu-name "href="//127.0.0.1:8000/task_board">Taskboard</a></li>
+                                <li><a class="menu-name "href="//127.0.0.1:8000/question_board">Questionboard</a></li>
+                                <li><a class="menu-name "href="//127.0.0.1:8000/score_board">Scoreboard</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+                {% block other_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="{% static 'base/script.js' %}"></script>
+</body>
+
+</html>

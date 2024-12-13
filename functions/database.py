@@ -1,5 +1,5 @@
-from task_board.models import Course, CourseWork, Submission, CustomSocialAccount
-from task_board.utils import retry_on_failure
+from guilds.models import Course, CourseWork, Submission, CustomSocialAccount
+from guilds.utils import retry_on_failure
 
 from datetime import datetime, timedelta
 

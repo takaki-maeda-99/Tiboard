@@ -44,11 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'dash_board',
-    'question_board',
-    'score_board',
-    'task_board',
-    "widgets_test",
+    # 'dash_board',
+    # 'question_board',
+    # 'score_board',
+    # 'task_board',
+    # "widgets_test",
+    'guilds',
+    
     "django_extensions",
     'django.contrib.sites',
     'allauth',
@@ -74,7 +76,7 @@ ROOT_URLCONF = 'Tiboard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'static' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
