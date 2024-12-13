@@ -37,7 +37,7 @@
                     <div class="icon"></div>
                     <p class="post-id">{{ post.author}} Post ID: {{ post.id }}</p>
                 </div>
-                <button id="reply-btn" class="reply-btn" data-postid="{{ post.id }}" data-postcontent="{{ post.content }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+                <button id="reply-btn" class="reply-btn" data-postid="{{ post.id }}" data-postcontent="{{ post.content }}" data-hasfile="{% if post.attachments.exists %}true{% else %}false{% endif %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4z"/>
                     </svg></button>
             </div>
@@ -46,7 +46,7 @@
         <div class="post-wrap">
             <div class="post-top"></div>
             {% if post.content %}
-                <p class="post-content" style="white-space: pre-wrap;">{{ post.content }}</p>
+                <p class="post-content" style="white-space: pre-wrap; max-width:65vw;">{{ post.content }}</p>
             {% endif %}
             {% if post.attachment %}
                 <div class="post-file" >
@@ -56,7 +56,7 @@
                             <a id="post-file-name" class="file-link" href="/question_board{{ post.attachment.url }}" target="_brank">
                                 {{ post.attachment.name|filename  }}
                             </a>
-                            <button class="file-dl-btn" onclick="downloadFile('/question_board{{ post.attachment.url }}', '{{ post.file_name }}')">
+                            <button class="file-dl-btn" onclick="downloadFile('/question_board{{ post.attachment.url }}', '{{ post.file_name }}')" >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
                                     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                     <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
@@ -87,7 +87,8 @@
             <textarea id="myTextarea" class="myTextarea" readonly></textarea>
         </div>
         <div id="file-info">
-            <div id="file-preview-container" ></div>
+            <div id="file-preview-container" >
+            </div>
         </div>
         <textarea class="input-space" id="reply-content" name="content" placeholder="内容を入力"></textarea>   
         <label>
@@ -109,63 +110,7 @@
 
 
 
-<script src="{% static "question_board/thread_detail_script.js" %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const contentMain = document.getElementById('content-main');
-
-        window.onload = function() {
-            contentMain.scrollTop = contentMain.scrollHeight;
-        };
-    });
-    
-</script>
-<script>
-    function realtime() {
-        const postWraps = document.querySelectorAll('.post-wrap');
-
-        postWraps.forEach((postWrap) => {
-            const postFile = postWrap.querySelector('.post-file');
-            const postTop = postWrap.querySelector('.post-top');
-            const postBottom = postWrap.querySelector('.post-bottom');
-            const postContent = postWrap.querySelector('.post-content');
-
-            let contentWidth = 0;
-            let fileWidth = 0;
-
-            // post-content が存在する場合、その幅を取得
-            if (postContent) {
-                contentWidth = postContent.getBoundingClientRect().width;
-            }
-
-            // post-file が存在する場合、その幅を取得
-            if (postFile) {
-                fileWidth = postFile.getBoundingClientRect().width;
-            }
-
-            // 両方存在する場合は、大きい方に他の要素の幅を合わせる
-            if (postContent && postFile) {
-                const maxWidth = Math.max(contentWidth, fileWidth);
-                postContent.style.width = maxWidth + 'px';
-                postFile.style.width = maxWidth + 'px';
-                postTop.style.width = maxWidth + 'px';
-                postBottom.style.width = maxWidth + 'px';
-            }
-            // post-content だけが存在する場合は、その幅に合わせる
-            else if (postContent) {
-                postTop.style.width = contentWidth + 'px';
-                postBottom.style.width = contentWidth + 'px';
-            }
-            // post-file だけが存在する場合は、その幅に合わせる
-            else if (postFile) {
-                postTop.style.width = fileWidth + 'px';
-                postBottom.style.width = fileWidth + 'px';
-            }
-        });
-    }
-
-    window.addEventListener('load', realtime);
-</script>
+<script src="{% static "question_board/thread_detail_script2.js" %}"></script>
 
 {% endblock %} 
 
