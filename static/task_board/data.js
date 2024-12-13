@@ -1,5 +1,5 @@
 async function fetchDatum(url) {
-    const response = await fetch(`/task_board/${url}`);
+    const response = await fetch(`/guilds/${url}`);
 
     const data = await response.json();
 

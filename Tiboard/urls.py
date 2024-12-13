@@ -21,11 +21,12 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path("question_board/", include("question_board.urls")),
-    path("score_board/", include("score_board.urls")),
-    path("task_board/", include("task_board.urls")),
-    path("test/", include("widgets_test.urls")),
-    path("accounts/", include("allauth.urls")), #auth
+    # path("question_board/", include("question_board.urls")),
+    # path("score_board/", include("score_board.urls")),
+    # path("task_board/", include("task_board.urls")),
+    # path("test/", include("widgets_test.urls")),
+    path("accounts/", include("allauth.urls")), #auth    
+    path("guilds/", include("guilds.urls")),
 ]
 
 

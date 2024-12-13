@@ -1,6 +1,6 @@
 def info_and_posts(request):
-    from task_board.models import CourseWork, Course
-    from question_board.models import Thread, Post
+    from guilds.models import CourseWork, Course
+    from guilds.models import Thread, Post
     courses = Course.objects.all()
     courseworks = CourseWork.objects.all()
     tasks = {
