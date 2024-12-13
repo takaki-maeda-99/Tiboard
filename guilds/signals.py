@@ -2,9 +2,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-from guilds.models import Course
-from guilds.models import Thread
+from .models.task_board_models import Course
+from .models.question_board_models import Thread
 
+# courseが作成されたときにthreadも作成する
 @receiver(post_save, sender=Course)
 def create_thread_for_course(sender, instance, created, **kwargs):
     if created:
@@ -12,8 +13,9 @@ def create_thread_for_course(sender, instance, created, **kwargs):
 
 
 from allauth.socialaccount.models import SocialAccount
-from guilds.models import CustomSocialAccount
+from .models.task_board_models import CustomSocialAccount
 
+# SocialAccountが作成されたときにCustomSocialAccountも作成する
 @receiver(post_save, sender=SocialAccount)
 def save_custom_social_account(sender, instance, **kwargs):
     try:

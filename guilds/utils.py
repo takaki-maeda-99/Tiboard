@@ -1,6 +1,7 @@
 import time
 from django.db import OperationalError
 
+# データベースがロックされている場合にリトライするデコレータ
 def retry_on_failure(retries=20, delay=0.1):
     def decorator(func):
         def wrapper(*args, **kwargs):

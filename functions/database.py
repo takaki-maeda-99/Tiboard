@@ -1,4 +1,4 @@
-from guilds.models import Course, CourseWork, Submission, CustomSocialAccount
+from guilds.models.task_board_models import Course, CourseWork, Submission, CustomSocialAccount
 from guilds.utils import retry_on_failure
 
 from datetime import datetime, timedelta
