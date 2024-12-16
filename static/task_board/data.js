@@ -1,5 +1,5 @@
 async function fetchDatum(url) {
-    const response = await fetch(`/guilds/${url}`);
+    const response = await fetch(`${url}`);
 
     const data = await response.json();
 

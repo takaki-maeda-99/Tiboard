@@ -60,7 +60,7 @@
             return {
                 "mainText": thread.name,
                 "subText": thread.description,
-                "link": "{% url 'guilds:get_thread' 0 %}".replace("0", thread.id)
+                "link": "{% url 'guilds:question_board:get_thread' 0 %}".replace("0", thread.id)
             };
         });
         createSidebar("sideber", dics, "Threads", true);
