@@ -13,18 +13,6 @@
 {% endblock %}
 
 {% block content_side %}
-
-<!-- 
-<script src="{% static "question_board/thread_detail_script.js" %}"></script>
-
-<ul class="thread-list">
-    {% for thread in threads %}
-    <li class="thread-names">
-        <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
-            {% comment %} - {{ thread.description }} {% endcomment %}
-    </li>
-    {% endfor %}
-</ul> -->
 <!-- ---------------------------------------------------------------------------------------------------- -->
 <div id="sideber"></div>
 <!-- ---------------------------------------------------------------------------------------------------- -->
@@ -33,80 +21,26 @@
 
 
 {% block content_main %}
-<div id="thread"></div>
-<!-- ディスコードライクなポスト入力エリア -->
-<style>
-    .post-area {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
 
-    .post-input {
-        display: flex;
-        flex-direction: column;
-        width: 50%;
-    }
+<div id="chat-container">
+    <!-- メッセージ表示エリア -->
+    <div id="messages"></div>
 
-    .post-text {
-        height: 100px;
-        margin-bottom: 10px;
-    }
-
-    .post-button {
-        width: 100px;
-        align-self: flex-end;
-    }
-</style>
-
-<div class="post-area">
-    <div class="post-input">
-        <textarea id="post-text" class="post-text" placeholder="Post your question here"></textarea>
-        <button id="post-button" class="post-button">Post</button>
+    <!-- 入力欄と送信ボタン -->
+    <div id="input-container">
+        <input type="text" id="message-input" placeholder="メッセージを入力...">
+        <button id="send-button">送信</button>
     </div>
 </div>
-
-<script>
-    // const postButton = document.getElementById("post-button");
-    // const postText = document.getElementById("post-text");
-
-    // postButton.addEventListener("click", () => {
-    //     const text = postText.value;
-    //     postText.value = "";
-    //     fetch("post/", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "X-CSRFToken": getCookie("csrftoken")
-    //         },
-    //         body: JSON.stringify({
-    //             text: text
-    //         })
-    //     }).then(response => response.json()).then(data => {
-    //         console.log(data);
-    //     });
-    // });
-</script>
 
 {% endblock %}
 
 
 {% block other_content %}
-
-<!-- <div class='sidebar-content'>
-    <h2>Thread List</h2>
-    <ul class="thread-list">
-        {% for thread in threads %}
-        <li class="thread-names">
-            <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
-        </li>
-        {% endfor %}
-    </ul>
-</div> -->
-
 <script src="{% static 'widgets_test/common_script.js' %}"></script>
 <script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
 <script src="{% static 'widgets_test/thread_func.js' %}"></script>
+
 <script>
     fetch("thread_list/").then(response => response.json()).then(data => {
         threads = data.threads;
