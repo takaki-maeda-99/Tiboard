@@ -53,7 +53,6 @@ def thread_detail(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
     threads = Thread.objects.all()
     posts = thread.posts.all()
-    # user_id = request.COOKIES.get('user_id')
 
     threads = Thread.objects.all()
 
@@ -61,6 +60,7 @@ def thread_detail(request, thread_id):
     if request.method == 'POST':
         content = request.POST.get('content')
         file = request.FILES.get('attachment')
+        # reply_to = request.POST.get('reply_to')
         print(1)
         
         if (content and content.strip()) or file:
@@ -69,8 +69,9 @@ def thread_detail(request, thread_id):
             if form.is_valid():
                 post = form.save(commit=False)
                 post.thread = thread
-                # post.author = User.objects.get(user_id=user_id)
                 post.author = request.user
+                # if reply_to:
+                #     post.reply_to = Post.objects.get(id=reply_to)
                 print(3)
 
                 if post.attachment:
@@ -89,7 +90,7 @@ def thread_detail(request, thread_id):
                     post.attachment = file
                     post.save()
                     print(12)
-        return redirect('question_board:thread_detail', thread_id=thread_id)
+        return redirect('guilds:question_board:thread_detail', thread_id=thread_id)
 
     else:
         form = PostForm()
