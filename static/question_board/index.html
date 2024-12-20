@@ -7,6 +7,13 @@
 <!-- <link rel="stylesheet" type="text/css" href="{% static 'question_board/styles.css' %}"> -->
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/sidebar_func.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/thread_func.css' %}">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<script src="{% static 'widgets_test/common_script.js' %}"></script>
+<script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
+<script src="{% static 'widgets_test/thread_func.js' %}"></script>
+
 {% endblock %}
 
 {% block head_bar_main %}
@@ -24,22 +31,116 @@
 
 <div id="chat-container">
     <!-- メッセージ表示エリア -->
-    <div id="messages"></div>
+    <script>
+        const post = {
+            id: 'postid',
+            icon: '{% static "icons/rogo.png" %}',
+            userName: 'unchi',
+            date: '2024年12月18日',
+            replyTo: 'postid',
+            contents: 'contentaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa なんでえええええええええええええええええええええ　いやえ？、まってあああああああああああああああああああああああ'
+        };
+        const chatContainer = document.getElementById('chat-container');
 
-    <!-- 入力欄と送信ボタン -->
-    <div id="input-container">
-        <input type="text" id="message-input" placeholder="メッセージを入力...">
-        <button id="send-button">送信</button>
-    </div>
+        const postElement = createPost(post);
+        const postElement2 = createPost(post);
+        const postElement3 = createPost(post);
+        const postElement4 = createPost(post);
+        const postElement5 = createPost(post);
+        const postElement6 = createPost(post);
+        const postElement7 = createPost(post);
+
+        chatContainer.appendChild(postElement);
+        chatContainer.appendChild(postElement2);
+        chatContainer.appendChild(postElement3);
+        chatContainer.appendChild(postElement4);
+        chatContainer.appendChild(postElement5);
+        chatContainer.appendChild(postElement6);
+        chatContainer.appendChild(postElement7);
+
+    </script>
 </div>
+<!-- 入力欄と送信ボタン -->
+<div id="input-container-backarea"></div>
+<div id="input-container">
+    <div id="reply-to">
+        <p>≫<span id="reply-to-post"></span></p>
+    </div>
+    <textarea id="message-input" placeholder="メッセージを入力..."></textarea>
+    <button id="upload-button">
+        <i class="bi bi-paperclip"></i>
+    </button>
+    <button id="send-button">
+        <i class="bi bi-send"></i>
+    </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+        
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const contentMain = document.getElementById('content-main');
+
+    const inputContainerBackarea = document.getElementById('input-container-backarea');
+    var beforeHeight = messageInput.scrollHeight;
+
+    // メッセージ入力欄の高さを自動調整
+    messageInput.addEventListener('input', () => {
+        messageInput.style.height = '24px';
+        messageInput.style.height = `${messageInput.scrollHeight}px`;
+        inputContainerBackarea.style.height = `${messageInput.scrollHeight + 150 -24}px`;
+
+        // 高さの変化量を計算してスクロール
+        const diff = messageInput.scrollHeight - beforeHeight;
+
+        contentMain.scrollBy({
+            top: diff, // 縦方向にスクロール
+            left: 0,  // 横方向にはスクロールしない
+            behavior: 'smooth' // スムーズなスクロール
+        });
+
+        beforeHeight = messageInput.scrollHeight;
+    });
+
+    // 送信ボタンのクリックイベント
+    sendButton.addEventListener('click', () => {
+        const messageText = messageInput.value.trim(); // メッセージの内容を取得
+        messageInput.value = ''; // メッセージ入力欄を空にする
+        messageInput.style.height = '24px'; // メッセージ入力欄の高さをリセット
+        inputContainerBackarea.style.height = '150px'; // メッセージ入力欄の高さをリセット
+        beforeHeight = 16;
+
+        const replyTo = document.getElementById('reply-to'); // 返信先の表示を消す
+        replyTo.style.display = 'none';
+        const replyToPost = document.getElementById('reply-to-post'); // 返信先のユーザー名を取得
+
+        const newpost = createPost({
+            icon: '{% static "icons/rogo.png" %}',
+            userName: 'unchi',
+            date: '2024年12月18日',
+            postid: 'postid',
+            replyTo: replyToPost.textContent,
+            contents: messageText
+        });
+        chatContainer.appendChild(newpost);
+
+        //一番下にスクロール
+        contentMain.scrollBy({
+            top: 10000, // 縦方向にスクロール
+            left: 0,  // 横方向にはスクロールしない
+            behavior: 'smooth' // スムーズなスクロール
+        });
+
+    }); 
+});
+
+</script>
 
 {% endblock %}
 
 
 {% block other_content %}
-<script src="{% static 'widgets_test/common_script.js' %}"></script>
-<script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
-<script src="{% static 'widgets_test/thread_func.js' %}"></script>
 
 <script>
     fetch("thread_list/").then(response => response.json()).then(data => {

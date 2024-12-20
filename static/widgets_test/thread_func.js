@@ -16,75 +16,83 @@
 //         }
 
 function clearThreads() {
-    const threads = document.querySelectorAll('.thread-container');
-    threads.forEach(thread => {
-        thread.innerHTML = '';
-    });
+    const threadElement = document.getElementById("chat-container");
+    threadElement.innerHTML = '';
 }
 
-function createThread(elementId, thread) {
+function createThread(thread) {
     clearThreads();
-    const threadElement = document.getElementById(elementId);
+    const threadElement = document.getElementById("chat-container");
     const threadHeader = document.createElement('h2');
     const threadContent = document.createElement('ul');
     threadElement.appendChild(threadHeader);
     threadElement.appendChild(threadContent);
     threadHeader.textContent = thread.name;
 
-    threadElement.className = "thread-container";
-    threadContent.className = "thread-content";
-
     thread.posts.forEach(post => {
-        console.log(post);
-        createPost(threadContent, post);
+        createPost(post);
     });
+
+
 }
 
-function createPost(parent, post) {
-    console.log(post);
-    const container = document.createElement('li');
-    parent.appendChild(container);
+function createPost(post) {
+    const postDiv = document.createElement('div');
+    postDiv.className = 'post-div';
 
-    const header = document.createElement('div');
-    container.appendChild(header);
+    const icon = document.createElement('img');
+    icon.src = post.icon;
+    icon.className = 'icon';
+    postDiv.appendChild(icon);
+    
+    const postDiv2 = document.createElement('div');
+    postDiv.appendChild(postDiv2);
 
-    const icon = document.createElement('div');
-    const user = document.createElement('h4');
-    const info = document.createElement('p');
-    header.appendChild(icon);
-    header.appendChild(user);
-    header.appendChild(info);
+    const postInfo = document.createElement('div');
+    postInfo.className = 'post-info';
+    postDiv2.appendChild(postInfo);
 
-    const content = document.createElement('div');
-    container.appendChild(content);
+    const userName = document.createElement('h5');
+    userName.textContent = post.userName;
+    postInfo.appendChild(userName);
 
-    const text = document.createElement('p');
-    const file = document.createElement('div');
-    content.appendChild(text);
-    content.appendChild(file);
+    const date = document.createElement('h6');
+    date.textContent = post.date;
+    postInfo.appendChild(date);
 
-    const replyBtn = document.createElement('button');
-    container.appendChild(replyBtn);
+    const postId = document.createElement('h6');
+    postId.textContent = "postid:" + post.id;
+    postInfo.appendChild(postId);
 
-    container.className = "post-container";
-    header.className = "post-header";
-    content.className = "post-content";
-    icon.className = "post-icon";
-    user.className = "post-user";
-    info.className = "post-info";
-    file.className = "post-file";
-    replyBtn.className = "reply-btn";
+    const replyButton = document.createElement('button');
+    postInfo.appendChild(replyButton);
 
-    user.textContent = post.author;
-    info.textContent = `${post.created_at} Post ID: ${post.id}`;
-    text.textContent = post.content;
-    // if (post.attachment) {
-    //     const img = document.createElement('img');
-    //     img.src = post.attachment;
-    //     file.appendChild(img);
-    // }
-    replyBtn.textContent = "Reply";
-    // replyBtn.dataset.postid = post.id;
-    // replyBtn.dataset.postcontent = post.content;
-    // replyBtn.addEventListener('click', replyToPost);
+    const replyIcon = document.createElement('i');
+    replyIcon.className = 'bi bi-reply-fill';
+    replyButton.appendChild(replyIcon);
+    
+    if (post.replyTo) {
+        const replyTo = document.createElement('a');
+        replyTo.className = 'reply-to';
+        replyTo.textContent = "≫" + post.replyTo;
+        replyTo.href = '#';
+        postDiv2.appendChild(replyTo);
+    }
+
+    const contents = document.createElement('div');
+    contents.className = 'contents';
+    postDiv2.appendChild(contents);
+
+    const contentsText = document.createElement('p');
+    contentsText.textContent = post.contents;
+    contents.appendChild(contentsText);
+
+    replyButton.addEventListener('click', () => {
+        const replyTo = document.getElementById('reply-to');
+        replyTo.style.display = 'block';
+        const replyToPost = document.getElementById('reply-to-post');
+        replyToPost.textContent = post.id;
+    });
+
+    return postDiv;
 }

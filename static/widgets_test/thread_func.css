@@ -1,66 +1,148 @@
-/* .thread-container {
 
-} */
-
-.thread-container ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+:root {
+    --icon-size: 40px;
+    --thread-base-color: #323438;
 }
 
-/* .thread-content {
-
-} */
-
-.post-container {
-    border: 1px solid #ccc;
-    width: 100%;
-    /* max-width: 400px; */
-    background-color: #333333;
-    padding: 2%;
-    border-radius: 10px;
-    font-family: Arial, sans-serif;
-    margin: 1%;
-}
-
-.post-header {
+#chat-container {
     display: flex;
-    /* align-items: center; */
-    /* justify-content: space-between; */
-    margin-bottom: 2%;
+    flex-direction: column;
+    padding: 1%;
+    width: 100%;
+    gap:10px
+}
+
+/* post */
+
+.post-div {
+    display: flex;
+    margin-bottom: 1%; /* 下に余白 */
+}
+.post-div .icon {
+    width: var(--icon-size); /* アイコンのサイズ */
+    height: var(--icon-size); /* アイコンのサイズ */
+    border-radius: 50%; /* 丸くする */
+    margin-right: 1%; /* 右に余白 */
+}
+.post-div .post-info {
+    display: flex; /* 横並び */
+    align-items: center; /* 縦中央揃え */
+    height: calc(var(--icon-size)*2/5); /* アイコンの高さの3/5 */
+    gap: 0.5%; /* 要素間の間隔 */
+    white-space: nowrap; /* 折り返し禁止 */
+    margin-bottom: 0.5%; /* 下に余白 */
+}
+.post-div .post-info h5 {
+    margin: 0; /* 余白を消す */
+}
+.post-div .post-info h6 {
+    margin: 0; /* 余白を消す */
+}
+.post-div .post-info button {
+    border-radius: 25%; /* 角丸 */
+    cursor: pointer; /* マウスを重ねた時のカーソル */
+}
+
+.post-div .reply-to {
+    height: 24px; /* 高さ */
+    font-size: large;
+}
+
+.post-div .contents {
+    margin-top: 5px;
+    border: 1px outset; /* 枠線 */
+    border-radius: calc(var(--icon-size)/2); /* 角丸 */
+    background-color: var(--thread-base-color); /* 背景色 */
+    padding: 10px; /* 内側の余白 */
+    width: max-content; /* 最大幅 */
+    padding: calc(var(--icon-size)*1/5); /* 内側の余白 */
+}
+
+.post-div .contents p {
+    margin: 0; /* 余白を消す */
+    max-width: 65vw; /* 最大幅 */
+    word-wrap: break-word; /* 長い単語を折り返す */
+    word-break: break-all; /* 長い単語を折り返す */
+
+}
+
+/* post */
+
+
+
+/* input-area */
+
+#input-container {
+    position: fixed;
+    bottom: 1%;
+    background-color: var(--thread-base-color);
+    width: 72%;
+    padding: 10px;
+    height: fit-content;
+    border-radius: 25px;
+    border: 3px outset;
+}
+
+#reply-to {
+    background-color: var(--thread-base-color);
+    height: 24px;
+    display: none;
+    padding-left: 10px;
+}
+
+#reply-to-post {
+    width: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#message-input {
+    box-sizing: border-box;
+    background-color: var(--thread-base-color);
     color: white;
+    width: 100%;
+    padding: 0 0 0 10px;
+    border: 0;
+    resize: none;
+    height: 24px;
+    outline: 0;
+    border-radius: 10px;
 }
 
-.post-icon {
-    width: 10%;
-    padding-top: 10%;
-    background-color: red;
-    border-radius: 50%;
-    margin: 0 1%;
-}
-
-.post-user {
-    flex-grow: 0;
-    margin-left: 2%;
-}
-
-.post-info {
-    flex-grow: 1;
-    margin-left: 2%;
-}
-
-.content {
-    background-color: white;
-    padding: 3%;
-    margin: 3% 0;
-    border-radius: 5px;
-}
-
-.reply-btn {
-    border: 1px solid #333;
-    padding: 2% 5%;
-    font-size: 90%;
+#upload-button {
+    background-color: var(--thread-base-color);
+    border: 0;
+    border-radius: 30px;
     cursor: pointer;
-    background-color: #fff;
-    border-radius: 5px;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    float: left;
 }
+
+#send-button {
+    background-color: white;
+    border: 0;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    padding: 2px 2px 0 0;
+    margin-right: 10px;
+    float: right;
+}
+
+#send-button:hover {
+    background-color: #f0f0f0;
+}
+
+#input-container-backarea {
+    width: 100%;
+    height: 150px;
+    z-index: -1;
+}
+
+/* input-area */

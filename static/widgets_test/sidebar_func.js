@@ -32,8 +32,7 @@ function createSidebar(parentId, dics, headerText, link_for_fetch = false) {
         } else {
             classNameElm.addEventListener('click', () => {
                 fetch(`${dic.link}`).then(response => response.json()).then(data => {
-                    console.log(data);
-                    createThread("thread", data.thread);
+                    createThread(data.thread);
                 });
             });
         }
