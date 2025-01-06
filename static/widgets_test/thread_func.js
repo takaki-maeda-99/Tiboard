@@ -1,20 +1,4 @@
 
-// 'thread': {
-//             'id': thread.id,
-//             'name': thread.course.course_name,
-//             'description': thread.description,
-//             'posts': [
-//                 {
-//                     'id': post.id,
-//                     'content': post.content,
-//                     'created_at': post.created_at,
-//                     'author': post.author.username,
-//                     'attachment': post.attachment.url if post.attachment else None,
-//                 }
-//                 for post in posts
-//             ]
-//         }
-
 var thread_id = 0;
 
 function createThread(thread) {
@@ -28,7 +12,6 @@ function createThread(thread) {
     threadHeader.textContent = thread.name;
 
     thread_id = thread.id; 
-    console.log(thread);
 
     thread.posts.forEach(post => {
         threadContent.appendChild(createPost(post));
@@ -103,3 +86,94 @@ function createPost(post) {
 
     return postDiv;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+        
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const contentMain = document.getElementById('content-main');
+    const inputContainerBackarea = document.getElementById('input-container-backarea');
+
+    var beforeHeight = messageInput.scrollHeight;
+
+    // メッセージ入力欄の高さを自動調整
+    messageInput.addEventListener('input', () => {
+        messageInput.style.height = '24px';
+        messageInput.style.height = `${messageInput.scrollHeight}px`;
+        inputContainerBackarea.style.height = `${messageInput.scrollHeight + 150 -24}px`;
+
+        // 高さの変化量を計算してスクロール
+        const diff = messageInput.scrollHeight - beforeHeight;
+
+        contentMain.scrollBy({
+            top: diff, // 縦方向にスクロール
+            left: 0,  // 横方向にはスクロールしない
+            behavior: 'smooth' // スムーズなスクロール
+        });
+
+        beforeHeight = messageInput.scrollHeight;
+    });
+
+    // 送信ボタンのクリックイベント
+    sendButton.addEventListener('click', () => {
+        const messageText = messageInput.value.trim(); // メッセージの内容を取得
+        messageInput.value = ''; // メッセージ入力欄を空にする
+        messageInput.style.height = '24px'; // メッセージ入力欄の高さをリセット
+        inputContainerBackarea.style.height = '150px'; // メッセージ入力欄の高さをリセット
+        beforeHeight = 16;
+
+        const replyTo = document.getElementById('reply-to'); // 返信先の表示を消す
+        replyTo.style.display = 'none';
+        const replyToPost = document.getElementById('reply-to-post'); // 返信先のユーザー名を取得
+
+        const post_data = { 
+            "thread": thread_id,
+            "content": messageText,
+            "reply_to": replyToPost.innerText,
+            "author_id": "anonymous",
+        };
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch(post_url, {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken, // CSRFトークンをヘッダーに追加
+            },
+        body: JSON.stringify(post_data), // データを JSON 文字列に変換
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            return response.json(); // レスポンスを JSON としてパース
+        })
+        .then((responseData) => {
+            fetch(get_thread_url.replace("0", thread_id)).then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            return response.json(); // レスポンスを JSON としてパース
+            })
+            .then((responseData) => {
+                createThread(responseData.thread);
+            })
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+    }); 
+});
+
+fetch("thread_list/").then(response => response.json()).then(data => {
+    threads = data.threads;
+    const dics = threads.map(thread => {
+        return {
+            "mainText": thread.name,
+            "subText": thread.description,
+            "link": get_thread_url.replace("0", thread.id)
+        };
+    });
+    createSidebar("sideber", dics, "Threads", true);
+});

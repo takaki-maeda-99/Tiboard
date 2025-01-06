@@ -123,11 +123,8 @@ def post_post(request):
         post = request.body.decode()
         post = json.loads(post)
         post['author'] = request.user.id
-        print(post)
         form = PostForm(post)
         if form.is_valid():
-            print('valid')
-            print(form.cleaned_data)
             form.save()
             return JsonResponse({'status': 'ok'})
         else:
