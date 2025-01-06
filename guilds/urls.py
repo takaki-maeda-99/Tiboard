@@ -21,6 +21,7 @@ question_board_patterns = [
     path("", TemplateView.as_view(template_name="question_board/index.html"), name="index"),
     path("thread_list/", question_board.thread_list, name="thread_list"),
     path("get_thread/<int:thread_id>/", question_board.get_thread, name="get_thread"),
+    path("post_post/", question_board.post_post, name="post_post"),
     path("thread/<int:thread_id>/", question_board.thread_detail, name="thread_detail"),
 ]
 

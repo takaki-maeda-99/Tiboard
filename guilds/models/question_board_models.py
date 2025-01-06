@@ -18,7 +18,7 @@ class Thread(models.Model):
 
 class Post(models.Model):
     thread = models.ForeignKey(Thread, related_name='posts', on_delete=models.CASCADE)
-    # reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,7 +26,7 @@ class Post(models.Model):
     attachment = models.FileField(upload_to='attachments/', null=True, blank=True)
 
     def __str__(self):
-        return self.thread.course.course_name
+        return f'{self.id} {self.author}: {self.content[:50]} {self.thread}'
     
 from django.db import models
 

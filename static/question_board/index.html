@@ -31,51 +31,26 @@
 
 <div id="chat-container">
     <!-- メッセージ表示エリア -->
-    <script>
-        const post = {
-            id: 'postid',
-            icon: '{% static "icons/rogo.png" %}',
-            userName: 'unchi',
-            date: '2024年12月18日',
-            replyTo: 'postid',
-            contents: 'contentaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa なんでえええええええええええええええええええええ　いやえ？、まってあああああああああああああああああああああああ'
-        };
-        const chatContainer = document.getElementById('chat-container');
-
-        const postElement = createPost(post);
-        const postElement2 = createPost(post);
-        const postElement3 = createPost(post);
-        const postElement4 = createPost(post);
-        const postElement5 = createPost(post);
-        const postElement6 = createPost(post);
-        const postElement7 = createPost(post);
-
-        chatContainer.appendChild(postElement);
-        chatContainer.appendChild(postElement2);
-        chatContainer.appendChild(postElement3);
-        chatContainer.appendChild(postElement4);
-        chatContainer.appendChild(postElement5);
-        chatContainer.appendChild(postElement6);
-        chatContainer.appendChild(postElement7);
-
-    </script>
 </div>
+
 <!-- 入力欄と送信ボタン -->
+{% csrf_token %}
 <div id="input-container-backarea"></div>
 <div id="input-container">
     <div id="reply-to">
         <p>≫<span id="reply-to-post"></span></p>
     </div>
     <textarea id="message-input" placeholder="メッセージを入力..."></textarea>
-    <button id="upload-button">
+    <button id="upload-button" type="button">
         <i class="bi bi-paperclip"></i>
     </button>
-    <button id="send-button">
+    <button id="send-button" type="button">
         <i class="bi bi-send"></i>
     </button>
 </div>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', () => {
         
     const messageInput = document.getElementById('message-input');
@@ -115,23 +90,49 @@ document.addEventListener('DOMContentLoaded', () => {
         replyTo.style.display = 'none';
         const replyToPost = document.getElementById('reply-to-post'); // 返信先のユーザー名を取得
 
-        const newpost = createPost({
-            icon: '{% static "icons/rogo.png" %}',
-            userName: 'unchi',
-            date: '2024年12月18日',
-            postid: 'postid',
-            replyTo: replyToPost.textContent,
-            contents: messageText
-        });
-        chatContainer.appendChild(newpost);
+        const post_data = { 
+            "thread": thread_id,
+            "content": messageText,
+            "reply_to": replyToPost.innerText,
+            "author__id": "anonymous",
+        };
 
-        //一番下にスクロール
-        contentMain.scrollBy({
-            top: 10000, // 縦方向にスクロール
-            left: 0,  // 横方向にはスクロールしない
-            behavior: 'smooth' // スムーズなスクロール
-        });
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
+        post_url = "{% url 'guilds:question_board:post_post' %}"
+
+        url = "{% url 'guilds:question_board:get_thread' 0 %}".replace("0", thread_id)
+
+        fetch(post_url, {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken, // CSRFトークンをヘッダーに追加
+            },
+        body: JSON.stringify(post_data), // データを JSON 文字列に変換
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            return response.json(); // レスポンスを JSON としてパース
+        })
+        .then((responseData) => {
+            console.log("Success:", responseData);
+            fetch(url).then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            return response.json(); // レスポンスを JSON としてパース
+            })
+            .then((responseData) => {
+                console.log("Success:", responseData.thread);
+                createThread(responseData.thread);
+            })
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
     }); 
 });
 
@@ -144,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
     fetch("thread_list/").then(response => response.json()).then(data => {
+        console.log("aaa");
         threads = data.threads;
         const dics = threads.map(thread => {
             return {

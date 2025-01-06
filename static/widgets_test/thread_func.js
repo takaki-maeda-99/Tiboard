@@ -15,25 +15,32 @@
 //             ]
 //         }
 
-function clearThreads() {
-    const threadElement = document.getElementById("chat-container");
-    threadElement.innerHTML = '';
-}
+var thread_id = 0;
 
 function createThread(thread) {
-    clearThreads();
     const threadElement = document.getElementById("chat-container");
+    threadElement.innerHTML = ''; // clear the chat container
+
     const threadHeader = document.createElement('h2');
     const threadContent = document.createElement('ul');
     threadElement.appendChild(threadHeader);
     threadElement.appendChild(threadContent);
     threadHeader.textContent = thread.name;
 
+    thread_id = thread.id; 
+    console.log(thread);
+
     thread.posts.forEach(post => {
-        createPost(post);
+        threadContent.appendChild(createPost(post));
     });
 
+    contentMain = document.getElementById('content-main');
 
+    contentMain.scrollBy({
+        top: 10000, // 縦方向にスクロール
+        left: 0,  // 横方向にはスクロールしない
+        behavior: 'smooth' // スムーズなスクロール
+    });
 }
 
 function createPost(post) {
@@ -41,7 +48,7 @@ function createPost(post) {
     postDiv.className = 'post-div';
 
     const icon = document.createElement('img');
-    icon.src = post.icon;
+    // icon.src = post.icon;
     icon.className = 'icon';
     postDiv.appendChild(icon);
     
@@ -53,11 +60,11 @@ function createPost(post) {
     postDiv2.appendChild(postInfo);
 
     const userName = document.createElement('h5');
-    userName.textContent = post.userName;
+    userName.textContent = post.author.username;
     postInfo.appendChild(userName);
 
     const date = document.createElement('h6');
-    date.textContent = post.date;
+    date.textContent = post.created_at;
     postInfo.appendChild(date);
 
     const postId = document.createElement('h6');
@@ -71,10 +78,10 @@ function createPost(post) {
     replyIcon.className = 'bi bi-reply-fill';
     replyButton.appendChild(replyIcon);
     
-    if (post.replyTo) {
+    if (post.reply_to) {
         const replyTo = document.createElement('a');
         replyTo.className = 'reply-to';
-        replyTo.textContent = "≫" + post.replyTo;
+        replyTo.textContent = "≫" + post.reply_to.id;
         replyTo.href = '#';
         postDiv2.appendChild(replyTo);
     }
@@ -84,7 +91,7 @@ function createPost(post) {
     postDiv2.appendChild(contents);
 
     const contentsText = document.createElement('p');
-    contentsText.textContent = post.contents;
+    contentsText.textContent = post.content;
     contents.appendChild(contentsText);
 
     replyButton.addEventListener('click', () => {
