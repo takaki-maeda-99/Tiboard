@@ -15,7 +15,15 @@
 //             ]
 //         }
 
+function clearThreads() {
+    const threads = document.querySelectorAll('.thread-container');
+    threads.forEach(thread => {
+        thread.innerHTML = '';
+    });
+}
+
 function createThread(elementId, thread) {
+    clearThreads();
     const threadElement = document.getElementById(elementId);
     const threadHeader = document.createElement('h2');
     const threadContent = document.createElement('ul');

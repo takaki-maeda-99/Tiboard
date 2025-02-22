@@ -13,18 +13,6 @@
 {% endblock %}
 
 {% block content_side %}
-
-<!-- 
-<script src="{% static "question_board/thread_detail_script.js" %}"></script>
-
-<ul class="thread-list">
-    {% for thread in threads %}
-    <li class="thread-names">
-        <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
-            {% comment %} - {{ thread.description }} {% endcomment %}
-    </li>
-    {% endfor %}
-</ul> -->
 <!-- ---------------------------------------------------------------------------------------------------- -->
 <div id="sideber"></div>
 <!-- ---------------------------------------------------------------------------------------------------- -->
@@ -33,26 +21,26 @@
 
 
 {% block content_main %}
-<div id="thread"></div>
+
+<div id="chat-container">
+    <!-- メッセージ表示エリア -->
+    <div id="messages"></div>
+
+    <!-- 入力欄と送信ボタン -->
+    <div id="input-container">
+        <input type="text" id="message-input" placeholder="メッセージを入力...">
+        <button id="send-button">送信</button>
+    </div>
+</div>
+
 {% endblock %}
 
 
 {% block other_content %}
-
-<!-- <div class='sidebar-content'>
-    <h2>Thread List</h2>
-    <ul class="thread-list">
-        {% for thread in threads %}
-        <li class="thread-names">
-            <a class="thread-name" href="{% url 'question_board:thread_detail' thread.id %}">{{ thread.name }}</a>
-        </li>
-        {% endfor %}
-    </ul>
-</div> -->
-
 <script src="{% static 'widgets_test/common_script.js' %}"></script>
 <script src="{% static 'widgets_test/sidebar_func.js' %}"></script>
 <script src="{% static 'widgets_test/thread_func.js' %}"></script>
+
 <script>
     fetch("thread_list/").then(response => response.json()).then(data => {
         threads = data.threads;
@@ -60,42 +48,11 @@
             return {
                 "mainText": thread.name,
                 "subText": thread.description,
-                "link": "{% url 'guilds:get_thread' 0 %}".replace("0", thread.id)
+                "link": "{% url 'guilds:question_board:get_thread' 0 %}".replace("0", thread.id)
             };
         });
         createSidebar("sideber", dics, "Threads", true);
     });
-</script>
-
-<script>
-    // 通知許可のリクエスト
-    function requestNotificationPermission() {
-        if (Notification.permission === "granted") {
-            return true;
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    return true;
-                }
-            });
-        }
-        return false;
-    }
-
-    // 通知を表示する関数
-    function showNotification(title, options) {
-        if (requestNotificationPermission()) {
-            new Notification(title, options);
-        }
-    }
-
-    {{ show_notification | safe }}
-    // 例として、ページロード時に通知を表示
-    // document.addEventListener('DOMContentLoaded', (event) => {
-        showNotification("ようこそ", {
-            body: "ページにアクセスいただきありがとうございます！",
-        });
-    // });
 </script>
 
 {% endblock %}
