@@ -1,7 +1,5 @@
 let COLOR_HEAD_MAIN = '#26282c'
 let COLOR_HEAD_SIDE = '#26282cf0'
-let COLOR_CONTENT_MAIN = '#b5e2fa'
-let COLOR_CONTENT_SIDE = '#b5e2fa80'
 let COLOR_ACCENT = '#913e0b'
 
 function setDefaultColor() {

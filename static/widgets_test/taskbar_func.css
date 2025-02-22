@@ -1,3 +1,23 @@
+:root {
+    --SEPARATOR_THINNESS: 1px;
+    --BACK_GROUND_COLOR: #913e0b80;
+    --HOURS_PER_DAY: 24;
+    --HOUR_TO_PX: 15px;
+    --TASK_BAR_FONT_SIZE: 12px;
+    --TASK_BAR_AND_NAME_HEIGHT: 45px;
+    --TASK_BAR_UNIT: 50px;
+    --taskBarFontSize: calc(var(--TASK_BAR_AND_NAME_HEIGHT)*0.35);
+    --taskBarMargin: calc((var(--TASK_BAR_UNIT) - var(--TASK_BAR_AND_NAME_HEIGHT))/2);
+}
+
+.paremt-elm {
+    overflow: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    display: block;
+    position: relative;
+}
+
 .tasks {
     display: flex;
     flex-direction: column;
@@ -45,11 +65,11 @@
     left: 0;
     width: 25%;
     border-radius: 20px;
+    font-size: var(--taskBarFontSize);
 }
 
 .task-bars {
     position: absolute;
-    width: 100%;
     padding-top: 5px;
     margin: 0;
 }
@@ -58,6 +78,8 @@
     position: absolute;
     border-radius: 10px;
     z-index: 100;
+    height: var(--TASK_BAR_AND_NAME_HEIGHT);
+    margin: var(--taskBarMargin);
 }
 
 .task-separator {
@@ -70,21 +92,28 @@
     position: relative;
 }
 
-.chart-header {
+.labels {
     display: flex;
+    position: sticky;
+    margin: 0;
+    overflow: hidden;
+    top: 0;
+    z-index: 101;
+}
+
+.chart-header {
     text-align: center;
     font-size: 12px;
     padding: 10px 0;
-    width: 100%;
     overflow: hidden;
     margin: 0;
-    top: 0;
 }
 
 .chart-footer {
     height: fit-content;
     margin: 0;
     top: 38px;
+    height: calc(var(--TASK_BAR_FONT_SIZE)*1.5);
 }
 
 .chart-header, .chart-footer {
@@ -102,6 +131,11 @@
     bottom: 0;
 }
 
+.date-label {
+    width: calc(var(--HOURS_PER_DAY) * var(--HOUR_TO_PX));
+    font-size: var(--TASK_BAR_FONT_SIZE);
+}
+
 .chart-footer .date-line {
     position: absolute;
     height: calc(100% + 5px);
@@ -112,6 +146,8 @@
 
 .vertical-line {
     margin: 5px 0 0 0;
+    width: var(--SEPARATOR_THINNESS);
+    background-color: var(--BACK_GROUND_COLOR);
 }
 
 .vertical-lines {
@@ -138,6 +174,22 @@
     z-index: 2;
 }
 
+.now-time {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    padding: 0;
+    width: 2px;
+    background-color: #ff000099;
+    z-index: 101;
+}
+
+.due-date {
+    font-size: var(--taskBarFontSize);
+    margin: calc((var(--TASK_BAR_AND_NAME_HEIGHT) - var(--taskBarFontSize) - var(--taskBarMargin)*2)/2);
+    color: white;
+}
+
 .label-task-name {
     display: none;
 }
@@ -152,6 +204,17 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.task-link {
+    height: var(--TASK_BAR_AND_NAME_HEIGHT);
+    font-size: var(--taskBarFontSize);
+}
+
+.task-span {
+    font-size: var(--taskBarFontSize);
+    margin-top: calc((var(--TASK_BAR_AND_NAME_HEIGHT) - var(--taskBarFontSize) - var(--taskBarMargin)*2)/2);
+    color: white;
 }
 
 @media (max-width: 767.5px) { /* md以下のとき */

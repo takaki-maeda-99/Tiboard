@@ -12,8 +12,17 @@ ul {
     position: relative;
 }
 
+.sidebar-header-div {
+    display: block;
+    position: sticky;
+    top: 0;
+    background-color: #26282cf0;
+    z-index: 100;
+}
+
 .text-elm a {
     text-decoration: none;
+    display: block;
 }
 
 .text-elm li {
