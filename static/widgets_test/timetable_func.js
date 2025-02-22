@@ -1,23 +1,6 @@
 // ローカルストレージキー
 const COURSE_STORAGE_KEY = "cachedCourses";
-const TIME_TABLE_STORAGE_KEY = "timetableData";
-
-// データ取得用関数
-async function fetchDatum(url) {
-    const cachedData = localStorage.getItem(COURSE_STORAGE_KEY);
-    if (cachedData) {
-        console.log("Using cached course data");
-        return JSON.parse(cachedData);
-    }
-
-    console.log("Fetching courses from server...");
-    const response = await fetch(`/task_board/${url}`);
-    const data = await response.json();
-
-    // キャッシュに保存
-    localStorage.setItem(COURSE_STORAGE_KEY, JSON.stringify(data));
-    return data;
-}
+const TIME_TABLE_STORAGE_KEY = "timetableData"
 
 // キャッシュを更新する（必要な場合）
 async function updateCachedCourses(url) {
@@ -40,7 +23,7 @@ function editTimeTable(subjects) {
     // 各セルにドロップダウンリストとテキスト表示を作成
     timeSlots.forEach((slot, index) => {
         const select = document.createElement("select");
-        const displayText = document.createElement("span");
+        const displayText = document.createElement("div");
         select.classList.add("subject-select");
         displayText.classList.add("subject");
 
@@ -75,7 +58,7 @@ function editTimeTable(subjects) {
         // 各セルの表示を切り替え
         timeSlots.forEach(slot => {
             const select = slot.querySelector("select");
-            const displayText = slot.querySelector("span");
+            const displayText = slot.querySelector("div");
 
             if (isEditMode) {
                 select.classList.remove("hidden");
@@ -103,7 +86,7 @@ function editTimeTable(subjects) {
             const timetableData = JSON.parse(savedData);
             timeSlots.forEach((slot, index) => {
                 const select = slot.querySelector("select");
-                const displayText = slot.querySelector("span");
+                const displayText = slot.querySelector("div");
                 const value = timetableData[index] || "空きコマ";
 
                 // セレクトボックスとテキスト表示を復元
@@ -227,55 +210,115 @@ function addPopupToTimeSlots(courses) {
             return;
         }
         const popup = createPopup(index, courses);
-        slot.appendChild(popup);
-    });
 
-    document.querySelectorAll(".time-slot").forEach(subject => {
-        const popup = subject.querySelector(".popup");
-        if (!popup) return;
+        // 初期位置を設定
+        document.body.appendChild(popup);
+
+        popup.style.top = "0";
+        popup.style.left = "0";
+
         let popupTimer;
-        
-        subject.addEventListener("mouseenter", function () {
+
+        // マウスが科目名にホバーしたとき
+        subjectSpan.addEventListener("mouseenter", function () {
             if (isEditMode) return;
+
             popupTimer = setTimeout(() => {
                 if (popup) {
-                    adjustPopupPosition(this, popup);
+                    adjustPopupPosition(slot, popup);
                     popup.classList.add("visible");
                 }
             }, 200);
         });
 
-        subject.addEventListener("mouseleave", function () {
+        // マウスが科目名から外れたとき
+        subjectSpan.addEventListener("mouseleave", function (event) {
+            if (popup.contains(event.relatedTarget)) return; // popup 内なら閉じない
             clearTimeout(popupTimer);
-            popup.classList.remove("visible");
+            hidePopup(popup);
         });
 
-        window.addEventListener("scroll", () => {
-            if (popup.classList.contains("visible")) {
-                adjustPopupPosition(subject, popup);
-            }
+        // マウスがポップアップ内に入ったとき
+        popup.addEventListener("mouseenter", function () {
+            clearTimeout(popupTimer); // 閉じるタイマーを解除
         });
-    })
+
+        // マウスがポップアップから出たとき
+        popup.addEventListener("mouseleave", function (event) {
+            if (subjectSpan.contains(event.relatedTarget)) return; // subject に戻ったら閉じない
+            hidePopup(popup);
+        });
+    });
 }
 
+// ポップアップを非表示にする関数
+function hidePopup(popup) {
+    popup.classList.remove("visible");
+    popup.style.top = "0px"; // 初期位置に戻す
+    popup.style.left = "0px";
+}
+
+// すべてのポップアップの位置を調整
+function adjustAllPopups() {
+    const timeSlots = document.querySelectorAll(".time-slot");
+
+    timeSlots.forEach(slot => {
+        const popup = slot.querySelector(".popup");
+        if (popup) {
+            adjustPopupPosition(slot, popup);
+        }
+    });
+}
+
+// ページスクロール中にポップアップの位置を調整
+window.addEventListener("scroll", () => {
+    const visiblePopups = document.querySelectorAll(".popup.visible");
+    visiblePopups.forEach(popup => {
+        const parentSlot = popup.closest(".time-slot");
+        if (parentSlot) {
+            adjustPopupPosition(parentSlot, popup);
+        }
+    });
+});
+
+// ポップアップの位置を調整する
 function adjustPopupPosition(target, popup) {
     const rect = target.getBoundingClientRect();
     const popupRect = popup.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
-    let top = rect.bottom + window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const timeSlotRect = target.closest(".time-slot").getBoundingClientRect();
+    const timeTableRect = target.closest(".table").getBoundingClientRect();
 
-    if (popupRect.right > viewportWidth) {
-        popup.style.left = "auto";
-        popup.style.right = "5px";
-    }
+    console.log("timeSlotRect", timeSlotRect);
 
-    if (popupRect.left < 0) {
-        popup.style.left = "5px";
+    let left = rect.left + (rect.width / 2) - (popupRect.width / 2) + window.scrollX;
+    let top = timeSlotRect.bottom + window.scrollY;
+
+    // ポップアップが画面の下部にはみ出る場合
+    if (top + popupRect.height > viewportHeight + window.scrollY) {
+        top = timeTableRect.bottom - popupRect.height - 1 ; // .table の bottom に合わせる
     }
 
     popup.style.top = `${top}px`;
+    popup.style.bottom = "auto";
+
+    // 右にはみ出す場合、画面右側に合わせる
+    if (left + popupRect.width > viewportWidth + window.scrollX) {
+        left = viewportWidth + window.scrollX - popupRect.width - 5;
+    }
+
+    // 左にはみ出す場合、画面左側に合わせる
+    if (left < 0) {
+        left = 5;
+    }
+
+    // 左右の位置を設定
+    popup.style.left = `${left}px`;
+    popup.style.right = "auto";
 }
 
+// ポップアップを作る
 function createPopup(index, courses) {
     const popup = document.createElement("div");
     popup.className = "popup";
@@ -313,10 +356,10 @@ function createPopup(index, courses) {
         const counterContainer = document.createElement("div");
         counterContainer.className = "counter";
 
-        const labelElem = document.createElement("span");
+        const labelElem = document.createElement("div");
         labelElem.textContent = `${label}: `;
 
-        const count = document.createElement("span");
+        const count = document.createElement("div");
         count.textContent = savedData[key];
         count.className = "count";
 
@@ -370,10 +413,10 @@ function createCounter(label) {
     const container = document.createElement("div");
     container.classList.add("popup-item", "counter");
 
-    const labelElement = document.createElement("span");
+    const labelElement = document.createElement("div");
     labelElement.textContent = `${label}`;
 
-    const countElement = document.createElement("span");
+    const countElement = document.createElement("div");
     countElement.textContent = "0";
     countElement.classList.add("count");
 
@@ -400,6 +443,17 @@ function createCounter(label) {
     return container;
 }
 
+// ページ読み込み時にポップアップの位置を調整
+document.addEventListener("DOMContentLoaded", () => {
+    const popups = document.querySelectorAll(".popup");
+    popups.forEach(popup => {
+        const parentSlot = popup.closest(".time-slot");
+        if (parentSlot) {
+            adjustPopupPosition(parentSlot, popup);
+        }
+    });
+});
+
 // courseNameをトリミング
 function processCourse(course) {
     let courseName = course.name 
@@ -413,24 +467,3 @@ function processCourse(course) {
         link: link
     };
 }
-
-document.addEventListener("DOMContentLoaded", async function () {
-    const parentId = "up-left";
-
-    try {
-        const data = await fetchDatum("update_courses/");
-        makeTimeTable(data, parentId);
-    } catch (error) {
-        console.error("Error fetching courses:", error);
-    }
-
-    // 定期的にキャッシュを更新
-    const lastUpdateKey = "lastCourseUpdate";
-    const lastUpdate = localStorage.getItem(lastUpdateKey);
-    const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 1日1回
-
-    if (!lastUpdate || Date.now() - new Date(lastUpdate).getTime() > oneDayInMilliseconds) {
-        await updateCachedCourses("update_courses/");
-        localStorage.setItem(lastUpdateKey, new Date().toISOString());
-    }
-});

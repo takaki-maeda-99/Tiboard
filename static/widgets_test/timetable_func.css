@@ -95,11 +95,20 @@
     height: calc(100% / 6);
 }
 
-.subject{
+.subject {
+    display: block;
+    text-align: center;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    width: 100%;
+    padding-top: calc(100% / 6);
+    padding-bottom: calc(100% / 6);
 }
+
+    /* displayをflexにせずに垂直方向に中央ぞろえにしないといけない */
+
+/* --------------------以降popup関係 -------------------*/
 
 /* ポップアップ全体のスタイル */
 .popup {
@@ -108,32 +117,35 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: inline-block;
     z-index: 105;
     font-size: 14px;
     pointer-events: none;
-    transform: translateY(10px);
     opacity: 0;
+    visibility: hidden;
     min-width: 150px;
     max-width: 200px;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.2s ease;
+    top: 0;
+    left: 0;
+    color: black;
 }
 
 /* ポップアップが表示される状態 */
 .popup.visible {
     opacity: 1;
-    transform: translateY(0);
     pointer-events: auto;
+    visibility: visible;
 }
 
 .popup-subject {
     border-radius: 5px;
+    text-align: center;
 }
 
 .popup-subject a {
     text-decoration: none;
-    color: #000000;
     display: block;
+    color: black;
 }
 
 /* 各ポップアップ項目 */
@@ -148,6 +160,7 @@
     align-items: center;
     justify-content: space-between;
     border-radius: 5px;
+    margin: 3px;
 }
 
 .counter .count {

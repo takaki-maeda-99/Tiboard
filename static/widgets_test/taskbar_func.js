@@ -3,13 +3,8 @@ const HOUR_TO_PX = 15;
 const SECONDS_PER_HOUR = 1000 * 60 * 60
 const CHART_LEFT_MARGIN = 24;
 const TASK_BAR_UNIT = 50;
-const SEPARATOR_THINNESS = 1;
-const BACK_GROUND_COLOR = '#913e0b80';
-const TASK_BAR_FONT_SIZE = 12;
 const INTERVAL = 30;
 const ADJUST_MARGIN = 5;
-
-const taskBarFontSize = TASK_BAR_AND_NAME_HEIGHT * 0.35
 
 let daysRange = 3;
 let intervalHours = 3;
@@ -24,9 +19,7 @@ function drawVerticalLine(taskLength) {
         const verticalLine = document.createElement('div');
         verticalLine.className = 'vertical-line';
         verticalLine.style.left = `${CHART_LEFT_MARGIN + i * HOUR_TO_PX * intervalHours - i}px`;
-        verticalLine.style.width = `${SEPARATOR_THINNESS}px`;
         verticalLine.style.height = `${taskBarsHeight}px`;
-        verticalLine.style.backgroundColor = BACK_GROUND_COLOR;
         taskBars.appendChild(verticalLine);
     };
 };
@@ -82,12 +75,12 @@ function makeHorizontalLabel() {
     for (let day = 0; day < daysRange; day++) {
         for (let hour = 0; hour < HOURS_PER_DAY; hour += intervalHours) {
             const headerCell = document.createElement('div');
+            headerCell.className = 'header-cell';
+            headerCell.style.width = `${HOUR_TO_PX * intervalHours}px`;
+
             const date = new Date(startDate.getTime());
             date.setDate(startDate.getDate() + day);
             date.setHours(hour, 0, 0, 0);
-
-            headerCell.className = 'header-cell';
-            headerCell.style.width = `${HOUR_TO_PX * intervalHours}px`;
 
             const timeText = document.createElement('div');
             timeText.className = 'time-text';
@@ -104,8 +97,6 @@ function createDateLabel(date, day) {
     const label = document.createElement('div');
     label.className = 'date-label';
     label.style.left = `${CHART_LEFT_MARGIN + HOURS_PER_DAY * HOUR_TO_PX * day}px`;
-    label.style.width = `${HOURS_PER_DAY * HOUR_TO_PX}px`;
-    label.style.fontSize = `${TASK_BAR_FONT_SIZE}px`
 
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
     const dateText = date.toLocaleDateString('ja', { month: 'short', day: 'numeric' });
@@ -164,42 +155,6 @@ if (document.getElementById("days-range")){
     });
 };
 
-// スクロールの同期
-document.addEventListener('DOMContentLoaded', function () {
-    const chartHeader = document.getElementById('chart-header');
-    const chartFooter = document.getElementById('chart-footer');
-    const chart = document.getElementById('chart');
-
-    if (chartHeader && chartFooter && chart) {
-        let isSyncingScroll = false; // フラグを追加
-
-        const syncScroll = (source) => {
-            if (isSyncingScroll) return;
-            isSyncingScroll = true;
-
-            const scrollLeft = source.scrollLeft;
-
-            if (source !== chartHeader) chartHeader.scrollLeft = scrollLeft; 
-            if (source !== chartFooter) chartFooter.scrollLeft = scrollLeft;
-            if (source !== chart) chart.scrollLeft = scrollLeft;
-
-            isSyncingScroll = false;
-        };
-
-        chartHeader.addEventListener('scroll', function () {
-            syncScroll(chartHeader);
-        });
-
-        chartFooter.addEventListener('scroll', function () {
-            syncScroll(chartFooter);
-        });
-
-        chart.addEventListener('scroll', function () {
-            syncScroll(chart);
-        });
-    }
-});
-
 // task = {"startTime": startTime, "endTime": endTime, "name": name, "link": link}
 // tasks = [task1, task2, ...]
 // endTimeが現在時刻よりも前のやつは渡さないようにしてほしい
@@ -214,6 +169,7 @@ function addTaskBars(tasks) {
     taskBars.style.height = `${taskBarsHeight}px`;
 
     drawVerticalLine(tasks.length)
+    console.log("tasks:", tasks);
 
     tasks.forEach((task, index) => {
         const taskBar = document.createElement('div');
@@ -223,7 +179,6 @@ function addTaskBars(tasks) {
         const taskEndPx = timeToPixels(task.endTime) + CHART_LEFT_MARGIN;
         const taskBarWidth = taskEndPx - taskStartPx;
 
-        taskBar.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
         taskBar.style.left = `${taskStartPx}px`;
         taskBar.style.width = `${taskBarWidth}px`;
         if (index ===0) {
@@ -232,8 +187,6 @@ function addTaskBars(tasks) {
             taskBar.style.top = `${(TASK_BAR_AND_NAME_HEIGHT + MARGIN * 2) * index + ADJUST_MARGIN}px`;
         };
 
-        const taskBarMargin = (TASK_BAR_UNIT - TASK_BAR_AND_NAME_HEIGHT) / 2
-        taskBar.style.margin = `${taskBarMargin}px`;
         taskBar.style.backgroundColor = setTaskBarColor(task);
 
         const maxPx = daysRange * HOURS_PER_DAY * HOUR_TO_PX; // チャートの右端までのpx
@@ -253,34 +206,26 @@ function addTaskBars(tasks) {
             hour: '2-digit',
             minute: '2-digit',
         }).replace(/\//g, '/');
-
-        dueDateDiv.style.fontSize = `${taskBarFontSize}px`;
-        dueDateDiv.style.margin = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
         
         const taskNameOnLabel = document.createElement('div');
         taskNameOnLabel.className = 'label-task-name';
 
         const taskLink = document.createElement('a')
-        const taskSpan = document.createElement('span')
-
-        taskLink.style.height = `${TASK_BAR_AND_NAME_HEIGHT}px`
+        taskLink.className = 'task-link';
+        taskLink.target = '_blank';
         taskLink.href = task.link;
-        taskSpan.style.fontSize = `${taskBarFontSize}px`;
+        
+        const taskSpan = document.createElement('span')
+        taskSpan.className = 'task-span';
         taskSpan.target = '_blank';
         taskSpan.rel = 'noopener noreferrer';
         taskSpan.textContent = task.name
-        taskSpan.style.fontSize = `${taskBarFontSize}px`;
-        taskSpan.style.marginTop = `${(TASK_BAR_AND_NAME_HEIGHT - taskBarFontSize - taskBarMargin * 2) / 2}px`;
         taskSpan.style.maxWidth = `${taskBarWidth}px`;
-        dueDateDiv.style.color = 'white';
-        taskSpan.style.color = 'white';
 
         const contentMain = document.getElementById('content-main');
         const detailPopup = document.createElement('div');
         detailPopup.className = 'task-detail-popup';
         detailPopup.textContent = task.name;
-        taskLink.target = '_blank';
-        detailPopup.style.fontSize = `${taskBarFontSize}px`;
         contentMain.appendChild(detailPopup);
 
         setPopup(taskBar, taskNameOnLabel, detailPopup, true);
@@ -296,52 +241,49 @@ function addTaskBars(tasks) {
 // タスクバー等を追加するための準備
 function addTaskBarContainer(parentId, tasks) {
     const parentElm = document.getElementById(parentId);
-    parentElm.style.overflow = 'auto';
-    parentElm.style.whiteSpace = 'nowrap';
-    parentElm.style.scrollbarWidth = 'none';
-    parentElm.style.display = 'flex';
+    parentElm.classList.add("parent-elm");
 
     const row1 = document.createElement('div');
-    const row2 = document.createElement('div');
-    const row3 = document.createElement('div');
-    const row4 = document.createElement('div');
-    const chartDiv = document.createElement('div');
-
     row1.className = 'row chart-header';
     row1.id = 'chart-header';
+
+    const row2 = document.createElement('div');
     row2.className = 'row chart-footer';
     row2.id = 'chart-footer';
+
+    const row3 = document.createElement('div');
     row3.className = 'row task-bars';
     row3.id = 'task-bars';
+
+    const row4 = document.createElement('div');
     row4.className = 'row vertical-lines';
     row4.id = 'vertical-lines';
+
+    const rows = document.createElement('div');
+    rows.className = 'row labels';
+    rows.id = 'rows';
+
+    const chartDiv = document.createElement('div');
     chartDiv.className = 'chart';
     chartDiv.id = 'chart';
 
-    parentElm.style.display = 'block';
-    parentElm.style.position = 'relative';
 
     const totalWidth = daysRange * HOURS_PER_DAY * HOUR_TO_PX;
-    row1.style.width = `${totalWidth}px`;
-    row2.style.height = `${TASK_BAR_FONT_SIZE*1.5}px`;
-    row2.style.width = `${totalWidth}px`;
-    row3.style.width = `${totalWidth}px`;
-
+    [row1, row2, rows, row3].forEach(row => row.style.width = `${totalWidth}px`);
 
     row3.style.height = `${TASK_BAR_UNIT*tasks.length}`;
 
-    parentElm.appendChild(row1);
-    parentElm.appendChild(row2);
+    rows.appendChild(row1);
+    rows.appendChild(row2);
+    parentElm.appendChild(rows);
     chartDiv.appendChild(row3);
     chartDiv.appendChild(row4);
     parentElm.appendChild(chartDiv);
 
     makeHorizontalLabel();
-    addTaskBars(tasks);
     drawFooterLine();
 
     const classList = ['task-bars', 'chart-header', "chart-footer"]
-
     const taskBarsHeight = tasks.length * (MARGIN * 2 + TASK_BAR_AND_NAME_HEIGHT);
 
     classList.forEach(classId => {
@@ -353,8 +295,6 @@ const nowLineElements = {};
 
 // 現在時刻の線を引く
 function drawNowLine(taskBarsHeight, classId) {
-    const element = document.getElementById(classId);
-
     // クラスに対応する古い線があれば削除
     if (nowLineElements[classId]) {
         nowLineElements[classId].remove();
@@ -365,13 +305,6 @@ function drawNowLine(taskBarsHeight, classId) {
 
     const nowLineElement = document.createElement('div');  // 新しい線を作成
     nowLineElement.classList.add("now-time");
-    nowLineElement.style.position = 'absolute';
-    nowLineElement.style.top = '0';
-    nowLineElement.style.bottom = '0';
-    nowLineElement.style.padding = '0';
-    nowLineElement.style.width = '2px';
-    nowLineElement.style.backgroundColor = '#ff000099'; // red(0xff0000)のopacity: 0x99
-    nowLineElement.style.zIndex = '100';
     nowLineElement.style.left = `${CHART_LEFT_MARGIN + nowPx}px`;
     
     if (classId === 'task-bars') {
@@ -381,6 +314,7 @@ function drawNowLine(taskBarsHeight, classId) {
     }
 
     // 新しい線を追加
+    const element = document.getElementById(classId);
     if (element) {
         element.appendChild(nowLineElement);
         // 新しい線をオブジェクトに保存
@@ -396,13 +330,20 @@ function startNowLineUpdates(taskBarsHeight, classId) {
     }, 1000 * INTERVAL);  // interval秒ごとに更新
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const task1 = {"startTime": "2024-11-13T18:00:00Z", "endTime": "2024-11-29T21:00:00Z", "name": "test1", "link": "#"};
-    const task2 = {"startTime": "2024-10-23T21:00:00Z", "endTime": "2024-10-29T12:00:00Z", "name": "test", "link": "#"};
-    const task3 = {"startTime": "2024-10-24T00:00:00Z", "endTime": "2024-10-28T12:00:00Z", "name": "test", "link": "#"};
-    const task4 = {"startTime": "2024-10-23T18:00:00Z", "endTime": "2024-10-29T18:00:00Z", "name": "test1", "link": "#"};
-    const task5 = {"startTime": "2024-10-23T21:00:00Z", "endTime": "2024-10-30T12:00:00Z", "name": "test", "link": "#"};
-    const task6 = {"startTime": "2024-10-24T00:00:00Z", "endTime": "2024-10-30T12:00:00Z", "name": "test", "link": "#"};
-    const tasks = [task1, task2, task3, task4, task5, task6];
-    addTaskBarContainer("gantt", tasks);
-});
+// 特定のクラス名を持つ要素をすべて削除する関数
+// classNames = ["className1", "className2", ...]
+function removeElementsByClassNames(classNames) {
+    classNames.forEach(className => {
+        const elements = document.querySelectorAll(`.${className}`);
+        elements.forEach(element => element.remove());
+    });
+}
+
+// チャートの削除
+async function clearChart(classNames) {
+    removeElementsByClassNames(classNames);
+    const popups = document.getElementsByClassName('task-detail-popup');
+    while (popups.length > 0) {
+        popups[0].parentNode.removeChild(popups[0]);
+    };
+};

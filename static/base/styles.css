@@ -315,3 +315,7 @@ body::-webkit-scrollbar {
       display: block;
   }
 }
+
+.link {
+  margin: 10px;
+}
