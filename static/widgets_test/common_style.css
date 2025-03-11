@@ -12,3 +12,31 @@
     width: 25%;
     border-radius: 20px;
 }
+
+#up-left, #up-middle, #down-left, #down-right {
+    height: 70vh;
+    padding: 0;
+    border: 1px solid #ffffff;
+}
+
+#up-middle {
+    display: flex;
+    overflow: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    padding-right: 5px;
+}
+
+#up-middle {
+    padding-left: 5px;
+}
+
+#up-right {
+    height: 45vh;
+}
+
+@media (max-width: 767.5px) { /* md以下のとき */
+    #up-left {
+        display: none !important;
+    }
+}

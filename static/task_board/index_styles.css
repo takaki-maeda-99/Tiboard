@@ -29,6 +29,7 @@
 
 .task-name a {
     text-decoration: none;
+    display: block;
 }
 
 .task-name li {
