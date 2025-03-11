@@ -74,7 +74,7 @@ class Function:
         self.db.clear_courses()
         for course in courses:
             self.db.add_course(course)
-        return {"result": "success"}
+        return {"result": "success", "courses": courses}
     
     def update_courseworks(self, request):
         created = False
