@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .post-container {
+            border: 1px solid #ccc;
+            width: 80%;
+            max-width: 400px;
+            background-color: #f0f0f0;
+            padding: 2%;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2%;
+        }
+
+        .post-icon {
+            width: 10%;
+            padding-top: 10%;
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        .post-info {
+            flex-grow: 1;
+            margin-left: 2%;
+        }
+
+        .post-info p {
+            margin: 0;
+        }
+
+        .post-info h4 {
+            margin: 0;
+        }
+
+        .content {
+            background-color: white;
+            padding: 3%;
+            margin: 3% 0;
+            border-radius: 5px;
+        }
+
+        .reply-btn {
+            border: 1px solid #333;
+            padding: 2% 5%;
+            font-size: 90%;
+            cursor: pointer;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="post-container">
+        <div class="post-header">
+            <div class="icon"></div>
+            <div class="post-info">
+                <h4>username</h4>
+                <p>date,post_id</p>
+            </div>
+        </div>
+        <div class="content">
+            <p>content</p>
+        </div>
+        <button class="reply-btn">reply</button>
+    </div>
+
+</body>
+
+</html>
