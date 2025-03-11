@@ -1,4 +1,3 @@
-const TASK_BAR_AND_NAME_HEIGHT = 45;
 const MAX_WIDTH = 2000;
 const HEADER_HEIGHT = 61;
 

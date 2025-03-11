@@ -102,11 +102,17 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     width: 100%;
-    padding-top: calc(100% / 6);
-    padding-bottom: calc(100% / 6);
+    padding-top: calc(100% / 3);
+    padding-bottom: calc(100% / 3);
 }
 
-    /* displayをflexにせずに垂直方向に中央ぞろえにしないといけない */
+@media (max-width: 767.5px){
+    .subject{
+        padding-top: calc(100% / 12);
+        padding-bottom: calc(100% / 12);
+    }
+}
+  
 
 /* --------------------以降popup関係 -------------------*/
 

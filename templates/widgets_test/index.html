@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/sidebar_func.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/taskbar_func.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'widgets_test/timetable_func.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/test.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'widgets_test/thread_func.css' %}">
 {% endblock %}
 
 {% block content_side %}
@@ -19,10 +19,11 @@
 
 {% block content_main %}
 <div class="row">
-    <div class="col-md-9" id="up-left">
+    <div class="col-md-3" id="up-left">
+    </div>
+    <div class="col-md-6" id="up-middle">
     </div>
     <div class="col-md-3" id="up-right">
-        <div id="gantt"></div>
     </div>
 </div>
 <div class="row">
@@ -36,4 +37,5 @@
 <script src="{% static "widgets_test/sidebar_func.js" %}"></script>
 <script src="{% static "widgets_test/taskbar_func.js" %}"></script>
 <script src="{% static "widgets_test/timetable_func.js" %}"></script>
+<script src="{% static "widgets_test/thread_func.js" %}"></script>
 {% endblock %}
